@@ -1,0 +1,12 @@
+dst=$(date +"%Y-%m-%d_%a")
+dstFolder=${dst%.*}
+localFolder=$(dirname $0)
+cd $localFolder
+
+./dld-prog-francetv $dstFolder https://www.france.tv/france-2/la-source-de-vie/
+./dld-prog-francetv $dstFolder https://www.france.tv/france-2/sagesses-bouddhistes/
+./dld-prog-francetv $dstFolder https://www.france.tv/france-2/13h15-le-dimanche/
+./dld-f5-cpolitique
+./dld-prog-francetv $dstFolder https://www.france.tv/france-2/19h-le-dimanche/
+./dld-prog-francetv $dstFolder https://www.france.tv/france-3/dimanche-en-politique/
+./dld-prog-francetv $dstFolder https://www.france.tv/france-2/20h30-le-dimanche/

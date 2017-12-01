@@ -1,0 +1,7 @@
+dst=$(date +"%Y-%m-%d_%a")
+dstFolder=${dst%.*}
+localFolder=$(dirname $0)
+cd $localFolder
+
+./dld-francetv $dstFolder https://www.france.tv/france-5/c-politique/
+./dld-francetv $dstFolder https://www.france.tv/france-5/c-politique-le-debat/
