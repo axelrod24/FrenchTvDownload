@@ -85,7 +85,7 @@ if (__name__ == "__main__"):
         dstFullPath = os.path.join(args.outDir, fname)
 
         # rename file if it already exist.
-        fileIndex = 1
+        fileIndex = 2
         while os.path.isfile(dstFullPath) is True:
             basenamePath = dstFullPath.split(".mp4")[0]
             dstFullPath = basenamePath + "_" + str(fileIndex) + ".mp4"
