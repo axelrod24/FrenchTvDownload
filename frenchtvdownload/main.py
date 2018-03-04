@@ -88,8 +88,7 @@ if (__name__ == "__main__"):
         fileIndex = 1
         while os.path.isfile(dstFullPath) is True:
             basenamePath = dstFullPath.split(".mp4")[0]
-            basenamePath += "_"+str(fileIndex)
-            dstFullPath = os.path.join(basenamePath, ".mp4")
+            dstFullPath = basenamePath + "_" + str(fileIndex) + ".mp4"
             fileIndex += 1
 
         CreateMP4(videoFullPath, dstFullPath)
