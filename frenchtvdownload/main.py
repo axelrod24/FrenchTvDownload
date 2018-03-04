@@ -81,7 +81,16 @@ if (__name__ == "__main__"):
 
     # convert to mp4
     if videoFullPath is not None:
-        fname = os.path.basename(videoFullPath)
-        dstFullPath = os.path.join(args.outDir, fname).replace(".ts", ".mp4")
+        fname = os.path.basename(videoFullPath).replace(".ts", ".mp4")
+        dstFullPath = os.path.join(args.outDir, fname)
+
+        # rename file if it already exist.
+        fileIndex = 1
+        while os.path.isfile(dstFullPath) is True:
+            basenamePath = dstFullPath.split(".mp4")[0]
+            basenamePath += "_"+str(fileIndex)
+            dstFullPath = os.path.join(basenamePath, ".mp4")
+            fileIndex += 1
+
         CreateMP4(videoFullPath, dstFullPath)
 

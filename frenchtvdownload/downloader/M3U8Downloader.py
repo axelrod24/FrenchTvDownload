@@ -28,11 +28,11 @@ class M3U8Downloader(object):
         logger.info("Get index master.m3u8")
         m3u8page = self.fakeAgent.readPage(self.m3u8URL)
 
-        # get URL of all fragments
+        # get URL of all fragments highest bitrate
         listFragments = re.findall(".+?\.ts", m3u8page)
         if not listFragments:
             listFragments = []
-            listeM3U8 = re.findall(".+?index_2_av\.m3u8", m3u8page)
+            listeM3U8 = re.findall(".+?index_3_av\.m3u8", m3u8page)
             for m3u8 in listeM3U8:
                 m3u8data = self.fakeAgent.readPage(m3u8)
                 listFragments.extend(re.findall(".+?\.ts", m3u8data))
