@@ -24,8 +24,9 @@ from bs4 import BeautifulSoup
 
 from DownloadException import FrTvDownloadException
 from downloader.M3U8Downloader import M3U8Downloader
+from GlobalRef import LOGGER_NAME
 
-logger = logging.getLogger("frtvdld")
+logger = logging.getLogger(LOGGER_NAME)
 
 
 #
