@@ -41,10 +41,12 @@ class FranceTvDownloader(object):
     DATA_MAIN_VIDEO = 'data-main-video="([0-9][a-z]-)*"'
     REGEX_ID = "http://info.francetelevisions.fr/\?id-video=([^\"]+)"
     XML_DESCRIPTION = "http://www.pluzz.fr/appftv/webservices/video/getInfosOeuvre.php?mode=zeri&id-diffusion=_ID_EMISSION_"
-    JSON_DESCRIPTION = "http://webservices.francetelevisions.fr/tools/getInfosOeuvre/v2/?idDiffusion=_ID_EMISSION_&catalogue=Pluzz"
     URL_SMI = "http://www.pluzz.fr/appftv/webservices/video/getFichierSmi.php?smi=_CHAINE_/_ID_EMISSION_.smi&source=azad"
     M3U8_LINK = "http://medias2.francetv.fr/catchup-mobile/france-dom-tom/non-token/non-drm/m3u8/_FILE_NAME_.m3u8"
     REGEX_M3U8 = "/([0-9]{4}/S[0-9]{2}/J[0-9]{1}/[0-9]*-[0-9]{6,8})-"
+    JSON_DESCRIPTION = "http://webservices.francetelevisions.fr/tools/getInfosOeuvre/v2/?idDiffusion=_ID_EMISSION_&catalogue=Pluzz"
+    JSON2_DESC="https://sivideo.webservices.francetelevisions.fr/tools/getInfosOeuvre/v2/?idDiffusion=_ID_EMISSION_"
+
 
     #  http://webservices.francetelevisions.fr/tools/getInfosOeuvre/v2/?idDiffusion=166810096&catalogue=Pluzz
     # http://www.pluzz.fr/appftv/webservices/video/getInfosOeuvre.php?mode=zeri&id-diffusion=166810096
@@ -87,6 +89,11 @@ class FranceTvDownloader(object):
         # go for JSON straight, don't even try XML
         pageInfos = self.fakeAgent.readPage(self.JSON_DESCRIPTION.replace("_ID_EMISSION_", idEmission))
         self._parseInfosJSON(pageInfos)
+
+        #if no link to url try the other link
+        if self.m3u8URL is None:
+            pageInfos = self.fakeAgent.readPage(self.JSON2_DESC.replace("_ID_EMISSION_", idEmission))
+            self._parseInfosJSON(pageInfos)
 
         # Petit message en cas de DRM
         if self.drm:
