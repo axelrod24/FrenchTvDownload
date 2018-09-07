@@ -1,0 +1,835 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="fr_FR">
+<head profile="http://gmpg.org/xfn/11">
+<meta name="robots" content="noindex">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" >
+<meta property='og:type' content='video' />
+<meta property='og:title' content='Les nettoyeurs du Web - The Cleaners' />
+<meta property='og:image' content='https://static-cdn.arte.tv/resize/3LzieTKrGjMZrjN0PYV0FGyarKg=/940x530/smart/filters:strip_icc()/apios/Img_data/4/069881-000-A_2499206.jpg' />
+<link rel='image_src' href='https://static-cdn.arte.tv/resize/3LzieTKrGjMZrjN0PYV0FGyarKg=/940x530/smart/filters:strip_icc()/apios/Img_data/4/069881-000-A_2499206.jpg' />
+<meta property="og:site_name" content="arte.tv"/>
+<meta property='og:url' content='https://www.arte.tv/player/v3/index.php?json_url=https%3A%2F%2Fapi.arte.tv%2Fapi%2Fplayer%2Fv1%2Fconfig%2Ffr%2F069881-000-A%3Fautostart%3D0%26lifeCycle%3D1&amp;lang=fr_FR&amp;autostart=0&amp;embed=0' data-shortUrl="https://tinyurl.com/yc7u5x5g"/>
+<meta property='og:description' content='Qui modère nos contenus en ligne ? Les réseaux sociaux contribuent-ils à l&#039;accroissement de la haine ? Des Philippines à la Silicon Valley, une enquête exhaustive et brutale sur la violence à l&#039;ère du Web.' />
+<meta property="fb:app_id" content="416821615179393" />
+<meta name="twitter:card" content="player">
+<meta name="twitter:site" content="@ARTEfr">
+<meta name="twitter:creator" content="@ARTEfr">
+<meta name="twitter:title" content="Les nettoyeurs du Web - The Cleaners">
+<meta name="twitter:description" content="Qui modère nos contenus en ligne ? Les réseaux sociaux contribuent-ils à l&#039;accroissement de la haine ? Des Philippines à la Silicon Valley, une enquête exhaustive et brutale sur la violence à l&#039;ère du Web.">
+<meta name="twitter:image" content="https://static-cdn.arte.tv/resize/3LzieTKrGjMZrjN0PYV0FGyarKg=/940x530/smart/filters:strip_icc()/apios/Img_data/4/069881-000-A_2499206.jpg">
+<meta name="twitter:player" content="https://www.arte.tv/player/v3/index.php?json_url=https%3A%2F%2Fapi.arte.tv%2Fapi%2Fplayer%2Fv1%2Fconfig%2Ffr%2F069881-000-A%3Fautostart%3D0%26lifeCycle%3D1&amp;lang=fr_FR&amp;autostart=0&amp;embed=1">
+<meta name="twitter:player:height" content="360">
+<meta name="twitter:player:width" content="640">
+<meta name="twitter:domain" content="arte.tv">
+<meta name="twitter:app:id:iphone" content="405028510">
+<meta name="twitter:app:id:ipad" content="405028510">
+<meta name="twitter:app:id:googleplay" content="tv.arte.plus7">
+<meta name="twitter:app:name:iphone" content="Application  ARTE  pour  iPhone">
+<meta name="twitter:app:name:ipad" content="Application  ARTE  pour  iPad">
+<meta name="twitter:app:name:googleplay" content="Application  ARTE  pour  Androïd">
+<meta name="twitter:app:url:iphone" content="https://itunes.apple.com/fr/app/arte/id405028510?mt=8">
+<meta name="twitter:app:url:ipad" content="https://itunes.apple.com/fr/app/arte/id405028510?mt=8">
+<meta name="twitter:app:url:googleplay" content="https://play.google.com/store/apps/details?id=tv.arte.plus7&amp;hl=fr">
+<link rel="me" href="https://twitter.com/ARTEfr">
+<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=0, width=device-width"/>
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="HandheldFriendly" content="True">
+<meta name="MobileOptimized" content="480">
+<meta name="robots" content="noindex">
+<title>Les nettoyeurs du Web - The Cleaners</title>
+<meta name="description" content="Qui modère nos contenus en ligne ? Les réseaux sociaux contribuent-ils à l&#039;accroissement de la haine ? Des Philippines à la Silicon Valley, une enquête exhaustive et brutale sur la violence à l&#039;ère du Web." />
+<link rel="stylesheet" type="text/css" href="https://static-cdn.arte.tv/player/v3//build/css/arte.css?ver=3.32.1-fb8b44c1383bc215efd7" />
+<script>
+if(window.location.host.indexOf("arte.tv")>0)
+document.domain = "arte.tv";
+</script>
+<script src="https://static-cdn.arte.tv/player/v3//js/views/plugins/estat/mu-5.2.1.js"></script>
+<script type="text/javascript" src="js/vendor/jquery.min.js"></script>
+<script type="text/javascript" src="https://static-cdn.arte.tv/static/styleguide/3.16.0/asg/main.js"></script>
+<script type="text/javascript" src="https://static-cdn.arte.tv/static/styleguide/3.16.0/asg/loader.js?NextSharebar"></script>
+<link rel="stylesheet" href="https://static-cdn.arte.tv/static/styleguide/3.16.0/asg/main.css" />
+</head>
+<body>
+<div id="jwPlayerTeaser" class="jwplayer jw-reset jw-skin-arte jw-state-paused jw-flag-aspect-mode" tabindex="0">
+</div>
+<div class="jw-skin-arte jw-reset">
+<div id="playlistContainer" class="open jw-background-color"></div>
+</div>
+<script>var cdnUrl = 'https://static-cdn.arte.tv/player/v3//';</script>
+<script type="text/template" id="pluginInfoTemplate">
+<span class="jw-reset jw-icon jw-icon-close"></span>
+<h1><%= VTI %><% if(!_.isUndefined(subtitle) && !_.isNull(subtitle)) { %> - <%= subtitle %><% } %></h1>
+<% if(VDA){ %>
+<p class="info-vda"><%= VDA %></p>
+<% } %>
+<p>
+<% if(duration!==0) { %>
+<span class="duration"><%= duration %></span>
+<% } %>
+<% if(rights_until) { %>
+<span class="rights_until"> <%= rights_until %></span>
+<% } %>
+</p>
+<% if(!_.isNull(V7T)) { %>
+<p class="teaserText"><%= V7T %></p>
+<% } %>
+<% if(!_.isNull(VTR)) { %>
+<p><a class="infoLink" title="<%= VTI %>" href="<%= VTR %>"><i class="jw-icon-info"></i> <%= infoLinkText %></a></p>
+<% } %>
+</script>
+<script type="text/template" id="pluginMoralityTemplate">
+<div class="jw-morality-wrapper">
+<form id="moralityCheck">
+<div class="warning-msg"><p><%= morality_question_check %></p></div>
+<% if(!_.isNull(morality_response_yes) || !_.isNull(morality_response_no)) { %>
+<div>
+<% if(!_.isNull(morality_response_yes)) { %>
+<button value="yes" class="button" name="confirmAge"><%= morality_response_yes %></button>&nbsp;
+<% } %>
+<% if(!_.isNull(morality_response_no)) { %>
+<button class="button" value="no" name="confirmAge"><%= morality_response_no %></button>
+<% } %>
+</div>
+<% } %>
+</form>
+</div></script>
+<script type="text/template" id="pluginPartnerLogoTemplate">
+<% if(!_.isNull(link)) { %>
+<a href="<%= link %>" target="_blank">
+<% } %>
+<img src="<%= image %>" alt="" width="<%= width %>" height="<%= height %>">
+<% if(!_.isNull(link)) { %>
+</a>
+<% } %>
+</script>
+<script type="text/template" id="shareBoxTemplate">
+<div class='jw-sharing-row jw-sharing-title'>
+<h4 class="share selected"><%= topdockbutton_share %></h4>
+<h4 class="embed"><%= topdockbutton_embed %></h4>
+</div>
+<div class="sharePart">
+<div class="jw-sharing-link"><input type="text" readonly="true" class="jw-sharing-text"/></div>
+<div id="arte-share-bar-1" class="arte-share-bar arte-share-bar--small arte-share-bar--center"></div>
+<div class="columnContainer"></div>
+</div>
+<div class="embedPart">
+<div class="jw-sharing-embed"><input type="text" readonly="true" class="jw-sharing-text"/></div>
+<div class="columnContainer"></div>
+</div></script>
+<script type="text/template" id="relatedBoxTemplate">
+<div class="jw-related-grid jw-align-left jw-related-row-3 jw-related-col-4">
+<h4><%= title %></h4>
+<% for(var video in videoList) { %>
+<div href="<%= videoList[video].VUP %>" class="jw-related-thumb jw-reset">
+<a href="<%= videoList[video].VUP %>">
+<img class="jw-related-thumb-cover jw-reset" src="<%= videoList[video].VTU.IUR %>" />
+<span class="jw-related-thumb-title jw-text jw-reset"><%= videoList[video].VTI %></span>
+<span class="duration"><%= videoList[video].duration %></span>
+</a>
+</div>
+<% } %>
+</div></script>
+<script type="text/template" id="pluginMessageTemplate">
+<div id="pluginMessage">
+<% if((typeof title !== 'undefined' && !_.isNull(title)) || (typeof subtitle !== 'undefined' &&  !_.isNull(subtitle))) { %><div class="videoTitleContainer"><% } %>
+<% if(typeof title !== 'undefined' && !_.isNull(title)) { %><h1 class="videoTitle"><%= title %></h1><% } %>
+<% if(typeof subtitle !== 'undefined' &&  !_.isNull(subtitle)) { %><h2 class="videoSubtitle"><%= subtitle %></h2><% } %>
+<% if((typeof title !== 'undefined' && !_.isNull(title)) || (typeof subtitle !== 'undefined' &&  !_.isNull(subtitle))) { %></div><% } %>
+<p><%= message %></p>
+</div></script>
+<script type="text/template" id="pluginCountdownTemplate">
+<% if(!_.isNull(title) || !_.isNull(subtitle)) { %><div class="videoTitleContainer"><% } %>
+<% if(!_.isNull(title)) { %><h1 class="videoTitle"><%= title %></h1><% } %>
+<% if(!_.isNull(subtitle)) { %><h2 class="videoSubtitle"><%= subtitle %></h2><% } %>
+<% if(!_.isNull(title) || !_.isNull(subtitle)) { %></div><% } %>
+<p class="ctn_intro"><%= ctn_intro %></p>
+<p class="countdown"><%= count %></p></script>
+<script type="text/template" id="pluginVersionItemTemplate">
+<div data-versionprog="<%= id %>"
+<% if (selected) { %> 
+class="selected"
+<% } %>
+><%= title %></div></script>
+<script type="text/template" id="pluginEditChapterTemplate">
+<div class="jwp-overlay-content jw-reset">
+<div class="jwp-overlay-header-text jw-reset"><%= box_title_label %></div>
+<form>
+<div class="clearfix">
+<div class="tc_container">
+<label for="tc"><%= timecode_label %></label>
+<div>
+<input name="tc" id="tc" type="text" value="<%= current_tc %>">
+</div>
+</div>
+<div class="edit">
+<label for="title"><%= title_label %></label>
+<div>
+<input name="title" id="title" type="text" value="<%= current_title %>" maxlength="256">
+</div>
+</div>
+<div class="edit" style="display: none;">
+<label for="description"><%= description_label %></label>
+<div>
+<input name="description" id="description" type="text" value="<%= current_description %>" maxlength="512">
+</div>
+</div>
+<% if(!_.isNull(uniqueID)) { %>
+<input name="id" id="id" type="hidden" value="<%= uniqueID %>">
+<% } %>
+<div class="button save"><%= save_label %></div>
+</div>
+</form>
+</div></script>
+<script type="text/template" id="playlistTemplate">
+<div id="playlistHeader">
+<span class="jw-icon jw-icon-close"></span>
+<% if(!_.isNull(overTitle)){ %> <h5><%= overTitle %></h5><% } %>
+<div class="jw-icon jw-icon-inline jw-button-color jw-reset jw-icon-playlist" role="button" tabindex="0" aria-label="playlist"><span class="path1"></span><span class="path2"></span></div>
+<h4><%= title %></h4>
+<% if(!_.isEmpty(subtitle) || !_.isEmpty(shortDescription)){ %><p><% } %>
+<% if(!_.isEmpty(subtitle)){ %><%= subtitle %><br/><% } %><%=shortDescription %>
+<% if(!_.isEmpty(subtitle) || !_.isEmpty(shortDescription)){ %></p><% } %>
+<% if(!_.isEmpty(nbItem)){ %><span class="itemCount"><%= nbItem %></span><% } %>
+<% if(!_.isNull(add_text)){ %> <a href="javascript:void(0);" class="add"><%= add_text %></a> - <% } %>
+<% if(!_.isNull(save_text)){ %> <a href="javascript:void(0);" class="save"><%= save_text %></a><% } %>
+</div>
+<ul></ul></script>
+<script type="text/template" id="playlistItemTemplate">
+<li class="<% if(chapter_toDelete == true) { %>toDelete<% } %>" id="playlistItem_<%= id %>"
+<% if(!_.isEmpty(jsonUrl)){ %>data-jsonUrl="<%= jsonUrl %>"<% } %>
+<% if(!_.isEmpty(configPlayer)){ %>data-configPlayer="<%= configPlayer %>"<% } %>
+<% if(!_.isEmpty(id)){ %>id="playlistItem_<%= id %>"<% } %>
+<% if(!_.isEmpty(chapter_id)){ %>data-chapter-id="<%= chapter_id %>"<% } %>
+<% if(!_.isNull(timecode)){ %>data-chapter-tc="<%= timecode %>"<% } %>
+<% if(!_.isNull(title)){ %>data-chapter-title="<%= title %>"<% } %>
+<% if(!_.isNull(chapter_desc)){ %>data-chapter-description="<%= chapter_desc %>"<% } %>
+>
+<div class="playlistItem-wrapper">
+<div class="image-wrapper jw-icon">
+<% if(!_.isEmpty(image)){ %><img src="<%= image %>" alt="<%= title %>" /><% } %>
+<% if(!_.isEmpty(spriteUrl)){ %><div class="bgimage" style="background-image:url(<%= spriteUrl %>); background-position:-<%= id*142 %>px 0"></div><% } %>
+<% if(!_.isEmpty(imageLabel)){ %><span class="jw-label jw-label-live"><%= imageLabel %></span><% } %>
+</div>
+<div class="text-wrapper">
+<h3 id="title_<%= id %>"><%= title %></h3>
+<% if(!_.isEmpty(subtitle)){ %>
+<p class="subtitle"><%= subtitle %></p>
+<% } %>
+<% if(typeof kind != "undefined" && (
+kind == "CLIP" ||
+kind == "MANUAL_CLIP" ||
+kind == "TRAILER"
+)){ %>
+<div class='badge'><%= kindLabel %></div>
+<% } %>
+<p>
+<%= additionalInfos %>
+<% if(!_.isNull(timecode)){ %>
+<a href="javascript:void(0);" class="delete"><%= delete_text %></a> - <a href="javascript:void(0);" class="edit"><%= edit_text %></a>
+<% } %>
+</p>
+</div>
+<span class="selectedBar"></span>
+</div>
+</li></script>
+<script type="text/template" id="playlistIllicoItemTemplate">
+<li id="playlistItem_<%= id %>"
+<% if(!_.isEmpty(jsonUrl)){ %>data-jsonUrl="<%= jsonUrl %>"<% } %>
+<% if(!_.isEmpty(configPlayer)){ %>data-configPlayer="<%= configPlayer %>"<% } %>
+<% if(!_.isEmpty(id)){ %>id="playlistItem_<%= id %>"<% } %>
+>
+<div class="playlistItem-wrapper">
+<div class="image-wrapper jw-icon">
+<% if(!_.isEmpty(image)){ %><img src="<%= image %>" alt="<%= title %>" /><% } %>
+<% if(!_.isEmpty(imageLabel)){ %><span class="jw-label jw-label-live"><%= imageLabel %></span><% } %>
+</div>
+<div class="text-wrapper">
+<p class="diff_hour"><%= additionalInfos %><% if(kind == 'LIVE') { %> <span class="jw-label jw-label-live"><%= kindLabel %></span><% } %></p>
+<h3 id="title_<%= id %>"><%= title %></h3>
+<% if(!_.isEmpty(subtitle)){ %>
+<p class="subtitle"><%= subtitle %></p>
+<% } %>
+</div>
+<span class="selectedBar"></span>
+</div>
+</li></script>
+<script type="text/template" id="columnTemplate">
+<div id="<%= id %>" class="settings-column">
+<h4><%= title %></h4>
+<ul class="jw-menu jw-reset">
+<% for(var item in items) { %>
+<li class="jw-text jw-option jw-reset <% if(items[item].selected) { %>selected<% } %>" <% if(!_.isNull(items[item].id)) { %> id="<%= items[item].id %>" <% } %>><%= items[item].title %></li>
+<% } %>
+</ul>
+</div></script>
+<script type="text/template" id="fullOverlayTemplate">
+<div id='fullOverlay'>
+<span class="jwp-overlay-close jw-reset jw-icon jw-icon-close"></span>
+<div class="fullOverlay_content"></div>
+</div></script>
+<script type="text/template" id="teaserContentTemplate">
+<div class="jw-controls jw-reset">
+<div class="jw-display-icon-container jw-background-color jw-reset">
+<div class="jw-icon jw-icon-display loading jw-button-color jw-reset"></div>
+</div>
+<div class="jw-controlbar jw-background-color jw-reset">
+<div class="jw-group jw-controlbar-left-group jw-reset">
+<div class="jw-icon jw-icon-inline jw-button-color jw-reset <%= icon %>"></div>
+<div class="arte-vp-title"><span class="jw-text"><%= VTI %><% if(!_.isUndefined(subtitle) && !_.isNull(subtitle)) { %> - <%= subtitle %><% } %></span></div>
+</div>
+</div>
+</div></script>
+<script type="text/template" id="nextItemTemplate">
+<img src="<%= image %>" />
+<% if(!_.isNull(position)) { %><p><%= position %></p><% } %>
+<h1><%= VTI %></h1>
+</script>
+<script type="text/template" id="playlistItemInterstitial">
+<div class="interstitial-wrapper">
+<div class="interstitial-wrapper--subWrapper">
+<% if(!programUrl){ %>
+<p><%= nextVideo %></p>
+<% } %>
+<h1><%= VTI %><% if(!_.isUndefined(subtitle) && !_.isNull(subtitle)) { %> - <%= subtitle %><% } %></h1>
+<% if(playNext){ %>
+<div class="loader-wrapper">
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 400 400">
+<circle class="path" cx="50%" cy="50%" r="35%"></circle>
+</svg>
+<div class="jw-icon jw-icon-playback"></div>
+</div>
+<% } %>
+<% if(programUrl){ %>
+<a href="<%= programUrl %>"><%= buttonCode %></a>
+<% } %>
+</div>
+</div></script>
+<script type="text/template" id="pluginBadgeTemplate">
+<a href="<%= link %>"><%= text %></a></script>
+<script>
+var siteConfigs = {};
+siteConfigs ={"general":{"http_player_base_url":"http://www.arte.tv/player/v3/","https_player_base_url":"https://www.arte.tv/player/v3/","jwplayer_key":"Y8pA/oQhEQymMl5gDa64VpYsXTFMCQyTJTnF6w==","smil_gen_url":"webservices/playlist.smil","gen_thumbnails_vtt_url":"webservices/gen_thumbnails_vtt","gen_chapters_vtt_url":"webservices/gen_chapters_vtt","embed_base_player_code":"<iframe allowfullscreen=\"true\" style=\"transition-duration:0;transition-property:no;margin:0 auto;position:relative;display:block;background-color:#000000;\" frameborder=\"0\" scrolling=\"no\" width=\"%width%\" height=\"%height%\" src=\"%prefix%index.php?json_url=%json_url%&lang=%lang%&config=%config%&embed=%embed%&autostart=%autostart%&mute=%mute%\"></iframe>","embed_share_sizes":["100%x100%","720x406","640x360","320x180"],"embed_share_default_sizes":"720x406","chromecast_app_id":"4DEEFA11","json_refresh_default_interval":60,"preroll_vast_base_url":"https://adserver.adtech.de/?advideo/3.0/1419.1/4890007/0//cc=2;vidAS=pre_roll;vidRT=VAST;vidRTV=3.0;","preroll_vast_passed_parameter":["videoIsoLang","VTY","caseProgram","genre","VPI","programId","platform"],"preferred_mediaType":["hls","mp4","rtmp"],"shortDuration_preferred_mediaType":["mp4","hls","rtmp"],"preferred_version":[1,2,3,4,5,6,7,8,9,10,11,12,null],"nielsen_stats":{"app_id":{"dev":"T95FFFEDB-BFD7-497B-8BF5-B26FEA79FC86","preprod":"T95FFFEDB-BFD7-497B-8BF5-B26FEA79FC86","prod":"P95FFFEDB-BFD7-497B-8BF5-B26FEA79FC86"}},"primary":"html5","serverside_json_cached":true,"twitter_hashtag":{"fr_FR":"","de_DE":"","en_US":"","es_ES":"","pl_PL":"","it_IT":""},"twitter_via":{"fr_FR":"ARTEfr","de_DE":"ARTEde","en_US":"ARTEen","es_ES":"","pl_PL":"","it_IT":""},"twitter_app_id_iphone":{"fr_FR":"405028510","de_DE":"405028510","en_US":"405028510","es_ES":"","pl_PL":"","it_IT":""},"twitter_app_id_ipad":{"fr_FR":"405028510","de_DE":"405028510","en_US":"405028510","es_ES":"","pl_PL":"","it_IT":""},"twitter_app_id_googleplay":{"fr_FR":"tv.arte.plus7","de_DE":"tv.arte.plus7","en_US":"tv.arte.plus7","es_ES":"","pl_PL":"","it_IT":""},"twitter_app_name_iphone":{"fr_FR":"Application  ARTE  pour  iPhone","de_DE":"ARTE  App  für  iPhone","en_US":"Application  ARTE  pour  iPhone","es_ES":"","pl_PL":"","it_IT":""},"twitter_app_name_ipad":{"fr_FR":"Application  ARTE  pour  iPad","de_DE":"ARTE  App  für  iPad","en_US":"Application  ARTE  pour  iPad","es_ES":"","pl_PL":"","it_IT":""},"twitter_app_name_googleplay":{"fr_FR":"Application  ARTE  pour  Androïd","de_DE":"ARTE  App  für  Androïd","en_US":"Application  ARTE  pour  Androïd","es_ES":"","pl_PL":"","it_IT":""},"twitter_app_url_iphone":{"fr_FR":"https://itunes.apple.com/fr/app/arte/id405028510?mt=8","de_DE":"https://itunes.apple.com/de/app/arte/id405028510?mt=8","en_US":"https://itunes.apple.com/fr/app/arte/id405028510?mt=8","es_ES":"","pl_PL":"","it_IT":""},"twitter_app_url_ipad":{"fr_FR":"https://itunes.apple.com/fr/app/arte/id405028510?mt=8","de_DE":"https://itunes.apple.com/de/app/arte/id405028510?mt=8","en_US":"https://itunes.apple.com/fr/app/arte/id405028510?mt=8","es_ES":"","pl_PL":"","it_IT":""},"twitter_app_url_googleplay":{"fr_FR":"https://play.google.com/store/apps/details?id=tv.arte.plus7&hl=fr","de_DE":"https://play.google.com/store/apps/details?id=tv.arte.plus7&hl=de","en_US":"https://play.google.com/store/apps/details?id=tv.arte.plus7&hl=fr","es_ES":"","pl_PL":"","it_IT":""},"facebook_app_id":416821615179393,"xiti_xtsite":{"dev":581265,"preprod":581264,"prod":581264},"xiti_xtn2":1,"whitelisted_json_url_domains":["arte.tv"]},"sites":{"arte_chapters":{"serverside_json_cached":false},"arte_concert_live_admin":{"serverside_json_cached":false},"arte_m3i":{"serverside_json_cached":false},"arte_opera_live_admin":{"serverside_json_cached":false}}}
+var fullResStore = {
+'fr': {
+"chapters__add_chapter_button": "Ajouter",
+"chapters__add_chapter_title": "Ajout d'un chapitre",
+"chapters__chapters_list_title": "Chapitres",
+"chapters__chapter_description": "Description",
+"chapters__chapter_timecode": "Timecode",
+"chapters__chapter_title": "Titre",
+"chapters__delete_chapter_button": "Supprimer",
+"chapters__edit_chapter_button": "Editer",
+"chapters__edit_chapter_title": "Edition du chapitre",
+"chapters__save_chapter_button": "Enregistrer",
+"club__add_favorite_button": "Ajouter",
+"club__favorite_added_button": "Ajouté",
+"club__favorite_complete_profile": "<p>Il manque des informations sur votre compte. Connectez vous à Mon ARTE pour mettre à jour votre profil.</p><p><div class='next-button__wrapper'><div class='next-button__value'><a target='_parent' class='next-button next-bgcolor--arte' href='https://club.arte.tv/index.php?lang=fr'>Se connecter</a></div></div></p>",
+"club__favorite_connect_title": "Pour ajouter cette vidéo à votre liste,<br/>connectez-vous à Mon ARTE.",
+"club__favorite_link_account_text": "<p>Vous avez déjà un profil ARTE. Connectez vous avec votre compte existant</p><p><div class='next-button__wrapper'><div class='next-button__value'><a target='_parent' class='next-button next-bgcolor--arte' href='https://club.arte.tv/index.php?lang=fr'>Se connecter</a></div></div></p>",
+"club__favorite_no_account_yet": "<p>Pour ajouter cette vidéo à votre liste, connectez-vous à Mon ARTE.</p><p><div class='next-button__wrapper'><div class='next-button__value'><a target='_parent' class='next-button next-bgcolor--arte' href='https://club.arte.tv/index.php?lang=fr'>Se connecter</a></div></div></p>",
+"club__preview_connect_text": "Les avant-premières sont réservées aux membres de Mon ARTE.<br/>Pour voir cette vidéo, inscrivez-vous gratuitement et découvrez tous les avantages.",
+"club__remove_favorite_button": "Retirer",
+"countdown__available_in": "Disponible dans",
+"countdown__available_on": "Disponible le",
+"countdown__format": "<div>%H<span>heures</span></div><em>:</em><div>%M<span>minutes</span></div><em>:</em><div>%S<span>secondes</span></div>",
+"countdown__format_final": "<div>%M<span>minutes</span></div><em>:</em><div>%S<span>secondes</span></div>",
+"countdown__live_start_in": "En direct dans",
+"countdown__live_start_on": "En direct le",
+"dateformat__day_short": "DD/MM",
+"dateformat__day_with_hour": "DD/MM [à] HH[h]mm",
+"error__available_soon": "Bientôt disponible",
+"error__bad_live_config": "Vous n’avez pas la configuration requise pour visionner ce programme en direct.",
+"error__bad_replay_config": "Vous n’avez pas la configuration requise pour lire cette vidéo.",
+"error__generic": "Erreur technique !",
+"error__geolocation": "Cette vidéo n'est pas disponible dans votre pays.",
+"error__no_video_available": "Pas de vidéo disponible",
+"info__detail_link": "Plus d'infos sur ce programme",
+"info__live_label": "DIRECT",
+"info__postroll_empty_text": "Désolé, il n'y a pas de recommandations en rapport avec cette vidéo pour le moment.",
+"info__rights_after_datetime_format": "dddd DD MMMM [à] HH[h]mm",
+"info__rights_until_datetime_format": "[Jusqu'au] DD/MM/YYYY à HH[h]mm",
+"info__rights_until_date_format": "[Jusqu'au] DD/MM/YYYY",
+"info__see_program_link": "Voir le programme",
+"info__video_duration": "{{duration}} min",
+"info__vod_available": "Ce programme est disponible en VOD ou DVD",
+"interstitial__did_you_like_trailer": "Cette vidéo vous a plu ?",
+"interstitial__next_video": "Programme suivant",
+"interstitial__watch_full_program": "<button class='button'>Voir le programme</button>",
+"morality__question_check": "Attention, ce programme n'est pas adapté aux personnes de moins de 18 ans.<br /><strong>Avez-vous plus de 18 ans ?</strong>",
+"morality__response_no": "Annuler",
+"morality__response_yes": "Confirmer",
+"morality__video_playing_denied": "Nous sommes désolés vous n'avez pas l'âge requis pour consulter cette vidéo",
+"morality__video_warning_ok": "Poursuivre",
+"morality__video_warning_text": "Attention, ce programme comporte des scènes déconseillées au public jeune ou sensible.",
+"playlist__back_to_live": "Revenir au direct",
+"playlist__back_to_replay": "Revenir au début",
+"playlist__next_video": "Programme suivant",
+"playlist__previous_video": "Programme précédent",
+"playlist__program_of_the_day": "Les programmes du jour",
+"playlist__show_hour": "HH[:]mm",
+"preroll__skip_countdown": " XX sec.",
+"preroll__skip_text": "Ignorer",
+"preroll__waiting_message": "Votre vidéo commence dans XX secondes",
+"related__box_title": "Recommandations",
+"settings__quality_menu_title": "Qualité",
+"settings__version_menu_title": "Version",
+"share__autostart_option_text": "Lecture automatique",
+"share__embed_button_title": "Intégrer",
+"share__embed_options_title": "Code",
+"share__iframe_option_text": "Iframe",
+"share__javascript_option_size_100%x100%": "100%",
+"share__javascript_option_size_320x180": "320x180",
+"share__javascript_option_size_640x360": "640x360",
+"share__javascript_option_size_720x406": "720x406",
+"share__javascript_option_text": "Javascript",
+"share__loading_text": "Chargement...",
+"share__mute_option_text": "Désactiver le son",
+"share__options_options_title": "Options",
+"share__share_button_title": "Partager",
+"share__size_options_title": "Taille",
+"playlist__items_count": "({{count}} vidéo)",
+"playlist__items_count_plural": "({{count}} vidéos)"
+},
+'de': {
+"chapters__add_chapter_button": "Hinzufügen",
+"chapters__add_chapter_title": "Ein Kapitel hinzufügen",
+"chapters__chapters_list_title": "Kapitel",
+"chapters__chapter_description": "Beschreibung",
+"chapters__chapter_timecode": "Timecode",
+"chapters__chapter_title": "Titel",
+"chapters__delete_chapter_button": "Löschen",
+"chapters__edit_chapter_button": "Bearbeiten",
+"chapters__edit_chapter_title": "Kapitel bearbeiten",
+"chapters__save_chapter_button": "Speichern",
+"club__add_favorite_button": "Hinzufügen",
+"club__favorite_added_button": "Hinzugefügt",
+"club__favorite_complete_profile": "<p>Es fehlen noch Informationen in Ihrem Profil. Loggen Sie sich im Mein ARTE ein, um Ihr Profil zu vervollständigen.</p><p><div class='next-button__wrapper'><div class='next-button__value'><a target='_parent' class='next-button next-bgcolor--arte' href='http://club.arte.tv/index.php?lang=de'>Einloggen</a></div></div></p>",
+"club__favorite_connect_title": "Loggen Sie sich bei Mein ARTE ein,<br/>um dieses Video Ihrer Liste hinzuzufügen.",
+"club__favorite_link_account_text": "<p>Sie haben bereits ein ARTE-Profil. Loggen Sie sich mit Ihrem Konto ein.</p><p><div class='next-button__wrapper'><div class='next-button__value'><a target='_parent' class='next-button next-bgcolor--arte' href='https://club.arte.tv/index.php?lang=de'>Einloggen</a></div></div></p>",
+"club__favorite_no_account_yet": "<p>Loggen Sie sich bei Mein ARTE ein, um dieses Video Ihrer Liste hinzuzufügen.</p><p><div class='next-button__wrapper'><div class='next-button__value'><a target='_parent' class='next-button next-bgcolor--arte' href='https://club.arte.tv/index.php?lang=de'>Einloggen</a></div></div></p>",
+"club__preview_connect_text": "Vorabpremieren sind für Mitglieder von Mein ARTE reserviert.<br/>Registrieren Sie sich bei Mein ARTE, um dieses Video zu sehen. Entdecken Sie alle Vorteile dieser kostenlosen Mitgliedschaft.",
+"club__remove_favorite_button": "Entfernen",
+"countdown__available_in": "Verfügbar in",
+"countdown__available_on": "Verfügbar am",
+"countdown__format": "<div>%H<span>Stunden</span></div><em>:</em><div>%M<span>Minuten</span></div><em>:</em><div>%S<span>Sekunden</span></div>",
+"countdown__format_final": "<div>%M<span>Minuten</span></div><em>:</em><div>%S<span>Sekunden</span></div>",
+"countdown__live_start_in": "Live in",
+"countdown__live_start_on": "Live am",
+"dateformat__day_short": "DD.MM.",
+"dateformat__day_with_hour": "DD.MM. [um] HH[:]mm [Uhr]",
+"error__available_soon": "Demnächst verfügbar",
+"error__bad_live_config": "Ihre Einstellungen entsprechen nicht den Systemanforderungen um diesen Livestream zu sehen.",
+"error__bad_replay_config": "Ihre Einstellungen entsprechen nicht den Systemanforderungen um dieses Video zu sehen.",
+"error__generic": "Es tut uns leid.",
+"error__geolocation": "Dieses Video ist in Ihrem Land nicht verfügbar.",
+"error__no_video_available": "Kein Video verfügbar",
+"info__detail_link": "Mehr Infos zu diesem Programm",
+"info__live_label": "LIVE",
+"info__postroll_empty_text": "Leider gibt es für dieses Programm momentan keine weiteren Video-Empfehlungen.",
+"info__rights_after_datetime_format": "dddd DD MMMM [um] HH[:]mm [Uhr]",
+"info__rights_until_datetime_format": "[Bis] DD.MM.YYYY [um] HH[:]mm",
+"info__rights_until_date_format": "[Bis] DD.MM.YYYY",
+"info__see_program_link": "Das Programm sehen",
+"info__video_duration": "{{duration}} Min.",
+"interstitial__did_you_like_trailer": "Interesse geweckt?",
+"interstitial__next_video": "Nächstes Programm",
+"interstitial__watch_full_program": "<button class='button'>Das Programm sehen</button>",
+"morality__question_check": "Achtung, dieses Video ist nicht für Jugendliche unter 18 Jahren geeignet.<br /><strong>Sind Sie 18 oder älter?<strong>",
+"morality__response_no": "Abbrechen",
+"morality__response_yes": "Bestätigen",
+"morality__video_playing_denied": "Es tut uns leid, aber Sie haben nicht das erforderliche Alter, um dieses Video zu sehen.",
+"morality__video_warning_ok": "Weiter",
+"morality__video_warning_text": "Dieses Programm ist nicht geeignet für Kinder, Jugendliche oder empfindsame Zuschauer.",
+"playlist__back_to_live": "Zurück zum Live",
+"playlist__back_to_replay": "Zum Anfang",
+"playlist__next_video": "Nächstes Programm",
+"playlist__previous_video": "Vorheriges Programm",
+"playlist__program_of_the_day": "Programme des Tages",
+"playlist__show_hour": "HH[.]mm [Uhr]",
+"preroll__skip_countdown": " XX Sek.",
+"preroll__skip_text": "Überspringen",
+"preroll__waiting_message": "Ihr Video beginnt in XX Sekunden",
+"related__box_title": "Empfehlungen",
+"settings__quality_menu_title": "Qualität",
+"settings__version_menu_title": "Sprachauswahl",
+"share__autostart_option_text": "Autoplay",
+"share__embed_button_title": "Einbetten",
+"share__embed_options_title": "Code",
+"share__iframe_option_text": "iframe",
+"share__javascript_option_size_100%x100%": "100%",
+"share__javascript_option_size_320x180": "320x180",
+"share__javascript_option_size_640x360": "640x360",
+"share__javascript_option_size_720x406": "720x406",
+"share__javascript_option_text": "Javascript",
+"share__loading_text": "Lädt...",
+"share__mute_option_text": "Stummschalten",
+"share__options_options_title": "Optionen",
+"share__share_button_title": "Teilen",
+"share__size_options_title": "Größe",
+"playlist__items_count": "({{count}} Video)",
+"playlist__items_count_plural": "({{count}} Videos)"
+},
+'es': {
+"chapters__add_chapter_button": "Añadir",
+"chapters__add_chapter_title": "Añadir un capítulo",
+"chapters__chapters_list_title": "Capítulos",
+"chapters__chapter_description": "Descripción",
+"chapters__chapter_timecode": "Código de tiempo",
+"chapters__chapter_title": "Título",
+"chapters__delete_chapter_button": "Eliminar",
+"chapters__edit_chapter_button": "Editar",
+"chapters__edit_chapter_title": "Edición del capítulo",
+"chapters__save_chapter_button": "Grabar",
+"club__add_favorite_button": "Añadir",
+"club__favorite_added_button": "Añadido",
+"club__favorite_complete_profile": "<p>Falta información en tu cuenta. Por favor, conéctate a Mi ARTE y actualiza tu perfil. </p><p><div class='next-button__wrapper'><div class='next-button__value'><a target='_parent' class='next-button next-bgcolor--arte' href='https://club.arte.tv/index.php?lang=es'>Conectarse</a></div></div></p>",
+"club__favorite_connect_title": "Para añadir este vídeo a tu lista,<br/> conéctate a Mi ARTE.",
+"club__favorite_link_account_text": "<p>Ya tienes un perfil ARTE. Por favor, úsalo para conectarte.</p><p><div class='next-button__wrapper'><div class='next-button__value'><a target='_parent' class='next-button next-bgcolor--arte' href='https://club.arte.tv/index.php?lang=es'>Conectarse</a></div></div></p>",
+"club__favorite_no_account_yet": "<p>Para añadir este vídeo a tu lista, conéctate a Mi ARTE.</p><p><div class='next-button__wrapper'><div class='next-button__value'><a target='_parent' class='next-button next-bgcolor--arte' href='https://club.arte.tv/index.php?lang=es'>Conectarse</a></div></div></p>",
+"club__preview_connect_text": "Los preestrenos están reservados a los miembros de Mi ARTE.</br>Inscríbete gratis y disfruta de este vídeo y de todas nuestras ventajas.",
+"club__remove_favorite_button": "Quitar",
+"countdown__available_in": "Disponible en",
+"countdown__available_on": "Disponible el",
+"countdown__format": "<div>%H<span>horas</span></div><em>:</em><div>%M<span>minutos</span></div><em>:</em><div>%S<span>segundos</span></div>",
+"countdown__format_final": "<div>%M<span>minutos</span></div><em>:</em><div>%S<span>segundos</span></div>",
+"countdown__live_start_in": "En directo en",
+"countdown__live_start_on": "En directo el",
+"dateformat__day_short": "DD/MM",
+"dateformat__day_with_hour": "DD/MM [a las] HH[:]mm",
+"error__available_soon": "Pronto disponible",
+"error__bad_live_config": "Lo sentimos, pero no tiene la configuración adecuada para ver este programa en directo.",
+"error__bad_replay_config": "Lo sentimos, pero no tiene la configuración adecuada para reproducir este vídeo.",
+"error__generic": "¡Error técnico!",
+"error__geolocation": "Este vídeo no está disponible en su país.",
+"error__no_video_available": "Ningún vídeo disponible",
+"info__detail_link": "Ver el programa",
+"info__live_label": "EN DIRECTO",
+"info__postroll_empty_text": "Lo sentimos, pero por ahora no hay ninguna recomendación asociada a este vídeo.",
+"info__rights_after_datetime_format": "dddd DD MMMM [a las] HH[h]mm",
+"info__rights_until_datetime_format": "[Hasta] DD/MM/YYYY [a las] HH[h]mm",
+"info__rights_until_date_format": "[Hasta] DD/MM/YYYY",
+"info__see_program_link": "Ver el programa",
+"info__video_duration": "{{duration}} min",
+"interstitial__did_you_like_trailer": "¿Te ha gustado?",
+"interstitial__next_video": "Próximo programa",
+"interstitial__watch_full_program": "<button class='button'>Ver el programa</button>",
+"morality__question_check": "Atención: este vídeo no es apto para menores.<br /><strong> ¿Tiene más de 18 años?</strong>",
+"morality__response_no": "Cancelar",
+"morality__response_yes": "Confirmar",
+"morality__video_playing_denied": "Lo sentimos, pero no tiene la edad requerida para ver el vídeo",
+"morality__video_warning_ok": "Continuar",
+"morality__video_warning_text": "Atención: este programa contiene escenas no aptas para público sensible o menores. ",
+"playlist__back_to_live": "Volver al directo",
+"playlist__back_to_replay": "Volver",
+"playlist__next_video": "Próximo programa",
+"playlist__previous_video": "Programa anterior",
+"playlist__program_of_the_day": "Los programas del día",
+"playlist__show_hour": "HH[:]mm",
+"preroll__skip_countdown": "XX s",
+"preroll__skip_text": "Ignorar",
+"preroll__waiting_message": "El vídeo comenzará en XX segundos.",
+"related__box_title": "Recomendaciones",
+"settings__quality_menu_title": "Calidad",
+"settings__version_menu_title": "Versión",
+"share__autostart_option_text": "Lectura automática",
+"share__embed_button_title": "Incrustar",
+"share__embed_options_title": "Código",
+"share__iframe_option_text": "iframe",
+"share__javascript_option_size_100%x100%": "100%",
+"share__javascript_option_size_320x180": "320x180",
+"share__javascript_option_size_640x360": "640x360",
+"share__javascript_option_size_720x406": "720x406",
+"share__javascript_option_text": "Javascript",
+"share__loading_text": "Cargando...",
+"share__mute_option_text": "Desactivar el sonido",
+"share__options_options_title": "Opciones",
+"share__share_button_title": "Compartir",
+"share__size_options_title": "Tamaño",
+"playlist__items_count": "({{count}} vídeo)",
+"playlist__items_count_plural": "({{count}} vídeos)"
+},
+'pl': {
+"chapters__add_chapter_button": "Dodaj",
+"chapters__add_chapter_title": "Dodaj rozdział",
+"chapters__chapters_list_title": "Rozdziały",
+"chapters__chapter_description": "Opis",
+"chapters__chapter_timecode": "Kod czasowy",
+"chapters__chapter_title": "Tytuł",
+"chapters__delete_chapter_button": "Usuń",
+"chapters__edit_chapter_button": "Edycja",
+"chapters__edit_chapter_title": "Edytuj rozdział",
+"chapters__save_chapter_button": "Zapisz",
+"club__add_favorite_button": "Dodaj",
+"club__favorite_added_button": "Dodane",
+"club__favorite_complete_profile": "<p>Na Twoim profilu brakuje kilku informacji. Zaloguj się do \\\"Mojego ARTE\\\" aby uzupełnić profil.</p><p><div class='next-button__wrapper'><div class='next-button__value'><a target='_parent' class='next-button next-bgcolor--arte' href='https://club.arte.tv/index.php?lang=pl'>Zaloguj się</a></div></div></p>",
+"club__favorite_connect_title": "Aby dodać to wideo to Twojej lista,<br/> zaloguj się do Moje ARTE.",
+"club__favorite_link_account_text": "<p>Twój profil już istnieje. Użyj go, aby zalogować się do \\\"Mojego ARTE\\\".</p><p><div class='next-button__wrapper'><div class='next-button__value'><a target='_parent' class='next-button next-bgcolor--arte' href='https://club.arte.tv/index.php?lang=pl'>Zaloguj się</a></div></div></p>",
+"club__favorite_no_account_yet": "<p>Zaloguj się do \\\"Mojego ARTE\\\" aby móc dodać wideo do listy</p><p><div class='next-button__wrapper'><div class='next-button__value'><a target='_parent' class='next-button next-bgcolor--arte' href='https://club.arte.tv/index.php?lang=pl'>Zaloguj się</a></div></div></p>",
+"club__preview_connect_text": "Przedpremiery są dostępne jedynie dla członków \"Mojego ARTE\".</br>Aby zaobaczyć to wideo załóż bezpłatne konto i korzystaj ze wszystkich jego korzyści.",
+"club__remove_favorite_button": "Dodaj",
+"countdown__available_in": "Dostępny za",
+"countdown__available_on": "Dostępny",
+"countdown__format": "<div>%H<span>godzin</span></div><em>:</em><div>%M<span>minut</span></div><em>:</em><div>%S<span>sekund</span></div>",
+"countdown__format_final": "<div>%M<span>minut</span></div><em>:</em><div>%S<span>sekund</span></div>",
+"countdown__live_start_in": "Dostępny na żywo za",
+"countdown__live_start_on": "Dostępny na żywo",
+"dateformat__day_short": "DD/MM",
+"dateformat__day_with_hour": "DD/MM [o] HH[:]mm",
+"error__available_soon": "Wkrótce dostępny",
+"error__bad_live_config": "Nie masz wymaganych ustawień niezbędnych do oglądania tego programu na żywo.",
+"error__bad_replay_config": "Nie masz wymaganych ustawień niezbędnych do oglądania tego wideo.",
+"error__generic": "Błąd techniczny.",
+"error__geolocation": "To wideo nie jest dostępne w Twojej obecnej lokalizacji.",
+"error__no_video_available": "Wideo nie jest dostępne",
+"info__detail_link": "Zobacz program",
+"info__live_label": "DIRECT",
+"info__postroll_empty_text": "Przepraszamy, w tej chwili nie ma żadnych rekomandecji do tego wideo.",
+"info__rights_after_datetime_format": "dddd DD MMMM. HH[:]mm",
+"info__rights_until_datetime_format": "[Do] DD/MM/YYYY. hh[:]mm",
+"info__rights_until_date_format": "[Do] DD/MM/YYYY",
+"info__see_program_link": "Zobacz program",
+"info__video_duration": "{{duration}} min",
+"interstitial__did_you_like_trailer": "Podobał Ci się ten wideo?",
+"interstitial__next_video": "Następny program",
+"interstitial__watch_full_program": "<button class='button'>Zobacz program</button>",
+"morality__question_check": "Uwaga, ten program jest przeznaczony dla osób powyżej 18 roku życia.<br /><strong>Czy masz co najmniej 18 lat?</strong>",
+"morality__response_no": "Nie",
+"morality__response_yes": "Tak",
+"morality__video_playing_denied": "Przepraszamy, jesteś zbyt młody/a by obejrzeć ten program.",
+"morality__video_warning_ok": "Rozumiem",
+"morality__video_warning_text": "Uwaga: ten program zawiera sceny, które są nieodpowiednie dla niepełnoletnich bądź wrażliwych widzów.",
+"playlist__back_to_live": "Powrót do programu na żywo",
+"playlist__back_to_replay": "Odtwórz ponownie",
+"playlist__next_video": "Następny program",
+"playlist__previous_video": "Poprzedni program",
+"playlist__program_of_the_day": "Programy dnia",
+"playlist__show_hour": "HH[:]mm",
+"preroll__skip_countdown": "XX sek.",
+"preroll__skip_text": "Pomiń",
+"preroll__waiting_message": "Wideo rozpocznie się za XX sekund.",
+"related__box_title": "Rekomendacje",
+"settings__quality_menu_title": "Jakość",
+"settings__version_menu_title": "Wersja",
+"share__autostart_option_text": "Automatyczne odtwarzanie",
+"share__embed_button_title": "Osadź na stronie",
+"share__embed_options_title": "Kod",
+"share__iframe_option_text": "Iframe",
+"share__javascript_option_size_100%x100%": "100%",
+"share__javascript_option_size_320x180": "320x180",
+"share__javascript_option_size_640x360": "640x360",
+"share__javascript_option_size_720x406": "720x406",
+"share__javascript_option_text": "JavaScript",
+"share__loading_text": "Ładowanie...",
+"share__mute_option_text": "Wyłącz dźwięk",
+"share__options_options_title": "Opcje",
+"share__share_button_title": "Udostępnij",
+"share__size_options_title": "Rozmiar",
+"playlist__items_count": "({{count}} wideo)",
+"playlist__items_count_plural": "({{count}} wideos)"
+},
+'en': {
+"chapters__add_chapter_button": "Add",
+"chapters__add_chapter_title": "Add a chapter",
+"chapters__chapters_list_title": "Chapters",
+"chapters__chapter_description": "Description",
+"chapters__chapter_timecode": "Timecode",
+"chapters__chapter_title": "Title",
+"chapters__delete_chapter_button": "Remove",
+"chapters__edit_chapter_button": "Edit",
+"chapters__edit_chapter_title": "Edit chapter",
+"chapters__save_chapter_button": "Save",
+"club__add_favorite_button": "Add",
+"club__favorite_added_button": "Added",
+"club__favorite_complete_profile": "<p>Some details are missing from your account. Login to My ARTE to update your profile.</p><p><div class='next-button__wrapper'><div class='next-button__value'><a target='_parent' class='next-button next-bgcolor--arte' href='https://club.arte.tv/index.php?lang=en'>Log in</a></div></div></p>",
+"club__favorite_connect_title": "To add this video to your list,<br/>log on to My ARTE.",
+"club__favorite_link_account_text": "<p>You already have a My ARTE account. Connect with you existing login details.</p><p><div class='next-button__wrapper'><div class='next-button__value'><a target='_parent' class='next-button next-bgcolor--arte' href='https://club.arte.tv/index.php?lang=en'>Log in</a></div></div></p>",
+"club__favorite_no_account_yet": "<p>Log in to My ARTE to add this video to your list.</p><p><div class='next-button__wrapper'><div class='next-button__value'><a target='_parent' class='next-button next-bgcolor--arte' href='https://club.arte.tv/index.php?lang=en'>Log in</a></div></div></p>",
+"club__preview_connect_text": "Previews are only available to My ARTE members.<br/>To watch this video, you need to register with My ARTE. Get all the advantages with a free account.",
+"club__remove_favorite_button": "Remove",
+"countdown__available_in": "Available in",
+"countdown__available_on": "Available on",
+"countdown__format": "<div>%H<span>hours</span></div><em>:</em><div>%M<span>minutes</span></div><em>:</em><div>%S<span>seconds</span></div>",
+"countdown__format_final": "<div>%M<span>minutes</span></div><em>:</em><div>%S<span>seconds</span></div>",
+"countdown__live_start_in": "Live in",
+"countdown__live_start_on": "Live on",
+"dateformat__day_short": "DD/MM",
+"dateformat__day_with_hour": "DD/MM [at] HH[:]mm",
+"error__available_soon": "Available shortly",
+"error__bad_live_config": "You don’t have the minimum configurations required to live stream this programme.",
+"error__bad_replay_config": "You don’t have the minimum configurations required to play this video.",
+"error__generic": "Technical error !",
+"error__geolocation": "This video cannot be viewed from your current location.",
+"error__no_video_available": "No video available",
+"info__detail_link": "Watch the programme",
+"info__live_label": "LIVE",
+"info__postroll_empty_text": "Sorry, there are no recommendations for this video at the moment.",
+"info__rights_after_datetime_format": "dddd DD MMMM [at] HH[h]mm",
+"info__rights_until_datetime_format": "[Until] DD/MM/YYYY at HH[h]mm",
+"info__rights_until_date_format": "[Until] DD/MM/YYYY",
+"info__see_program_link": "Watch the programme",
+"info__video_duration": "{{duration}} min",
+"interstitial__did_you_like_trailer": "Did you like this video?",
+"interstitial__next_video": "Next programme",
+"interstitial__watch_full_program": "<button class='button'>Watch the programme</button>",
+"morality__question_check": "Please be aware that this programme is unsuitable for children.<br /><strong>Are you at least 18 years old?</strong>",
+"morality__response_no": "No",
+"morality__response_yes": "Yes",
+"morality__video_playing_denied": "Sorry you are not old enough to view this content.",
+"morality__video_warning_ok": "I understand",
+"morality__video_warning_text": "Please be aware that this programme contains scenes of a shocking nature unsuitable for young or sensitive viewers.",
+"playlist__back_to_live": "Return to live streaming",
+"playlist__back_to_replay": "Restart",
+"playlist__next_video": "Next programme",
+"playlist__previous_video": "Previous programme",
+"playlist__program_of_the_day": "Today's programmes",
+"playlist__show_hour": "HH[:]mm",
+"preroll__skip_countdown": " XX sec.",
+"preroll__skip_text": "Skip",
+"preroll__waiting_message": "Your video starts in XX seconds.",
+"related__box_title": "Recommandations",
+"settings__quality_menu_title": "Quality",
+"settings__version_menu_title": "Version",
+"share__autostart_option_text": "Autoplay",
+"share__embed_button_title": "Embed",
+"share__embed_options_title": "Code",
+"share__iframe_option_text": "iframe",
+"share__javascript_option_size_100%x100%": "100%",
+"share__javascript_option_size_320x180": "320x180",
+"share__javascript_option_size_640x360": "640x360",
+"share__javascript_option_size_720x406": "720x406",
+"share__javascript_option_text": "Javascript",
+"share__loading_text": "Loading...",
+"share__mute_option_text": "Disable sound",
+"share__options_options_title": "Options",
+"share__share_button_title": "Share",
+"share__size_options_title": "Size",
+"playlist__items_count": "({{count}} video)",
+"playlist__items_count_plural": "({{count}} videos)"
+},
+'it': {
+"chapters__add_chapter_button": "Aggiungi",
+"chapters__add_chapter_title": "Aggiungi un capitolo",
+"chapters__chapters_list_title": "Capitoli",
+"chapters__chapter_description": "Descrizione",
+"chapters__chapter_timecode": "Timecode",
+"chapters__chapter_title": "Titolo",
+"chapters__delete_chapter_button": "Elimina",
+"chapters__edit_chapter_button": "Edita",
+"chapters__edit_chapter_title": "Edita il capitolo",
+"chapters__save_chapter_button": "Salva",
+"club__add_favorite_button": "Aggiungi",
+"club__favorite_added_button": "Aggiunto",
+"club__favorite_complete_profile": "<p>Mancano alcune informazioni sul tuo account. Connettiti a My ARTE per aggiornare il tuo profilo.</p><p><div class='next-button__wrapper'><div class='next-button__value'><a target='_parent' class='next-button next-bgcolor--arte' href='https://club.arte.tv/index.php?lang=it'>Connessione</a></div></div></p>",
+"club__favorite_connect_title": "Per aggiungere il video alla tua lista,<br/> connettiti a My ARTE.",
+"club__favorite_link_account_text": "<p>Hai già un profilo My ARTE. Connettiti con l'account esistente</p><p><div class='next-button__wrapper'><div class='next-button__value'><a target='_parent' class='next-button next-bgcolor--arte' href='https://club.arte.tv/index.php?lang=it'>Connessione</a></div></div></p>",
+"club__favorite_no_account_yet": "<p>Per aggiungere il video alla tua lista, connettiti a My ARTE.</p><p><div class='next-button__wrapper'><div class='next-button__value'><a target='_parent' class='next-button next-bgcolor--arte' href='https://club.arte.tv/index.php?lang=it'>Log in</a></div></div></p>",
+"club__preview_connect_text": "Le anteprime sono riservate ai membri di My ARTE.<br/>Iscriviti gratuitamente per guardare questo video e scoprire tutti i nostri vantaggi.",
+"club__remove_favorite_button": "Rimuovi",
+"countdown__available_in": "Disponibile tra",
+"countdown__available_on": "Disponibile il",
+"countdown__format": "<div>%H<span>ore</span></div><em>:</em><div>%M<span>minuti</span></div><em>:</em><div>%S<span>secondi</span></div>",
+"countdown__format_final": "<div>%M<span>minuti</span></div><em>:</em><div>%S<span>secondi</span></div>",
+"countdown__live_start_in": "In diretta tra",
+"countdown__live_start_on": "In diretta il",
+"dateformat__day_short": "DD/MM",
+"dateformat__day_with_hour": "DD/MM [alle] HH[:]mm",
+"error__available_soon": "Disponible a breve",
+"error__bad_live_config": "Non disponi della configurazione minima prevista per guardare il programma in diretta.",
+"error__bad_replay_config": "Non disponi della configurazione minima prevista per guardare il programma in diretta.",
+"error__generic": "Errore tecnico!",
+"error__geolocation": "Questo video non è disponibile nel tuo paese.",
+"error__no_video_available": "Nessun video disponibile",
+"info__detail_link": "Guarda il programma",
+"info__live_label": "DIRETTA",
+"info__postroll_empty_text": "Siamo spiacenti, ma non ci sono suggerimenti associati a questo video.",
+"info__rights_after_datetime_format": "dddd DD MMMM [alle] HH[:]mm",
+"info__rights_until_datetime_format": "[Fino al ] DD/MM/YYYY alle HH[:]mm",
+"info__rights_until_date_format": "[Fino al] DD/MM/YYYY",
+"info__see_program_link": "Guarda il programma",
+"info__video_duration": "{{duration}} min",
+"interstitial__did_you_like_trailer": "Ti è piaciuto questo video?",
+"interstitial__next_video": "Programma successivo",
+"interstitial__watch_full_program": "<button class='button'>Guarda il programma</button>",
+"morality__question_check": "Attenzione: il programma non è adatto ai minori.<br<strong>Hai più di 18 anni?</strong>",
+"morality__response_no": "Annulla",
+"morality__response_yes": "Conferma",
+"morality__video_playing_denied": "Siamo spiacenti, non hai l'età per visionare questo contenuto.",
+"morality__video_warning_ok": "Continua",
+"morality__video_warning_text": "Attenzione: questo programma contiene scene non adatte a un pubblico sensibile o ai minorenni.",
+"playlist__back_to_live": "Torna alla diretta",
+"playlist__back_to_replay": "Torna all'inizio",
+"playlist__next_video": "Programma successivo",
+"playlist__previous_video": "Programma precedente",
+"playlist__program_of_the_day": "I programmi di oggi",
+"playlist__show_hour": "HH[:]mm",
+"preroll__skip_countdown": "XX sec.",
+"preroll__skip_text": "Ignora",
+"preroll__waiting_message": "Il video inizia tra XX secondi",
+"related__box_title": "Suggerimenti",
+"settings__quality_menu_title": "Qualità",
+"settings__version_menu_title": "Versione",
+"share__autostart_option_text": "Riproduzione automatica",
+"share__embed_button_title": "Inserisci",
+"share__embed_options_title": "Codice",
+"share__iframe_option_text": "iframe",
+"share__javascript_option_size_100%x100%": "100%",
+"share__javascript_option_size_320x180": "320x180",
+"share__javascript_option_size_640x360": "640x360",
+"share__javascript_option_size_720x406": "720x406",
+"share__javascript_option_text": "Javascript",
+"share__loading_text": "Caricamento...",
+"share__mute_option_text": "Disattiva l'audio",
+"share__options_options_title": "Opzioni",
+"share__share_button_title": "Condividi",
+"share__size_options_title": "Dimensioni",
+"playlist__items_count": "({{count}} video)",
+"playlist__items_count_plural": "({{count}} video)"
+}	};
+var js_json = {"videoJsonPlayer":{"VID":"069881-000-A","VPI":"069881-000","videoDurationSeconds":5105,"videoIsoLang":"fr_FR","VTY":"ARTE_NEXT","VTX":"ARTE","VTI":"Les nettoyeurs du Web - The Cleaners","VDU":86,"tc_start_from":0,"autostart":true,"liveStreamRights":true,"VED":1,"VGB":"ALL","VRA":"26\/08\/2018 03:00:00 +0000","VRU":"04\/09\/2018 03:00:00 +0000","VAD":false,"videoWarning":true,"VTU":{"IUR":"https:\/\/static-cdn.arte.tv\/resize\/3LzieTKrGjMZrjN0PYV0FGyarKg=\/940x530\/smart\/filters:strip_icc()\/apios\/Img_data\/4\/069881-000-A_2499206.jpg"},"VTR":"https:\/\/www.arte.tv\/fr\/videos\/069881-000-A\/les-nettoyeurs-du-web-the-cleaners\/","VUP":"https:\/\/www.arte.tv\/fr\/videos\/069881-000-A\/les-nettoyeurs-du-web-the-cleaners\/","V7T":"Qui mod\u00e8re nos contenus en ligne ? Les r\u00e9seaux sociaux contribuent-ils \u00e0 l'accroissement de la haine ? Des Philippines \u00e0 la Silicon Valley, une enqu\u00eate exhaustive et brutale sur la violence \u00e0 l'\u00e8re du Web.","VDE":"Ignorer ou supprimer ? Cette question, les mod\u00e9rateurs des r\u00e9seaux sociaux se la posent chacun vingt-cinq mille\u00a0fois par jour. Aux Philippines, ils sont des centaines \u00e0 effectuer ce travail que Facebook sous-traite \u00e0 une multinationale : purger le Net de ses images les plus violentes. De la p\u00e9dopornographie aux d\u00e9capitations terroristes, en passant par l'automutilation ou la simple nudit\u00e9, proscrite par les chartes des grands groupes, l'impact psychologique des images les plus rudes \u2013 seul quotidien de ces abeilles ouvri\u00e8res du Web \u2013 est aussi violent qu'ignor\u00e9 par la Silicon Valley, pour laquelle le rendement passe avant tout. Mais les r\u00e8gles de mod\u00e9ration impos\u00e9es trouvent bien vite leur limite, d\u00e8s lors que la question de l'art ou de la politique fait irruption. Quelle est la fronti\u00e8re entre mod\u00e9ration et censure ? Doit-on \"nettoyer\" les r\u00e9seaux des images de guerre, alors qu'elles documentent les conflits ? Lorsque l'administration du pr\u00e9sident Erdogan demande aux g\u00e9ants des r\u00e9seaux sociaux de supprimer des contenus d'opposition politique qu'elle juge terroristes, sous peine de bloquer les sites sur le territoire turc, pourquoi les entreprises s'ex\u00e9cutent-elles ? Comment ne pas y voir une logique froidement mercantile ?\n\nLe mal du XXIe si\u00e8cle\nQuel est le meilleur moyen d'engranger de l'audience ? \"L'indignation\", r\u00e9pond Tristan Harris, ancien cadre de Google. En privil\u00e9giant les contenus choquants, les r\u00e9seaux sociaux \u2013 seule source d'information pour un nombre grandissant d'internautes \u2013 voient leur vision segment\u00e9e s'imposer \u00e0 leurs utilisateurs, polarisant une haine et d\u00e9cha\u00eenant une violence bien r\u00e9elles. C'est tout le paradoxe de ces nouveaux ma\u00eetres du Web, qui \u00e9puisent leurs sous-traitants \u00e0 purger les r\u00e9seaux tout en b\u00e2tissant des algorithmes au service de la col\u00e8re. Un mal du XXIe si\u00e8cle intelligemment expliqu\u00e9 par Hans Block et Moritz Riesewieck qui, des Philippines \u00e0 la Silicon Valley, examinent les deux c\u00f4t\u00e9s de la cha\u00eene dans un documentaire \u00e0 charge, exhaustif et passionnant.","postroll":"https:\/\/api.arte.tv\/api\/player\/v1\/recommendedPostroll\/fr\/069881-000-A","VSR":{"HTTPS_MQ_2":{"id":"HTTPS_MQ_2","quality":"MQ","width":384,"height":216,"mediaType":"mp4","mimeType":"video\/mp4","bitrate":300,"url":"https:\/\/arteptweb-a.akamaihd.net\/am\/ptweb\/069000\/069800\/069881-000-A_MQ_0_VOA-STA_03823447_MP4-300_AMM-PTWEB_10WKGtldbm.mp4","versionProg":2,"versionCode":"VOA-STA","versionLibelle":"Allemand (original)","versionShortLibelle":"VOA"},"HTTPS_EQ_2":{"id":"HTTPS_EQ_2","quality":"EQ","width":720,"height":406,"mediaType":"mp4","mimeType":"video\/mp4","bitrate":1500,"url":"https:\/\/arteptweb-a.akamaihd.net\/am\/ptweb\/069000\/069800\/069881-000-A_EQ_0_VOA-STA_03823448_MP4-1500_AMM-PTWEB_10WKHtldbm.mp4","versionProg":2,"versionCode":"VOA-STA","versionLibelle":"Allemand (original)","versionShortLibelle":"VOA"},"HTTPS_HQ_2":{"id":"HTTPS_HQ_2","quality":"HQ","width":640,"height":360,"mediaType":"mp4","mimeType":"video\/mp4","bitrate":800,"url":"https:\/\/arteptweb-a.akamaihd.net\/am\/ptweb\/069000\/069800\/069881-000-A_HQ_0_VOA-STA_03823450_MP4-800_AMM-PTWEB_10WKLtldfl.mp4","versionProg":2,"versionCode":"VOA-STA","versionLibelle":"Allemand (original)","versionShortLibelle":"VOA"},"HLS_XQ_2":{"id":"HLS_XQ_2","quality":"XQ","width":1280,"height":720,"mediaType":"hls","mimeType":"application\/vnd.apple.mpegurl","bitrate":2200,"url":"https:\/\/arteptweb-vh.akamaihd.net\/i\/am\/ptweb\/069000\/069800\/069881-000-A_0_VOA-STA_AMM-PTWEB_XQ.10WKOtldoe.smil\/master.m3u8","versionProg":2,"versionCode":"VOA-STA","versionLibelle":"Allemand (original)","versionShortLibelle":"VOA"},"HTTPS_SQ_2":{"id":"HTTPS_SQ_2","quality":"SQ","width":1280,"height":720,"mediaType":"mp4","mimeType":"video\/mp4","bitrate":2200,"url":"https:\/\/arteptweb-a.akamaihd.net\/am\/ptweb\/069000\/069800\/069881-000-A_SQ_0_VOA-STA_03823449_MP4-2200_AMM-PTWEB_10WKOtldjL.mp4","versionProg":2,"versionCode":"VOA-STA","versionLibelle":"Allemand (original)","versionShortLibelle":"VOA"},"HTTPS_MQ_4":{"id":"HTTPS_MQ_4","quality":"MQ","width":384,"height":216,"mediaType":"mp4","mimeType":"video\/mp4","bitrate":300,"url":"https:\/\/arteptweb-a.akamaihd.net\/am\/ptweb\/069000\/069800\/069881-000-A_MQ_0_VAAUD_03823451_MP4-300_AMM-PTWEB_10WKhtlduk.mp4","versionProg":4,"versionCode":"VAAUD","versionLibelle":"Audiodescription (allemand)","versionShortLibelle":"AD DE"},"HTTPS_EQ_4":{"id":"HTTPS_EQ_4","quality":"EQ","width":720,"height":406,"mediaType":"mp4","mimeType":"video\/mp4","bitrate":1500,"url":"https:\/\/arteptweb-a.akamaihd.net\/am\/ptweb\/069000\/069800\/069881-000-A_EQ_0_VAAUD_03823452_MP4-1500_AMM-PTWEB_10WKmtldyI.mp4","versionProg":4,"versionCode":"VAAUD","versionLibelle":"Audiodescription (allemand)","versionShortLibelle":"AD DE"},"HTTPS_HQ_4":{"id":"HTTPS_HQ_4","quality":"HQ","width":640,"height":360,"mediaType":"mp4","mimeType":"video\/mp4","bitrate":800,"url":"https:\/\/arteptweb-a.akamaihd.net\/am\/ptweb\/069000\/069800\/069881-000-A_HQ_0_VAAUD_03823454_MP4-800_AMM-PTWEB_10WL4tle9X.mp4","versionProg":4,"versionCode":"VAAUD","versionLibelle":"Audiodescription (allemand)","versionShortLibelle":"AD DE"},"HTTPS_MQ_3":{"id":"HTTPS_MQ_3","quality":"MQ","width":384,"height":216,"mediaType":"mp4","mimeType":"video\/mp4","bitrate":300,"url":"https:\/\/arteptweb-a.akamaihd.net\/am\/ptweb\/069000\/069800\/069881-000-A_MQ_0_VOA-STMA_03823455_MP4-300_AMM-PTWEB_10WL6tleDk.mp4","versionProg":3,"versionCode":"VOA-STMA","versionLibelle":"Version allemande - ST sourds\/mal (allemand)","versionShortLibelle":"ST mal DE"},"HTTPS_EQ_3":{"id":"HTTPS_EQ_3","quality":"EQ","width":720,"height":406,"mediaType":"mp4","mimeType":"video\/mp4","bitrate":1500,"url":"https:\/\/arteptweb-a.akamaihd.net\/am\/ptweb\/069000\/069800\/069881-000-A_EQ_0_VOA-STMA_03823456_MP4-1500_AMM-PTWEB_10WLDtleR4.mp4","versionProg":3,"versionCode":"VOA-STMA","versionLibelle":"Version allemande - ST sourds\/mal (allemand)","versionShortLibelle":"ST mal DE"},"HTTPS_SQ_4":{"id":"HTTPS_SQ_4","quality":"SQ","width":1280,"height":720,"mediaType":"mp4","mimeType":"video\/mp4","bitrate":2200,"url":"https:\/\/arteptweb-a.akamaihd.net\/am\/ptweb\/069000\/069800\/069881-000-A_SQ_0_VAAUD_03823453_MP4-2200_AMM-PTWEB_10WLCtleR4.mp4","versionProg":4,"versionCode":"VAAUD","versionLibelle":"Audiodescription (allemand)","versionShortLibelle":"AD DE"},"HLS_XQ_4":{"id":"HLS_XQ_4","quality":"XQ","width":1280,"height":720,"mediaType":"hls","mimeType":"application\/vnd.apple.mpegurl","bitrate":2200,"url":"https:\/\/arteptweb-vh.akamaihd.net\/i\/am\/ptweb\/069000\/069800\/069881-000-A_0_VAAUD_AMM-PTWEB_XQ.10WLCtleX2.smil\/master.m3u8","versionProg":4,"versionCode":"VAAUD","versionLibelle":"Audiodescription (allemand)","versionShortLibelle":"AD DE"},"HTTPS_MQ_1":{"id":"HTTPS_MQ_1","quality":"MQ","width":384,"height":216,"mediaType":"mp4","mimeType":"video\/mp4","bitrate":300,"url":"https:\/\/arteptweb-a.akamaihd.net\/am\/ptweb\/069000\/069800\/069881-000-A_MQ_0_VF-STF_03823459_MP4-300_AMM-PTWEB_10WLdtlfom.mp4","versionProg":1,"versionCode":"VF-STF","versionLibelle":"Fran\u00e7ais (doubl\u00e9)","versionShortLibelle":"VF"},"HTTPS_HQ_3":{"id":"HTTPS_HQ_3","quality":"HQ","width":640,"height":360,"mediaType":"mp4","mimeType":"video\/mp4","bitrate":800,"url":"https:\/\/arteptweb-a.akamaihd.net\/am\/ptweb\/069000\/069800\/069881-000-A_HQ_0_VOA-STMA_03823458_MP4-800_AMM-PTWEB_10WLntlft0.mp4","versionProg":3,"versionCode":"VOA-STMA","versionLibelle":"Version allemande - ST sourds\/mal (allemand)","versionShortLibelle":"ST mal DE"},"HTTPS_EQ_1":{"id":"HTTPS_EQ_1","quality":"EQ","width":720,"height":406,"mediaType":"mp4","mimeType":"video\/mp4","bitrate":1500,"url":"https:\/\/arteptweb-a.akamaihd.net\/am\/ptweb\/069000\/069800\/069881-000-A_EQ_0_VF-STF_03823460_MP4-1500_AMM-PTWEB_10WLptlfwd.mp4","versionProg":1,"versionCode":"VF-STF","versionLibelle":"Fran\u00e7ais (doubl\u00e9)","versionShortLibelle":"VF"},"HTTPS_SQ_3":{"id":"HTTPS_SQ_3","quality":"SQ","width":1280,"height":720,"mediaType":"mp4","mimeType":"video\/mp4","bitrate":2200,"url":"https:\/\/arteptweb-a.akamaihd.net\/am\/ptweb\/069000\/069800\/069881-000-A_SQ_0_VOA-STMA_03823457_MP4-2200_AMM-PTWEB_10WMEtlgB2.mp4","versionProg":3,"versionCode":"VOA-STMA","versionLibelle":"Version allemande - ST sourds\/mal (allemand)","versionShortLibelle":"ST mal DE"},"HLS_XQ_3":{"id":"HLS_XQ_3","quality":"XQ","width":1280,"height":720,"mediaType":"hls","mimeType":"application\/vnd.apple.mpegurl","bitrate":2200,"url":"https:\/\/arteptweb-vh.akamaihd.net\/i\/am\/ptweb\/069000\/069800\/069881-000-A_0_VOA-STMA_AMM-PTWEB_XQ.10WMEtlgG5.smil\/master.m3u8","versionProg":3,"versionCode":"VOA-STMA","versionLibelle":"Version allemande - ST sourds\/mal (allemand)","versionShortLibelle":"ST mal DE"},"HTTPS_HQ_1":{"id":"HTTPS_HQ_1","quality":"HQ","width":640,"height":360,"mediaType":"mp4","mimeType":"video\/mp4","bitrate":800,"url":"https:\/\/arteptweb-a.akamaihd.net\/am\/ptweb\/069000\/069800\/069881-000-A_HQ_0_VF-STF_03823462_MP4-800_AMM-PTWEB_10WMitlgL4.mp4","versionProg":1,"versionCode":"VF-STF","versionLibelle":"Fran\u00e7ais (doubl\u00e9)","versionShortLibelle":"VF"},"HLS_XQ_1":{"id":"HLS_XQ_1","quality":"XQ","width":1280,"height":720,"mediaType":"hls","mimeType":"application\/vnd.apple.mpegurl","bitrate":2200,"url":"https:\/\/arteptweb-vh.akamaihd.net\/i\/am\/ptweb\/069000\/069800\/069881-000-A_0_VF-STF_AMM-PTWEB_XQ.10WNHtlgtx.smil\/master.m3u8","versionProg":1,"versionCode":"VF-STF","versionLibelle":"Fran\u00e7ais (doubl\u00e9)","versionShortLibelle":"VF"},"HTTPS_SQ_1":{"id":"HTTPS_SQ_1","quality":"SQ","width":1280,"height":720,"mediaType":"mp4","mimeType":"video\/mp4","bitrate":2200,"url":"https:\/\/arteptweb-a.akamaihd.net\/am\/ptweb\/069000\/069800\/069881-000-A_SQ_0_VF-STF_03823461_MP4-2200_AMM-PTWEB_10WNHtlgp4.mp4","versionProg":1,"versionCode":"VF-STF","versionLibelle":"Fran\u00e7ais (doubl\u00e9)","versionShortLibelle":"VF"}},"tracking":{"tablet":{"WEB":"https:\/\/st.arte.tv\/api\/multimedia\/v1\/069881-000\/A\/fr\/ARTE_NEXT\/TABLET\/WEB\/pixel.gif","EMBED":"https:\/\/st.arte.tv\/api\/multimedia\/v1\/069881-000\/A\/fr\/ARTE_NEXT\/TABLET\/EMBED\/pixel.gif"},"desktop":{"WEB":"https:\/\/st.arte.tv\/api\/multimedia\/v1\/069881-000\/A\/fr\/ARTE_NEXT\/DESKTOP\/WEB\/pixel.gif","EMBED":"https:\/\/st.arte.tv\/api\/multimedia\/v1\/069881-000\/A\/fr\/ARTE_NEXT\/DESKTOP\/EMBED\/pixel.gif"},"mobile":{"WEB":"https:\/\/st.arte.tv\/api\/multimedia\/v1\/069881-000\/A\/fr\/ARTE_NEXT\/MOBILE\/WEB\/pixel.gif","EMBED":"https:\/\/st.arte.tv\/api\/multimedia\/v1\/069881-000\/A\/fr\/ARTE_NEXT\/MOBILE\/EMBED\/pixel.gif"}},"platform":"ARTE_NEXT","videoPlayerUrl":"https:\/\/api.arte.tv\/api\/player\/v1\/config\/fr\/069881-000-A?autostart=1","caseProgram":"602_thema-mardi","categories":[{"code":"ACT","name":"Actu & soci\u00e9t\u00e9"}],"category":{"code":"ACT","name":"Info et soci\u00e9t\u00e9"},"subcategory":{"code":"ENQ","name":"Enqu\u00eates et reportages"},"language":"fr","programId":"069881-000-A","genre":"2_Documentaire","mainPlatformCode":"INFO","VSO":"replay","kind":"SHOW","kindLabel":"PROGRAMME","collections":[],"arteClub":false,"programType":"BROADCAST","parentProgramId":"069881-000-A","markings":[],"adtech":{"kvprogramid":"069881-000-A","kvvty":"ARTE_NEXT","kvcategory":"ACT","kvsubcategory":"ENQ","kvwebonly":false,"kvbroadcast":true,"kvduration":5105,"kvcaseprogram":"602_thema-mardi","kvvideoisolang":"fr"},"eStat":{"streamName":"Les nettoyeurs du Web - The Cleaners","streamDuration":5105,"streamGenre":"2_documentaire","level1":"ACT_info-et-societe","level2":"PROGRAMME_ANTENNE","level3":"fr","level4":"ENQ_enquetes-et-reportages","level5":"069881-000-A","newLevel1":"SHOW","newLevel11":"602_thema-mardi","mediaChannel":"850","mediaContentId":"069881-000-A","mediaDiffMode":"TVOD"},"illico":true,"enablePreroll":true}};
+var js_json_playlist = '';
+var lang = 'fr_FR';
+var config_name = '';
+var json_url = 'https://api.arte.tv/api/player/v1/config/fr/069881-000-A?autostart=1&lifeCycle=1';
+var json_playlist_url = '';
+</script>
+<script>
+var arte_vp_version = '3.32.1';
+window.Promise||document.write('<script src="https://cdn.polyfill.io/v2/polyfill.min.js"><\/script>');
+</script>
+<script src="https://static-cdn.arte.tv/player/v3//build/js/app.bundle.js?ver=3.32.1-fb8b44c1383bc215efd7"></script>
+<script src='//cdn-gl.imrworldwide.com/novms/js/2/ggcmb510.js'></script>
+</body></html>
+
+
+{"videoJsonPlayer":
+    {"VID":"069881-000-A",
+    "VPI":"069881-000",
+    "videoDurationSeconds":5105,
+    "videoIsoLang":"fr_FR",
+    "VTY":"ARTE_NEXT",
+    "VTX":"ARTE",
+    "VTI":"Les nettoyeurs du Web - The Cleaners",
+    "VDU":86,
+    "tc_start_from":0,
+    "autostart":true,
+    "liveStreamRights":true,
+    "VED":1,"VGB":"ALL","VRA":"26\/08\/2018 03:00:00 +0000","VRU":"04\/09\/2018 03:00:00 +0000","VAD":false,"videoWarning":true,
+    "VTU":{
+        "IUR":"https:\/\/static-cdn.arte.tv\/resize\/3LzieTKrGjMZrjN0PYV0FGyarKg=\/940x530\/smart\/filters:strip_icc()\/apios\/Img_data\/4\/069881-000-A_2499206.jpg"
+    },
+    "VTR":"https:\/\/www.arte.tv\/fr\/videos\/069881-000-A\/les-nettoyeurs-du-web-the-cleaners\/",
+    "VUP":"https:\/\/www.arte.tv\/fr\/videos\/069881-000-A\/les-nettoyeurs-du-web-the-cleaners\/",
+    "V7T":"Qui mod\u00e8re nos contenus en ligne ? Les r\u00e9seaux sociaux contribuent-ils \u00e0 l'accroissement de la haine ? Des Philippines \u00e0 la Silicon Valley, une enqu\u00eate exhaustive et brutale sur la violence \u00e0 l'\u00e8re du Web.",
+    "VDE":"Ignorer ou supprimer ? Cette question, les mod\u00e9rateurs des r\u00e9seaux sociaux se la posent chacun vingt-cinq mille\u00a0fois par jour. Aux Philippines, ils sont des centaines \u00e0 effectuer ce travail que Facebook sous-traite \u00e0 une multinationale : purger le Net de ses images les plus violentes. De la p\u00e9dopornographie aux d\u00e9capitations terroristes, en passant par l'automutilation ou la simple nudit\u00e9, proscrite par les chartes des grands groupes, l'impact psychologique des images les plus rudes \u2013 seul quotidien de ces abeilles ouvri\u00e8res du Web \u2013 est aussi violent qu'ignor\u00e9 par la Silicon Valley, pour laquelle le rendement passe avant tout. Mais les r\u00e8gles de mod\u00e9ration impos\u00e9es trouvent bien vite leur limite, d\u00e8s lors que la question de l'art ou de la politique fait irruption. Quelle est la fronti\u00e8re entre mod\u00e9ration et censure ? Doit-on \"nettoyer\" les r\u00e9seaux des images de guerre, alors qu'elles documentent les conflits ? Lorsque l'administration du pr\u00e9sident Erdogan demande aux g\u00e9ants des r\u00e9seaux sociaux de supprimer des contenus d'opposition politique qu'elle juge terroristes, sous peine de bloquer les sites sur le territoire turc, pourquoi les entreprises s'ex\u00e9cutent-elles ? Comment ne pas y voir une logique froidement mercantile ?\n\nLe mal du XXIe si\u00e8cle\nQuel est le meilleur moyen d'engranger de l'audience ? \"L'indignation\", r\u00e9pond Tristan Harris, ancien cadre de Google. En privil\u00e9giant les contenus choquants, les r\u00e9seaux sociaux \u2013 seule source d'information pour un nombre grandissant d'internautes \u2013 voient leur vision segment\u00e9e s'imposer \u00e0 leurs utilisateurs, polarisant une haine et d\u00e9cha\u00eenant une violence bien r\u00e9elles. C'est tout le paradoxe de ces nouveaux ma\u00eetres du Web, qui \u00e9puisent leurs sous-traitants \u00e0 purger les r\u00e9seaux tout en b\u00e2tissant des algorithmes au service de la col\u00e8re. Un mal du XXIe si\u00e8cle intelligemment expliqu\u00e9 par Hans Block et Moritz Riesewieck qui, des Philippines \u00e0 la Silicon Valley, examinent les deux c\u00f4t\u00e9s de la cha\u00eene dans un documentaire \u00e0 charge, exhaustif et passionnant.","postroll":"https:\/\/api.arte.tv\/api\/player\/v1\/recommendedPostroll\/fr\/069881-000-A","VSR":{"HTTPS_MQ_2":{"id":"HTTPS_MQ_2","quality":"MQ","width":384,"height":216,"mediaType":"mp4","mimeType":"video\/mp4","bitrate":300,"url":"https:\/\/arteptweb-a.akamaihd.net\/am\/ptweb\/069000\/069800\/069881-000-A_MQ_0_VOA-STA_03823447_MP4-300_AMM-PTWEB_10WKGtldbm.mp4","versionProg":2,"versionCode":"VOA-STA","versionLibelle":"Allemand (original)","versionShortLibelle":"VOA"},"HTTPS_EQ_2":{"id":"HTTPS_EQ_2","quality":"EQ","width":720,"height":406,"mediaType":"mp4","mimeType":"video\/mp4","bitrate":1500,"url":"https:\/\/arteptweb-a.akamaihd.net\/am\/ptweb\/069000\/069800\/069881-000-A_EQ_0_VOA-STA_03823448_MP4-1500_AMM-PTWEB_10WKHtldbm.mp4","versionProg":2,"versionCode":"VOA-STA","versionLibelle":"Allemand (original)","versionShortLibelle":"VOA"},"HTTPS_HQ_2":{"id":"HTTPS_HQ_2","quality":"HQ","width":640,"height":360,"mediaType":"mp4","mimeType":"video\/mp4","bitrate":800,"url":"https:\/\/arteptweb-a.akamaihd.net\/am\/ptweb\/069000\/069800\/069881-000-A_HQ_0_VOA-STA_03823450_MP4-800_AMM-PTWEB_10WKLtldfl.mp4","versionProg":2,"versionCode":"VOA-STA","versionLibelle":"Allemand (original)","versionShortLibelle":"VOA"},"HLS_XQ_2":{"id":"HLS_XQ_2","quality":"XQ","width":1280,"height":720,"mediaType":"hls","mimeType":"application\/vnd.apple.mpegurl","bitrate":2200,"url":"https:\/\/arteptweb-vh.akamaihd.net\/i\/am\/ptweb\/069000\/069800\/069881-000-A_0_VOA-STA_AMM-PTWEB_XQ.10WKOtldoe.smil\/master.m3u8","versionProg":2,"versionCode":"VOA-STA","versionLibelle":"Allemand (original)","versionShortLibelle":"VOA"},"HTTPS_SQ_2":{"id":"HTTPS_SQ_2","quality":"SQ","width":1280,"height":720,"mediaType":"mp4","mimeType":"video\/mp4","bitrate":2200,"url":"https:\/\/arteptweb-a.akamaihd.net\/am\/ptweb\/069000\/069800\/069881-000-A_SQ_0_VOA-STA_03823449_MP4-2200_AMM-PTWEB_10WKOtldjL.mp4","versionProg":2,"versionCode":"VOA-STA","versionLibelle":"Allemand (original)","versionShortLibelle":"VOA"},"HTTPS_MQ_4":{"id":"HTTPS_MQ_4","quality":"MQ","width":384,"height":216,"mediaType":"mp4","mimeType":"video\/mp4","bitrate":300,"url":"https:\/\/arteptweb-a.akamaihd.net\/am\/ptweb\/069000\/069800\/069881-000-A_MQ_0_VAAUD_03823451_MP4-300_AMM-PTWEB_10WKhtlduk.mp4","versionProg":4,"versionCode":"VAAUD","versionLibelle":"Audiodescription (allemand)","versionShortLibelle":"AD DE"},"HTTPS_EQ_4":{"id":"HTTPS_EQ_4","quality":"EQ","width":720,"height":406,"mediaType":"mp4","mimeType":"video\/mp4","bitrate":1500,"url":"https:\/\/arteptweb-a.akamaihd.net\/am\/ptweb\/069000\/069800\/069881-000-A_EQ_0_VAAUD_03823452_MP4-1500_AMM-PTWEB_10WKmtldyI.mp4","versionProg":4,"versionCode":"VAAUD","versionLibelle":"Audiodescription (allemand)","versionShortLibelle":"AD DE"},"HTTPS_HQ_4":{"id":"HTTPS_HQ_4","quality":"HQ","width":640,"height":360,"mediaType":"mp4","mimeType":"video\/mp4","bitrate":800,"url":"https:\/\/arteptweb-a.akamaihd.net\/am\/ptweb\/069000\/069800\/069881-000-A_HQ_0_VAAUD_03823454_MP4-800_AMM-PTWEB_10WL4tle9X.mp4","versionProg":4,"versionCode":"VAAUD","versionLibelle":"Audiodescription (allemand)","versionShortLibelle":"AD DE"},"HTTPS_MQ_3":{"id":"HTTPS_MQ_3","quality":"MQ","width":384,"height":216,"mediaType":"mp4","mimeType":"video\/mp4","bitrate":300,"url":"https:\/\/arteptweb-a.akamaihd.net\/am\/ptweb\/069000\/069800\/069881-000-A_MQ_0_VOA-STMA_03823455_MP4-300_AMM-PTWEB_10WL6tleDk.mp4","versionProg":3,"versionCode":"VOA-STMA","versionLibelle":"Version allemande - ST sourds\/mal (allemand)","versionShortLibelle":"ST mal DE"},"HTTPS_EQ_3":{"id":"HTTPS_EQ_3","quality":"EQ","width":720,"height":406,"mediaType":"mp4","mimeType":"video\/mp4","bitrate":1500,"url":"https:\/\/arteptweb-a.akamaihd.net\/am\/ptweb\/069000\/069800\/069881-000-A_EQ_0_VOA-STMA_03823456_MP4-1500_AMM-PTWEB_10WLDtleR4.mp4","versionProg":3,"versionCode":"VOA-STMA","versionLibelle":"Version allemande - ST sourds\/mal (allemand)","versionShortLibelle":"ST mal DE"},"HTTPS_SQ_4":{"id":"HTTPS_SQ_4","quality":"SQ","width":1280,"height":720,"mediaType":"mp4","mimeType":"video\/mp4","bitrate":2200,"url":"https:\/\/arteptweb-a.akamaihd.net\/am\/ptweb\/069000\/069800\/069881-000-A_SQ_0_VAAUD_03823453_MP4-2200_AMM-PTWEB_10WLCtleR4.mp4","versionProg":4,"versionCode":"VAAUD","versionLibelle":"Audiodescription (allemand)","versionShortLibelle":"AD DE"},"HLS_XQ_4":{"id":"HLS_XQ_4","quality":"XQ","width":1280,"height":720,"mediaType":"hls","mimeType":"application\/vnd.apple.mpegurl","bitrate":2200,"url":"https:\/\/arteptweb-vh.akamaihd.net\/i\/am\/ptweb\/069000\/069800\/069881-000-A_0_VAAUD_AMM-PTWEB_XQ.10WLCtleX2.smil\/master.m3u8","versionProg":4,"versionCode":"VAAUD","versionLibelle":"Audiodescription (allemand)","versionShortLibelle":"AD DE"},"HTTPS_MQ_1":{"id":"HTTPS_MQ_1","quality":"MQ","width":384,"height":216,"mediaType":"mp4","mimeType":"video\/mp4","bitrate":300,"url":"https:\/\/arteptweb-a.akamaihd.net\/am\/ptweb\/069000\/069800\/069881-000-A_MQ_0_VF-STF_03823459_MP4-300_AMM-PTWEB_10WLdtlfom.mp4","versionProg":1,"versionCode":"VF-STF","versionLibelle":"Fran\u00e7ais (doubl\u00e9)","versionShortLibelle":"VF"},"HTTPS_HQ_3":{"id":"HTTPS_HQ_3","quality":"HQ","width":640,"height":360,"mediaType":"mp4","mimeType":"video\/mp4","bitrate":800,"url":"https:\/\/arteptweb-a.akamaihd.net\/am\/ptweb\/069000\/069800\/069881-000-A_HQ_0_VOA-STMA_03823458_MP4-800_AMM-PTWEB_10WLntlft0.mp4","versionProg":3,"versionCode":"VOA-STMA","versionLibelle":"Version allemande - ST sourds\/mal (allemand)","versionShortLibelle":"ST mal DE"},"HTTPS_EQ_1":{"id":"HTTPS_EQ_1","quality":"EQ","width":720,"height":406,"mediaType":"mp4","mimeType":"video\/mp4","bitrate":1500,"url":"https:\/\/arteptweb-a.akamaihd.net\/am\/ptweb\/069000\/069800\/069881-000-A_EQ_0_VF-STF_03823460_MP4-1500_AMM-PTWEB_10WLptlfwd.mp4","versionProg":1,"versionCode":"VF-STF","versionLibelle":"Fran\u00e7ais (doubl\u00e9)","versionShortLibelle":"VF"},"HTTPS_SQ_3":{"id":"HTTPS_SQ_3","quality":"SQ","width":1280,"height":720,"mediaType":"mp4","mimeType":"video\/mp4","bitrate":2200,"url":"https:\/\/arteptweb-a.akamaihd.net\/am\/ptweb\/069000\/069800\/069881-000-A_SQ_0_VOA-STMA_03823457_MP4-2200_AMM-PTWEB_10WMEtlgB2.mp4","versionProg":3,"versionCode":"VOA-STMA","versionLibelle":"Version allemande - ST sourds\/mal (allemand)","versionShortLibelle":"ST mal DE"},"HLS_XQ_3":{"id":"HLS_XQ_3","quality":"XQ","width":1280,"height":720,"mediaType":"hls","mimeType":"application\/vnd.apple.mpegurl","bitrate":2200,"url":"https:\/\/arteptweb-vh.akamaihd.net\/i\/am\/ptweb\/069000\/069800\/069881-000-A_0_VOA-STMA_AMM-PTWEB_XQ.10WMEtlgG5.smil\/master.m3u8","versionProg":3,"versionCode":"VOA-STMA","versionLibelle":"Version allemande - ST sourds\/mal (allemand)","versionShortLibelle":"ST mal DE"},"HTTPS_HQ_1":{"id":"HTTPS_HQ_1","quality":"HQ","width":640,"height":360,"mediaType":"mp4","mimeType":"video\/mp4","bitrate":800,"url":"https:\/\/arteptweb-a.akamaihd.net\/am\/ptweb\/069000\/069800\/069881-000-A_HQ_0_VF-STF_03823462_MP4-800_AMM-PTWEB_10WMitlgL4.mp4","versionProg":1,"versionCode":"VF-STF","versionLibelle":"Fran\u00e7ais (doubl\u00e9)","versionShortLibelle":"VF"},
+    
+    "HLS_XQ_1":{"id":"HLS_XQ_1","quality":"XQ","width":1280,"height":720,"mediaType":"hls","mimeType":"application\/vnd.apple.mpegurl","bitrate":2200,"url":"https:\/\/arteptweb-vh.akamaihd.net\/i\/am\/ptweb\/069000\/069800\/069881-000-A_0_VF-STF_AMM-PTWEB_XQ.10WNHtlgtx.smil\/master.m3u8","versionProg":1,"versionCode":"VF-STF","versionLibelle":"Fran\u00e7ais (doubl\u00e9)","versionShortLibelle":"VF"},
+    
+    
+    
+    "HTTPS_SQ_1":
+    {"id":"HTTPS_SQ_1","quality":"SQ","width":1280,"height":720,
+    "mediaType":"mp4","mimeType":"video\/mp4","bitrate":2200,
+    
+    "url":"https:\/\/arteptweb-a.akamaihd.net\/am\/ptweb\/069000\/069800\/069881-000-A_SQ_0_VF-STF_03823461_MP4-2200_AMM-PTWEB_10WNHtlgp4.mp4","versionProg":1,"versionCode":"VF-STF","versionLibelle":"Fran\u00e7ais (doubl\u00e9)","versionShortLibelle":"VF"}},"tracking":{"tablet":{"WEB":"https:\/\/st.arte.tv\/api\/multimedia\/v1\/069881-000\/A\/fr\/ARTE_NEXT\/TABLET\/WEB\/pixel.gif","EMBED":"https:\/\/st.arte.tv\/api\/multimedia\/v1\/069881-000\/A\/fr\/ARTE_NEXT\/TABLET\/EMBED\/pixel.gif"},"desktop":{"WEB":"https:\/\/st.arte.tv\/api\/multimedia\/v1\/069881-000\/A\/fr\/ARTE_NEXT\/DESKTOP\/WEB\/pixel.gif","EMBED":"https:\/\/st.arte.tv\/api\/multimedia\/v1\/069881-000\/A\/fr\/ARTE_NEXT\/DESKTOP\/EMBED\/pixel.gif"},"mobile":{"WEB":"https:\/\/st.arte.tv\/api\/multimedia\/v1\/069881-000\/A\/fr\/ARTE_NEXT\/MOBILE\/WEB\/pixel.gif","EMBED":"https:\/\/st.arte.tv\/api\/multimedia\/v1\/069881-000\/A\/fr\/ARTE_NEXT\/MOBILE\/EMBED\/pixel.gif"}},"platform":"ARTE_NEXT","videoPlayerUrl":"https:\/\/api.arte.tv\/api\/player\/v1\/config\/fr\/069881-000-A?autostart=1","caseProgram":"602_thema-mardi","categories":[{"code":"ACT","name":"Actu & soci\u00e9t\u00e9"}],"category":{"code":"ACT","name":"Info et soci\u00e9t\u00e9"},"subcategory":{"code":"ENQ","name":"Enqu\u00eates et reportages"},"language":"fr","programId":"069881-000-A","genre":"2_Documentaire","mainPlatformCode":"INFO","VSO":"replay","kind":"SHOW","kindLabel":"PROGRAMME","collections":[],"arteClub":false,"programType":"BROADCAST","parentProgramId":"069881-000-A","markings":[],"adtech":{"kvprogramid":"069881-000-A","kvvty":"ARTE_NEXT","kvcategory":"ACT","kvsubcategory":"ENQ","kvwebonly":false,"kvbroadcast":true,"kvduration":5105,"kvcaseprogram":"602_thema-mardi","kvvideoisolang":"fr"},"eStat":{"streamName":"Les nettoyeurs du Web - The Cleaners","streamDuration":5105,"streamGenre":"2_documentaire","level1":"ACT_info-et-societe","level2":"PROGRAMME_ANTENNE","level3":"fr","level4":"ENQ_enquetes-et-reportages","level5":"069881-000-A","newLevel1":"SHOW","newLevel11":"602_thema-mardi","mediaChannel":"850","mediaContentId":"069881-000-A","mediaDiffMode":"TVOD"},"illico":true,"enablePreroll":true}};

@@ -19,6 +19,7 @@ import sys
 
 from ColorFormatter import ColorFormatter
 from francetv.francetv import FranceTvDownloader
+from arte.arte import ArteDownloader
 from FakeAgent import FakeAgent
 from Converter import CreateMP4
 from GlobalRef import LOGGER_NAME
@@ -75,7 +76,8 @@ if (__name__ == "__main__"):
 
     logger.info(args.urlEmission)
 
-    downloader = FranceTvDownloader(url=args.urlEmission, fakeAgent=FakeAgent())
+#    downloader = FranceTvDownloader(url=args.urlEmission, fakeAgent=FakeAgent())
+    downloader = ArteDownloader(url=args.urlEmission, fakeAgent=FakeAgent())
 
     videoFullPath = downloader.download(progressFnct=progressFnct)
 
