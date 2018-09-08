@@ -86,6 +86,9 @@ class FranceTvDownloader(object):
             if videoUrl is None:
                 raise (FrTvDownloadException("Can't find selected Video url"))
 
+
+
+	logger.info("Program ID: %s" % idEmission)
         # go for JSON straight, don't even try XML
         pageInfos = self.fakeAgent.readPage(self.JSON_DESCRIPTION.replace("_ID_EMISSION_", idEmission))
         self._parseInfosJSON(pageInfos)
