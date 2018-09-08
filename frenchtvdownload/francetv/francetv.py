@@ -25,7 +25,7 @@ from bs4 import BeautifulSoup
 from DownloadException import FrTvDownloadException
 from downloader.M3U8Downloader import M3U8Downloader
 
-logger = logging.getLogger("frtvdld")
+logger = logging.getLogger("frenchtv")
 
 
 #
@@ -83,6 +83,9 @@ class FranceTvDownloader(object):
             if videoUrl is None:
                 raise (FrTvDownloadException("Can't find selected Video url"))
 
+
+
+	logger.info("Program ID: %s" % idEmission)
         # go for JSON straight, don't even try XML
         pageInfos = self.fakeAgent.readPage(self.JSON_DESCRIPTION.replace("_ID_EMISSION_", idEmission))
         self._parseInfosJSON(pageInfos)
