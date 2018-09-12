@@ -38,7 +38,6 @@ class M3U8Downloader(object):
                 listFragments.extend(re.findall(".+?\.ts", m3u8data))
 
         maxNbrFrag = len(listFragments)
-        maxNbrFrag = 10
         logger.info("Nbr of fragments : %d" % (maxNbrFrag))
 
         #
