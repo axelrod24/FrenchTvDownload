@@ -19,7 +19,7 @@ import tempfile
 import threading
 import time
 
-import BeautifulSoup
+#import BeautifulSoup
 from bs4 import BeautifulSoup
 
 from DownloadException import FrTvDownloadException
@@ -86,9 +86,7 @@ class FranceTvDownloader(object):
             if videoUrl is None:
                 raise (FrTvDownloadException("Can't find selected Video url"))
 
-
-
-	logger.info("Program ID: %s" % idEmission)
+        logger.info("Program ID: %s" % idEmission)
         # go for JSON straight, don't even try XML
         pageInfos = self.fakeAgent.readPage(self.JSON_DESCRIPTION.replace("_ID_EMISSION_", idEmission))
         self._parseInfosJSON(pageInfos)
@@ -173,5 +171,6 @@ class FranceTvDownloader(object):
         try:
             videoFile = self.downloader.download(progressFnct)
             return videoFile
-        except:
+        except ValueError as err:
+            print("Error:{0}".format(err))
             return None

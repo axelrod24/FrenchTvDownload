@@ -6,8 +6,7 @@
 # Modules
 #
 
-from exceptions import Exception
-
+#from exceptions import Exception
 
 class FrTvDownloadException(Exception):
     """

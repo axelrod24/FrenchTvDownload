@@ -18,9 +18,13 @@ class FakeAgent:
     def __init__(self):
         self.userAgent = userAgentList[0]
 
-    def readPage(self, url):
-        headers = {
-            'User-Agent': self.userAgent}
+    def readBin(self, url):
+        headers = {'User-Agent': self.userAgent}
 
         response = requests.get(url, headers=headers)
         return response.content
+
+    def readPage(self, url):
+        page = self.readBin(url)
+        return page.decode('utf-8')
+

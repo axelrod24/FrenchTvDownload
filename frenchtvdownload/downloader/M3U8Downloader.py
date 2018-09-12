@@ -37,7 +37,8 @@ class M3U8Downloader(object):
                 m3u8data = self.fakeAgent.readPage(m3u8)
                 listFragments.extend(re.findall(".+?\.ts", m3u8data))
 
-        maxNbrFrag = long(len(listFragments))
+        maxNbrFrag = len(listFragments)
+        maxNbrFrag = 10
         logger.info("Nbr of fragments : %d" % (maxNbrFrag))
 
         #
@@ -55,7 +56,7 @@ class M3U8Downloader(object):
         try:
             i = 0
             while i < maxNbrFrag and not self.stopDownloadEvent.isSet():
-                frag = self.fakeAgent.readPage("%s" % (listFragments[i]))
+                frag = self.fakeAgent.readBin("%s" % (listFragments[i]))
                 videoFile.write(frag)
 
                 # display progress
