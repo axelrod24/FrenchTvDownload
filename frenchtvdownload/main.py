@@ -16,9 +16,15 @@ import logging
 import platform
 import os
 import sys
+import tempfile
+import shutil
+
+from urllib.parse import urlparse
 
 from ColorFormatter import ColorFormatter
 from francetv.francetv import FranceTvDownloader
+from downloader.HLSDownloader import HlsManifestParser, HLSStreamDownloader
+
 from FakeAgent import FakeAgent
 from Converter import CreateMP4
 from GlobalRef import LOGGER_NAME
@@ -69,27 +75,51 @@ if (__name__ == "__main__"):
 
     # progress function
     if (args.progressbar):
-        progressFnct = lambda x: logger.info("progress : %3d %%" % (x))
+        
+        progressFnct = lambda x: logger.info("progress : %3d%% - %d/%d" % (min(int((x[0] * 100) / x[1]), 100), x[0], x[1]))
     else:
         progressFnct = lambda x: None
 
     logger.info(args.urlEmission)
+    parsed_uri = urlparse(args.urlEmission)
 
-    downloader = FranceTvDownloader(url=args.urlEmission, fakeAgent=FakeAgent())
+    if parsed_uri.netloc == "www.france.tv" or parsed_uri.netloc == "france.tv":
+        networkAccessor = FranceTvDownloader(url=args.urlEmission, fakeAgent=FakeAgent())
+    else:
+        print("Network not supported")
 
-    videoFullPath = downloader.download(progressFnct=progressFnct)
+    progMetadata = networkAccessor.getProgMetaData()  
+    if (progMetadata["streamType"] == "hls"):
+        manifestParser = HlsManifestParser(fakeAgent=FakeAgent(), url=progMetadata["manifestUrl"])
+        streamData = manifestParser.getHighestResolutionStream()
+        listOfSegment = manifestParser.getListOfSegment(url=streamData["URL"])
+
+        streamDownloader = HLSStreamDownloader(fakeAgent=FakeAgent(), seglist=listOfSegment)
+ 
+    else:
+       print("Protocol not supported:%s" % progMetadata["streamType"])   
+
+
+    # create the filename accoding to file meta-data
+    dstFolder = tempfile.mkdtemp()
+    videoFullPath = os.path.join(dstFolder, progMetadata["filename"])
+
+    streamDownloader.download(toFile=videoFullPath, progressFnct=progressFnct)
 
     # convert to mp4
     if videoFullPath is not None:
-        fname = os.path.basename(videoFullPath).replace(".ts", ".mp4")
+        basename = os.path.splitext(os.path.basename(videoFullPath))[0]
+        fname = basename + ".mp4"
         dstFullPath = os.path.join(args.outDir, fname)
 
         # rename file if it already exist.
         fileIndex = 2
         while os.path.isfile(dstFullPath) is True:
-            basenamePath = dstFullPath.split(".mp4")[0]
-            dstFullPath = basenamePath + "_" + str(fileIndex) + ".mp4"
+            dstFullPath = os.path.join(args.outDir, basename + "_" + str(fileIndex) + ".mp4")
             fileIndex += 1
 
         CreateMP4(videoFullPath, dstFullPath)
+
+        # delete the 
+        shutil.rmtree(dstFolder)
 

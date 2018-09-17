@@ -23,7 +23,6 @@ import time
 from bs4 import BeautifulSoup
 
 from DownloadException import FrTvDownloadException
-from downloader.M3U8Downloader import M3U8Downloader
 from GlobalRef import LOGGER_NAME
 
 logger = logging.getLogger(LOGGER_NAME)
@@ -57,18 +56,7 @@ class FranceTvDownloader(object):
                  ):
 
         self.fakeAgent = fakeAgent
-
-        # Infos video recuperees dans le XML
-        self.id = None
-        self.lienMMS = None
-        self.lienRTMP = None
-        self.manifestURL = None
-        self.m3u8URL = None
-        self.drm = None
-        self.chaine = None
-        self.timeStamp = None
-        self.codeProgramme = None
-        self.downloader = None
+        self.progMetaData = {} 
 
         # check if url point to the video page, if not get list of video URl one by one
         idEmission = None
@@ -89,28 +77,33 @@ class FranceTvDownloader(object):
         logger.info("Program ID: %s" % idEmission)
         # go for JSON straight, don't even try XML
         pageInfos = self.fakeAgent.readPage(self.JSON_DESCRIPTION.replace("_ID_EMISSION_", idEmission))
-        self._parseInfosJSON(pageInfos)
+        metadata = self._parseInfosJSON(pageInfos)
 
         #if no link to url try the other link
-        if self.m3u8URL is None:
+        if metadata['manifestUrl'] is None:
             pageInfos = self.fakeAgent.readPage(self.JSON2_DESC.replace("_ID_EMISSION_", idEmission))
-            self._parseInfosJSON(pageInfos)
+            metadata = self._parseInfosJSON(pageInfos)
 
         # Petit message en cas de DRM
-        if self.drm:
+        if metadata['drm']:
             logger.warning("La vidéo posséde un DRM ; elle sera sans doute illisible")
 
         # Verification qu'un lien existe
-        if self.m3u8URL is None:
+        if metadata['manifestUrl'] is None:
             raise FrTvDownloadException("Aucun lien vers la vidéo")
 
-        # create the filename accoding to file meta-data
-        dstFolder = tempfile.mkdtemp()
-        dstFullPath = os.path.join(dstFolder, "%s-%s.%s" % (
-            datetime.datetime.fromtimestamp(self.timeStamp).strftime("%Y%m%d"), self.codeProgramme, "ts"))
+        metadata["filename"] = "%s-%s.%s" % (datetime.datetime.fromtimestamp(metadata['timeStamp']).strftime("%Y%m%d"), metadata['progName'], "ts")
+        self.progMetaData = metadata
 
-        # Downloader
-        self.downloader = M3U8Downloader(self.m3u8URL, dstFullPath, self.fakeAgent, stopDownloadEvent)
+        # # create the filename accoding to file meta-data
+        # dstFolder = tempfile.mkdtemp()
+        # dstFullPath = os.path.join(dstFolder, metadata["filename"])
+
+        # # Downloader
+        # self.downloader = M3U8Downloader(asset['manifestUrl'], dstFullPath, self.fakeAgent, stopDownloadEvent)
+
+    def getProgMetaData(self):
+        return self.progMetaData
 
     def _getVideoId(self, page):
         """
@@ -146,21 +139,25 @@ class FranceTvDownloader(object):
         """
         try:
             data = json.loads(pageInfos)
-            self.lienRTMP = None
-            self.lienMMS = None
-            self.timeStamp = data['diffusion']['timestamp']
-            self.codeProgramme = data['code_programme']
+            metaData = {}
+            metaData["streamType"] = None
+            metaData['manifestUrl'] = None
+            metaData['drm'] = None
+            metaData['timeStamp'] = data['diffusion']['timestamp']
+            metaData['progName'] = data['code_programme']
+            metaData['progTitle'] = data['sous_titre']
             for v in data['videos']:
-                if v['format'] == 'm3u8-download':
-                    self.m3u8URL = v['url']
-                    self.drm = v['drm']
-                elif v['format'] == 'smil-mp4':
-                    self.manifestURL = v['url']
-            logger.debug("URL m3u8 : %s" % (self.m3u8URL))
-            logger.debug("URL manifest : %s" % (self.manifestURL))
-            logger.debug("Lien RTMP : %s" % (self.lienRTMP))
-            logger.debug("Lien MMS : %s" % (self.lienMMS))
-            logger.debug("Utilisation de DRM : %s" % (self.drm))
+                if v['format'] == 'hls_v5_os':
+                    metaData['manifestUrl'] = v['url']
+                    metaData['drm'] = v['drm']
+                    metaData["streamType"] = "hls"
+
+            logger.debug("Prog name: %s" % (metaData['progName']))
+            logger.debug("Prog title: %s" % (metaData['progTitle']))
+            logger.debug("Stream type: %s" % (metaData['streamType']))
+            logger.debug("Manifest URL: %s" % (metaData['manifestUrl']))
+            logger.debug("Drm : %s" % (metaData['drm']))
+            return metaData
         except:
             raise FrTvDownloadException("Impossible de parser le fichier JSON de l'émission")
 
