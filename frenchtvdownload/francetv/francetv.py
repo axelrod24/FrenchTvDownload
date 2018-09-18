@@ -22,6 +22,7 @@ import time
 #import BeautifulSoup
 from bs4 import BeautifulSoup
 
+from FakeAgent import FakeAgent
 from DownloadException import FrTvDownloadException
 from GlobalRef import LOGGER_NAME
 
@@ -31,6 +32,7 @@ logger = logging.getLogger(LOGGER_NAME)
 #
 # Classes
 #
+
 
 class FranceTvDownloader(object):
     """
@@ -49,14 +51,12 @@ class FranceTvDownloader(object):
 
     #  http://webservices.francetelevisions.fr/tools/getInfosOeuvre/v2/?idDiffusion=166810096&catalogue=Pluzz
     # http://www.pluzz.fr/appftv/webservices/video/getInfosOeuvre.php?mode=zeri&id-diffusion=166810096
-    def __init__(self,
-                 url,  # URL de la video
-                 fakeAgent=None,  # fakeAgent to download page/file
-                 stopDownloadEvent=threading.Event(),  # Event pour arreter un telechargement
-                 ):
+    def __init__(self, fakeAgent):
 
         self.fakeAgent = fakeAgent
         self.progMetaData = {} 
+
+    def parsePage(self, url):
 
         # check if url point to the video page, if not get list of video URl one by one
         idEmission = None
@@ -95,16 +95,6 @@ class FranceTvDownloader(object):
         metadata["filename"] = "%s-%s.%s" % (datetime.datetime.fromtimestamp(metadata['timeStamp']).strftime("%Y%m%d"), metadata['progName'], "ts")
         self.progMetaData = metadata
 
-        # # create the filename accoding to file meta-data
-        # dstFolder = tempfile.mkdtemp()
-        # dstFullPath = os.path.join(dstFolder, metadata["filename"])
-
-        # # Downloader
-        # self.downloader = M3U8Downloader(asset['manifestUrl'], dstFullPath, self.fakeAgent, stopDownloadEvent)
-
-    def getProgMetaData(self):
-        return self.progMetaData
-
     def _getVideoId(self, page):
         """
         get Video ID from the video page
@@ -140,7 +130,7 @@ class FranceTvDownloader(object):
         try:
             data = json.loads(pageInfos)
             metaData = {}
-            metaData["streamType"] = None
+            metaData["mediaType"] = None
             metaData['manifestUrl'] = None
             metaData['drm'] = None
             metaData['timeStamp'] = data['diffusion']['timestamp']
@@ -150,24 +140,86 @@ class FranceTvDownloader(object):
                 if v['format'] == 'hls_v5_os':
                     metaData['manifestUrl'] = v['url']
                     metaData['drm'] = v['drm']
-                    metaData["streamType"] = "hls"
+                    metaData["mediaType"] = "hls"
 
             logger.debug("Prog name: %s" % (metaData['progName']))
             logger.debug("Prog title: %s" % (metaData['progTitle']))
-            logger.debug("Stream type: %s" % (metaData['streamType']))
+            logger.debug("Stream type: %s" % (metaData['mediaType']))
             logger.debug("Manifest URL: %s" % (metaData['manifestUrl']))
             logger.debug("Drm : %s" % (metaData['drm']))
             return metaData
         except:
-            raise FrTvDownloadException("Impossible de parser le fichier JSON de l'émission")
+            raise FrTvDownloadException("Can't parse json for Francetv.fr")
 
-    def download(self,
-                 progressFnct=lambda x: None,  # Callback download progress
-                 ):
-        # delegate download to specialized downloader
+
+class ArteTvParser(object):
+    JSON_API = "https://api.arte.tv/api/player/v1/config/fr/_ID_EMISSION_"
+    def __init__(self, fakeAgent):
+
+        self.fakeAgent = fakeAgent
+        self.progMetaData = {} 
+
+    def parsePage(self, url):
+        progId = self._getProgId(url)
+
+        pageInfos = self.fakeAgent.readPage(self.JSON_API.replace("_ID_EMISSION_", progId))
+        metadata = self._parseInfosJSON(pageInfos)
+
+        metadata["filename"] = "%s-%s-%s.%s" % ("Arte", metadata['progName'], metadata['progTitle'], "ts")
+        # metadata["filename"] = "%s-%s.%s" % (datetime.datetime.fromtimestamp(metadata['timeStamp']).strftime("%Y%m%d"), metadata['progName'], "ts")
+        self.progMetaData = metadata
+       
+    def _getProgId(self, url):
+        l = url.split("/")
+        i = 0
+        while(i<len(l)):
+            if l[i] == "videos":
+                return l[i+1]
+            i+=1 
+
+        return None
+
+    def _parseInfosJSON(self, page):
         try:
-            videoFile = self.downloader.download(progressFnct)
-            return videoFile
-        except ValueError as err:
-            print("Error:{0}".format(err))
-            return None
+            data = json.loads(page)
+            metaData = {}
+            data = data["videoJsonPlayer"]
+            metaData['timeStamp'] = data['VRA']
+            metaData['progName'] = data['caseProgram']
+            metaData['progTitle'] = data['VTI']
+            VSR = data['VSR']
+            for k in VSR:
+                if not k.startswith("HLS"):
+                    continue
+                v = VSR[k]
+                if v["versionCode"] not in ["VF-STF", "VOF-STF"]:
+                    continue
+
+                metaData['manifestUrl'] = v['url']
+                metaData['drm'] = False
+                metaData["mediaType"] = "hls"
+                break
+
+            return metaData
+
+        except:
+            raise FrTvDownloadException("Can't parse json for Arte.tv")
+
+
+        
+
+class ProgNetworkParser(object):
+    FRANCETV = 1
+    ARTETV = 2
+    def __init__(self, tvname):
+        self._fakeAgent = FakeAgent()
+        if tvname == self.FRANCETV:
+            self._networkParser = FranceTvDownloader(self._fakeAgent)
+        elif tvname == self.ARTETV:
+            self._networkParser = ArteTvParser(self._fakeAgent)
+
+    def getProgMetaData(self, url):
+        self._networkParser.parsePage(url)
+
+        return self._networkParser.progMetaData
+

@@ -22,7 +22,7 @@ import shutil
 from urllib.parse import urlparse
 
 from ColorFormatter import ColorFormatter
-from francetv.francetv import FranceTvDownloader
+from francetv.francetv import ProgNetworkParser
 from downloader.HLSDownloader import HlsManifestParser, HLSStreamDownloader
 
 from FakeAgent import FakeAgent
@@ -84,12 +84,14 @@ if (__name__ == "__main__"):
     parsed_uri = urlparse(args.urlEmission)
 
     if parsed_uri.netloc == "www.france.tv" or parsed_uri.netloc == "france.tv":
-        networkAccessor = FranceTvDownloader(url=args.urlEmission, fakeAgent=FakeAgent())
+        networkAccessor = ProgNetworkParser(ProgNetworkParser.FRANCETV)
+    elif parsed_uri.netloc == "www.arte.tv" or parsed_uri.netloc == "arte.tv":
+        networkAccessor = ProgNetworkParser(ProgNetworkParser.ARTETV)
     else:
         print("Network not supported")
 
-    progMetadata = networkAccessor.getProgMetaData()  
-    if (progMetadata["streamType"] == "hls"):
+    progMetadata = networkAccessor.getProgMetaData(args.urlEmission)  
+    if (progMetadata["mediaType"] == "hls"):
         manifestParser = HlsManifestParser(fakeAgent=FakeAgent(), url=progMetadata["manifestUrl"])
         streamData = manifestParser.getHighestResolutionStream()
         listOfSegment = manifestParser.getListOfSegment(url=streamData["URL"])
