@@ -177,7 +177,8 @@ class ArteTvParser(object):
             data = json.loads(page)
             metaData = {}
             data = data["videoJsonPlayer"]
-            metaData['timeStamp'] = time.mktime(datetime.datetime.strptime(data['VRA'], "%d/%m/%Y").timetuple()) 
+            gregorian_date = data['VRA'].split(" ", 1)[0]
+            metaData['timeStamp'] = time.mktime(datetime.datetime.strptime(gregorian_date, "%d/%m/%Y").timetuple()) 
             metaData['progName'] = data['caseProgram']
             metaData['progTitle'] = data['VTI']
             VSR = data['VSR']
