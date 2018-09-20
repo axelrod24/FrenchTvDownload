@@ -12,7 +12,7 @@ from DownloadException import FrTvDownloadException
 
 logger = logging.getLogger(LOGGER_NAME)
 
-kw = ["SUBTITLES", "AUDIO", "PROGRAM-ID", "BANDWIDTH" , "RESOLUTION", "CODECS"]
+hlsKeyword = ["SUBTITLES", "AUDIO", "PROGRAM-ID", "BANDWIDTH" , "RESOLUTION", "CODECS", "CLOSED-CAPTIONS"]
 
 class HlsManifestParser(object):
     """
@@ -33,7 +33,7 @@ class HlsManifestParser(object):
             if l.startswith("#EXT-X-STREAM-INF:"):
                 streamInfMeta = self._parseStreamInf(l)
                 streamInfMeta["URL"] = lines[i+1]
-                self.data[streamInfMeta["WIDTH"]] = streamInfMeta
+                self.data[streamInfMeta["BANDWIDTH"]] = streamInfMeta
                 i+=2
                 continue
 
@@ -43,46 +43,49 @@ class HlsManifestParser(object):
         metadata = {}
         line = line[line.find(":")+1:]
 
-        while(len(line)>0):
-            # treat special case of CODECS which can't be split on ","
-            if line.startswith("CODECS"):
-                k, v = line.split("=", 1)
-                lastindex = v.find('"', 1)
-                metadata[k] = v[:lastindex+1].strip('"')
-                line = v[lastindex+1:]
+        for kw in hlsKeyword:
+            startIndex = line.find(kw)
+            if startIndex == -1:
                 continue
-            
-            # split on "," but get only first split
-            elt = line.split(",", 1)
-            k, v = elt[0].split("=")
-            if k == "RESOLUTION":
+            # skip the = and point on value
+            valueIndex = startIndex + len(kw) + 1
+            if kw == "CODECS":
+                endIndex = line.find('"',valueIndex + 1)
+                v = line[valueIndex:endIndex+1]
+                metadata[kw] = v.strip('"')
+                continue
+
+            endIndex = line.find(',',valueIndex)
+            v = line[valueIndex:endIndex]
+            if kw == "RESOLUTION":
                 w, h = v.split("x") 
                 metadata["WIDTH"] = int(w)
                 metadata["HEIGHT"] = int(h)
+                continue
 
-            elif k == "BANDWIDTH":
-                metadata[k] = int(v.strip('"'))
-
-            else:
-                metadata[k] = v.strip('"')
-
-            line = elt[1]
+            if kw == "BANDWIDTH":
+                metadata[kw] = int(v.strip('"'))
+                continue
+            
+            metadata[kw] = v
 
         return metadata
 
     def listOfResolutions(self):
         l=[]
-        for meta in self.data:
-            l.append(str(self.data[meta]["WIDTH"])+"x"+str(self.data[meta]["HEIGHT"]))
+        for k in self.data:
+            if self.data[k].get("WIDTH") is None:
+                continue
+            l.append(str(self.data[k]["WIDTH"])+"x"+str(self.data[k]["HEIGHT"]))
 
         return l
 
     def getHighestResolutionStream(self):
-        maxR = 0 
+        maxB = 0 
         for k in self.data.keys():
-            if k > maxR:
-                maxR = k
-        return self.data[maxR]
+            if k > maxB:
+                maxB = k
+        return self.data[maxB]
 
     def getListOfSegment(self, url):
         manifest = self.fakeAgent.readPage(url)
@@ -94,7 +97,7 @@ class HlsManifestParser(object):
 
 class HLSStreamDownloader(object):
     """
-    Download m3u8 file and segmets
+    Download m3u8 file and segments
     """
 
     def __init__(self, fakeAgent, seglist, stopDownloadEvent=threading.Event()):

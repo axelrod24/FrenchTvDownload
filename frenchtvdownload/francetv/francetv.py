@@ -28,12 +28,6 @@ from GlobalRef import LOGGER_NAME
 
 logger = logging.getLogger(LOGGER_NAME)
 
-
-#
-# Classes
-#
-
-
 class FranceTvDownloader(object):
     """
     Classe principale pour lancer un telechargement
@@ -165,8 +159,7 @@ class ArteTvParser(object):
         pageInfos = self.fakeAgent.readPage(self.JSON_API.replace("_ID_EMISSION_", progId))
         metadata = self._parseInfosJSON(pageInfos)
 
-        metadata["filename"] = "%s-%s-%s.%s" % ("Arte", metadata['progName'], metadata['progTitle'], "ts")
-        # metadata["filename"] = "%s-%s.%s" % (datetime.datetime.fromtimestamp(metadata['timeStamp']).strftime("%Y%m%d"), metadata['progName'], "ts")
+        metadata["filename"] = "%s-Arte-%s.%s" % (datetime.datetime.fromtimestamp(metadata['timeStamp']).strftime("%Y%m%d"), metadata['progTitle'], "ts")
         self.progMetaData = metadata
        
     def _getProgId(self, url):
@@ -184,7 +177,7 @@ class ArteTvParser(object):
             data = json.loads(page)
             metaData = {}
             data = data["videoJsonPlayer"]
-            metaData['timeStamp'] = data['VRA']
+            metaData['timeStamp'] = time.mktime(datetime.datetime.strptime(data['VRA'], "%d/%m/%Y").timetuple()) 
             metaData['progName'] = data['caseProgram']
             metaData['progTitle'] = data['VTI']
             VSR = data['VSR']
