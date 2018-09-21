@@ -180,7 +180,7 @@ class ArteTvParser(object):
             gregorian_date = data['VRA'].split(" ", 1)[0]
             metaData['timeStamp'] = time.mktime(datetime.datetime.strptime(gregorian_date, "%d/%m/%Y").timetuple()) 
             metaData['progName'] = data['caseProgram']
-            metaData['progTitle'] = data['VTI']
+            metaData['progTitle'] = data['VTI'].replace(" : "," ").replace(", "," ").replace(":", "-").replace(" ","_")
             VSR = data['VSR']
             for k in VSR:
                 if not k.startswith("HLS"):
