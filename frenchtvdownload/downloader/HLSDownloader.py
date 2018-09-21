@@ -122,7 +122,6 @@ class HLSStreamDownloader(object):
 
         # Download fragments and create the ts file
         logger.info("Start downloading fragments")
-        maxNbrFrag = 3
         try:
             i = 0
             while i < maxNbrFrag and not self.stopDownloadEvent.isSet():
