@@ -28,9 +28,10 @@ from GlobalRef import LOGGER_NAME
 
 logger = logging.getLogger(LOGGER_NAME)
 
-class FranceTvDownloader(object):
+
+class FranceTvParser(object):
     """
-    Classe principale pour lancer un telechargement
+    Parse Francetv.fr pages and extract meta-data of a given program 
     """
 
     DATA_MAIN_VIDEO = 'data-main-video="([0-9][a-z]-)*"'
@@ -38,6 +39,7 @@ class FranceTvDownloader(object):
     XML_DESCRIPTION = "http://www.pluzz.fr/appftv/webservices/video/getInfosOeuvre.php?mode=zeri&id-diffusion=_ID_EMISSION_"
     URL_SMI = "http://www.pluzz.fr/appftv/webservices/video/getFichierSmi.php?smi=_CHAINE_/_ID_EMISSION_.smi&source=azad"
     M3U8_LINK = "http://medias2.francetv.fr/catchup-mobile/france-dom-tom/non-token/non-drm/m3u8/_FILE_NAME_.m3u8"
+   
     REGEX_M3U8 = "/([0-9]{4}/S[0-9]{2}/J[0-9]{1}/[0-9]*-[0-9]{6,8})-"
     JSON_DESCRIPTION = "http://webservices.francetelevisions.fr/tools/getInfosOeuvre/v2/?idDiffusion=_ID_EMISSION_&catalogue=Pluzz"
     JSON2_DESC="https://sivideo.webservices.francetelevisions.fr/tools/getInfosOeuvre/v2/?idDiffusion=_ID_EMISSION_"
@@ -202,13 +204,13 @@ class ArteTvParser(object):
 
         
 
-class ProgNetworkParser(object):
+class NetworkProgParser(object):
     FRANCETV = 1
     ARTETV = 2
     def __init__(self, tvname):
         self._fakeAgent = FakeAgent()
         if tvname == self.FRANCETV:
-            self._networkParser = FranceTvDownloader(self._fakeAgent)
+            self._networkParser = FranceTvParser(self._fakeAgent)
         elif tvname == self.ARTETV:
             self._networkParser = ArteTvParser(self._fakeAgent)
 
