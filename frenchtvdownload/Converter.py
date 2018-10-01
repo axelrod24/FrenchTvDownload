@@ -12,11 +12,11 @@ def CreateMP4(src, dst):
     """
     logger.info("Creation of MP$")
     logger.info("Convert: %s -> %s" % (src, dst))
-    commande = "ffmpeg -i %s -c:a aac -strict -2 -vcodec copy %s" % (src, dst)
+    commande = "ffmpeg -hide_banner -i %s -c:a aac -strict -2 -vcodec copy %s" % (src, dst)
 
     try:
         if (os.system(commande) == 0):
-            os.remove(src)
+#            os.remove(src)
             logger.info("-> %s" % dst)
         else:
             logger.warning(

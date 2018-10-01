@@ -75,7 +75,6 @@ if (__name__ == "__main__"):
 
     # progress function
     if (args.progressbar):
-        
         progressFnct = lambda x: logger.info("progress : %3d%% - %d/%d" % (min(int((x[0] * 100) / x[1]), 100), x[0], x[1]))
     else:
         progressFnct = lambda x: None
@@ -122,6 +121,7 @@ if (__name__ == "__main__"):
 
         CreateMP4(videoFullPath, dstFullPath)
 
-        # delete the 
+        # delete the
+#        shutil.move(videoFullPath, os.path.join("/home", "lbr", "Dropbox", "Encoding/"))
         shutil.rmtree(dstFolder)
 
