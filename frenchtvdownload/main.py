@@ -86,12 +86,14 @@ if (__name__ == "__main__"):
         networkParser = NetworkProgParser(NetworkProgParser.FRANCETV)
     elif parsed_uri.netloc == "www.arte.tv" or parsed_uri.netloc == "arte.tv":
         networkParser = NetworkProgParser(NetworkProgParser.ARTETV)
+    elif parsed_uri.netloc == "www.tf1.fr" or parsed_uri.netloc == "tf1.fr":
+        networkParser = NetworkProgParser(NetworkProgParser.TF1)
     else:
         print("Network not supported")
 
     progMetadata = networkParser.getProgMetaData(args.urlEmission)  
     if (progMetadata["mediaType"] == "hls"):
-        manifestParser = HlsManifestParser(fakeAgent=FakeAgent(), url=progMetadata["manifestUrl"])
+        manifestParser = HlsManifestParser(fakeAgent=FakeAgent(), url=progMetadata["manifestUrl"], baseUrl=progMetadata["baseUrl"])
         streamData = manifestParser.getHighestResolutionStream()
         listOfSegment = manifestParser.getListOfSegment(url=streamData["URL"])
 

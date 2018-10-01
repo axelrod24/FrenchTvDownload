@@ -18,9 +18,10 @@ class HlsManifestParser(object):
     """
     Download and parse Hls manifest
     """
-    def __init__(self, fakeAgent, url):
+    def __init__(self, fakeAgent, url, baseUrl):
         self.fakeAgent = fakeAgent
         self.manifestUrl = url
+        self.baseUrl = baseUrl
         self.HlsManifest = self.fakeAgent.readPage(self.manifestUrl)
         self.data = {}
         self._parseManifest()
@@ -32,7 +33,8 @@ class HlsManifestParser(object):
             l = lines[i] 
             if l.startswith("#EXT-X-STREAM-INF:"):
                 streamInfMeta = self._parseStreamInf(l)
-                streamInfMeta["URL"] = lines[i+1]
+
+                streamInfMeta["URL"] = "%s%s" % (self.baseUrl,lines[i+1])
                 self.data[streamInfMeta["BANDWIDTH"]] = streamInfMeta
                 i+=2
                 continue
@@ -89,8 +91,13 @@ class HlsManifestParser(object):
 
     def getListOfSegment(self, url):
         manifest = self.fakeAgent.readPage(url)
+        listFragmentsUrl = []
+        listFragmentsUrl.extend(re.findall(".+?\.ts", manifest))
+
         listFragments = []
-        listFragments.extend(re.findall(".+?\.ts", manifest))
+        for u in listFragmentsUrl:
+            listFragments.append("%s%s" % (self.baseUrl, u))
+
         return listFragments
  
 
