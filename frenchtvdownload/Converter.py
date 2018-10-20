@@ -8,7 +8,7 @@ logger = logging.getLogger("frtvdld")
 
 def CreateMP4(src, dst):
     """
-    Creer un mkv a partir de la video existante (cree l'en-tete de la video)
+    convert to MP4
     """
     logger.info("Creation of MP$")
     logger.info("Convert: %s -> %s" % (src, dst))
