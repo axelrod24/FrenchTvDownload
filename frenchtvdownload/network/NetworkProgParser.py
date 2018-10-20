@@ -18,12 +18,13 @@ import re
 import tempfile
 import threading
 import time
+from urllib.parse import urlparse
 
 #import BeautifulSoup
 from bs4 import BeautifulSoup
 
 from FakeAgent import FakeAgent
-from DownloadException import FrTvDownloadException
+from DownloadException import *
 from GlobalRef import LOGGER_NAME
 
 logger = logging.getLogger(LOGGER_NAME)
@@ -66,7 +67,7 @@ class FranceTvParser(NetworkParser):
                 i += 1
 
             if videoUrl is None:
-                raise (FrTvDownloadException("Can't find selected Video url"))
+                raise FrTvDwnPageParsingError()
 
         logger.info("Program ID: %s" % idEmission)
         # go for JSON straight, don't even try XML
@@ -78,13 +79,14 @@ class FranceTvParser(NetworkParser):
             pageInfos = self.fakeAgent.readPage(self.JSON2_DESC.replace("_ID_EMISSION_", idEmission))
             metadata = self._parseInfosJSON(pageInfos)
 
+        metadata["videoId"] = idEmission
         # Petit message en cas de DRM
         if metadata['drm']:
-            logger.warning("La vidéo posséde un DRM ; elle sera sans doute illisible")
+            logger.warning("Video with DRM, probably can't be played")
 
         # Verification qu'un lien existe
         if metadata['manifestUrl'] is None:
-            raise FrTvDownloadException("Aucun lien vers la vidéo")
+            raise FrTvDwnManifestUrlNotFoundError()
         
         metadata["baseUrl"] = ""
         metadata["filename"] = "%s-%s.%s" % (datetime.datetime.fromtimestamp(metadata['timeStamp']).strftime("%Y%m%d"), metadata['progName'], "ts")
@@ -99,14 +101,24 @@ class FranceTvParser(NetworkParser):
             parsed = BeautifulSoup(page, "html.parser")
             videoId = parsed.find_all("div",
                                       attrs={"class": "PlayerContainer", "data-main-video": re.compile("[0-9]+")})
-            if len(videoId) == 0:
-                return None
+            # if len(videoId) == 0:
+            #     return None
 
-            # logger.debug("ID de l'émission : %s" % (videoId[0]["data-main-video"]))
-            return videoId[0]["data-main-video"]
+            # # logger.debug("ID de l'émission : %s" % (videoId[0]["data-main-video"]))
+            # return videoId[0]["data-main-video"]
+
+            # continue parsing if data-main-video
+            if len(videoId) > 0:
+                return videoId[0]["data-main-video"]
+
+            videoUrlList = parsed.find_all("a", attrs={"class": "card-link", "data-link": "player",
+                                                    "data-video": re.compile("[0-9]+")})
+
+            if len(videoUrlList) > 0:
+                return videoUrlList[0]["data-video"]
 
         except:
-            raise FrTvDownloadException("Can't get or parse video ID page")
+            raise FrTvDwnPageParsingError()
 
     def _getListOfAvailableVideo(self, url, index):
         page = self.fakeAgent.readPage(url)
@@ -131,6 +143,12 @@ class FranceTvParser(NetworkParser):
             metaData['timeStamp'] = data['diffusion']['timestamp']
             metaData['progName'] = data['code_programme']
             metaData['progTitle'] = data['sous_titre']
+            metaData['synopsis'] = data['synopsis']
+
+            # duration
+            timestr = data['duree']
+            metaData['duration'] = sum([a*b for a,b in zip([3600,60,1], [int(i) for i in timestr.split(":")])])
+
             for v in data['videos']:
                 if v['format'] == 'hls_v5_os':
                     metaData['manifestUrl'] = v['url']
@@ -144,7 +162,7 @@ class FranceTvParser(NetworkParser):
             logger.debug("Drm : %s" % (metaData['drm']))
             return metaData
         except:
-            raise FrTvDownloadException("Can't parse json for Francetv.fr")
+            raise FrTvDwnMetaDataParsingError()
 
 
 class ArteTvParser(NetworkParser):
@@ -174,11 +192,24 @@ class ArteTvParser(NetworkParser):
         try:
             data = json.loads(page)
             metaData = {}
+            metaData["mediaType"] = None
+            metaData['manifestUrl'] = None
+            metaData['drm'] = None
+
             data = data["videoJsonPlayer"]
+            if 'VRA' not in data.keys():
+                return metaData
             gregorian_date = data['VRA'].split(" ", 1)[0]
             metaData['timeStamp'] = time.mktime(datetime.datetime.strptime(gregorian_date, "%d/%m/%Y").timetuple()) 
             metaData['progName'] = data['caseProgram']
             metaData['progTitle'] = data['VTI'].replace(" : "," ").replace(", "," ").replace(":", "-").replace(" ","_").replace("/","_").replace("(",'').replace(")",'')
+            metaData['duration'] = data['videoDurationSeconds']
+            metaData["videoId"] = data['VID']
+            metaData['synopsis'] = data['VDE']
+
+            if 'VSR' not in data.keys():
+                return metaData
+            
             VSR = data['VSR']
             for k in VSR:
                 if not k.startswith("HLS"):
@@ -195,7 +226,7 @@ class ArteTvParser(NetworkParser):
             return metaData
 
         except:
-            raise FrTvDownloadException("Can't parse json for Arte.tv")
+            raise FrTvDwnMetaDataParsingError()
 
 
 
@@ -301,3 +332,19 @@ class NetworkProgParser(object):
 
         return self._networkParser.progMetaData
 
+
+def getVideoMetadata(prog_url):
+    logger.info(prog_url)
+    parsed_uri = urlparse(prog_url)
+
+    if parsed_uri.netloc == "www.france.tv" or parsed_uri.netloc == "france.tv":
+        networkParser = NetworkProgParser(NetworkProgParser.FRANCETV)
+    elif parsed_uri.netloc == "www.arte.tv" or parsed_uri.netloc == "arte.tv":
+        networkParser = NetworkProgParser(NetworkProgParser.ARTETV)
+    elif parsed_uri.netloc == "www.tf1.fr" or parsed_uri.netloc == "tf1.fr":
+        networkParser = NetworkProgParser(NetworkProgParser.TF1)
+    else:
+        print("Network not supported")
+
+    progMetadata = networkParser.getProgMetaData(prog_url)  
+    return progMetadata
