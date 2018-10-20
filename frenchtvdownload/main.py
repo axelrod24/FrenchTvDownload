@@ -124,6 +124,6 @@ if (__name__ == "__main__"):
         CreateMP4(videoFullPath, dstFullPath)
 
         # delete the
-#        shutil.move(videoFullPath, os.path.join("/home", "lbr", "Dropbox", "Encoding/"))
+        shutil.move(videoFullPath, os.path.join("/home", "lbr", "Dropbox", "Encoding/"))
         shutil.rmtree(dstFolder)
 
