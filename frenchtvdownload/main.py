@@ -82,24 +82,21 @@ if (__name__ == "__main__"):
     try:
         progMetadata = getVideoMetadata(args.urlEmission)
 
-    except FrTvDwnVideoNotFound:
-        print("Can't find video: %s" % args.urlEmission)
-        exit()
+    except FrTvDownloadException as excepErr:
+        if isinstance(excepErr, FrTvDwnVideoNotFound):
+            error = "Can't find video: %s" % args.urlEmission
+        elif isinstance(excepErr, FrTvDwnPageParsingError):
+            error = "Can't get or parse video ID page: %s" % args.urlEmission
+        elif isinstance(excepErr, FrTvDwnManifestUrlNotFoundError):
+            error = "Can't parse video metadata: %s" % args.urlEmission
+        elif isinstance(excepErr, FrTvDwnMetaDataParsingError):
+            error = "Can't get manifest URL: %s" % args.urlEmission
+        else:
+            error = "Unknown error getting metadata for %s" % args.urlEmission
 
-    except FrTvDwnPageParsingError:
-        print("Can't get or parse video ID page: %s" % args.urlEmission)
+        logger.error(error)
         exit()
-        
-    except FrTvDwnManifestUrlNotFoundError:
-        print("Can't parse video metadata: %s" % args.urlEmission)
-        exit()
-
-    except FrTvDwnMetaDataParsingError:
-        print("Can't get manifest URL: %s" % args.urlEmission)
-        exit()
-    except:
-        print("Unknown error getting metadata for %s" % args.urlEmission)
-        exit() 
+ 
 
     if (progMetadata["mediaType"] == "hls"):
         manifestParser = HlsManifestParser(fakeAgent=FakeAgent(), url=progMetadata["manifestUrl"], baseUrl=progMetadata["baseUrl"])
