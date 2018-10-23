@@ -18,10 +18,10 @@ import re
 import tempfile
 import threading
 import time
-from urllib.parse import urlparse
 
 #import BeautifulSoup
 from bs4 import BeautifulSoup
+from urllib.parse import urlparse
 
 from FakeAgent import FakeAgent
 from DownloadException import *
@@ -264,7 +264,7 @@ class Tf1Parser(NetworkParser):
             raise FrTvDownloadException("No manifest URL")
 
         metadata["baseUrl"] = metadata['manifestUrl'].split("%s.m3u8" % idEmission)[0]
-        metadata["filename"] = "%s-MyTf1-%s.%s" % (datetime.datetime.fromtimestamp(metadata['timeStamp']).strftime("%Y%m%d"), metadata['progTitle'], "ts")
+        metadata["filename"] = "%s-Tf1-%s.%s" % (datetime.datetime.fromtimestamp(metadata['timeStamp']).strftime("%Y%m%d"), metadata['progTitle'], "ts")
         self.progMetaData = metadata
 
     def _getVideoId(self, page):
@@ -313,10 +313,88 @@ class Tf1Parser(NetworkParser):
         except:
             raise FrTvDownloadException("Can't parse json for Arte.tv")
 
+
+class LcpParser(NetworkParser):
+    """
+    Parse Tf1 pages and extract meta-data of a given program 
+    """
+
+    REGEX_M3U8 = "/([0-9]{4}/S[0-9]{2}/J[0-9]{1}/[0-9]*-[0-9]{6,8})-"
+    JSON_API = "https://delivery.tf1.fr/mytf1-wrd/_ID_EMISSION_"
+    JSON_DESCRIPTION = "https://www.wat.tv/interface/contentv4/_ID_EMISSION_?context=MYTF1"
+
+    def parsePage(self, url):
+        # check if url point to the video page, if not get list of video URl one by one
+        videoUrl = url
+        logger.info("Processing: %s" % videoUrl)
+        page = self.fakeAgent.readPage(videoUrl)
+        parsed = BeautifulSoup(page, "html.parser")
+
+        metaData = {}
+        metaData['progTitle'] = self._getProgTitle(parsed).replace(" ", "_")
+        metaData['synopsis'] = self._getSynopsis(parsed)
+        
+        gregorian_date = self._getProgDate(parsed)
+        metaData['timeStamp'] = time.mktime(datetime.datetime.strptime(gregorian_date, "%d/%m/%Y").timetuple()) 
+        metaData['progName'] = ""
+        
+        metaData["filename"] = "%s-Lcp-%s.%s" % (datetime.datetime.fromtimestamp(metaData['timeStamp']).strftime("%Y%m%d"), metaData['progTitle'], "ts")
+
+        urlEmission = self._getVideoUrl(page)
+        page = self.fakeAgent.readPage(urlEmission)
+        k = '"stream_chromecast_url":"'
+        ib = page.find(k)
+        ie = page.find('"', ib+len(k))
+        manifestUrl = page[ib+len(k):ie].replace("\\","")
+        logger.info("manifestUrl: %s" % manifestUrl)
+        metaData['manifestUrl'] = manifestUrl
+        metaData['drm'] = False
+        metaData["mediaType"] = "hls"
+        metaData["baseUrl"] = ""
+
+        self.progMetaData = metaData
+
+
+    def _getProgTitle(self, parsed):
+        # parsed = BeautifulSoup(page, "html.parser")
+        # meta = parsed.find_all("meta", attrs={"property": "og:title"})
+        meta = parsed.find_all("meta", attrs={"itemprop": "name"})
+        return meta[0]["content"]
+
+    def _getSynopsis(self, parsed):
+        # parsed = BeautifulSoup(page, "html.parser")
+        meta = parsed.find_all("meta", attrs={"name": "abstract"})
+        return meta[0]["content"]
+
+    def _getProgDate(self, parsed):
+        # parsed = BeautifulSoup(page, "html.parser")
+        meta = parsed.find_all("span", attrs={"class": "text-muted"})
+        d = meta[0].text.split(" ")
+        return d[2]
+
+    def _getVideoUrl(self, page):
+       # \todo LBR: process error exceptions in case page can't be loaded or videoId can't be found
+        try:
+            parsed = BeautifulSoup(page, "html.parser")
+            iFrame = parsed.find_all("iframe",
+                                      attrs={"class": "embed-responsive-item"})
+            if len(iFrame) == 0:
+                raise FrTvDwnVideoNotFound("Can't find video iFrame")
+
+            # logger.debug("ID de l'émission : %s" % (videoId[0]["data-main-video"]))
+            return iFrame[0]["src"]
+
+        except:
+            raise FrTvDownloadException("Can't get or parse video URL page")
+
+        
+
+
 class NetworkProgParser(object):
     FRANCETV = 1
     ARTETV = 2
     TF1 = 3 
+    LCP = 4
 
     def __init__(self, tvname):
         self._fakeAgent = FakeAgent()
@@ -326,6 +404,8 @@ class NetworkProgParser(object):
             self._networkParser = ArteTvParser(self._fakeAgent)
         elif tvname == self.TF1:
             self._networkParser = Tf1Parser(self._fakeAgent)
+        elif tvname == self.LCP:
+            self._networkParser = LcpParser(self._fakeAgent)
 
     def getProgMetaData(self, url):
         self._networkParser.parsePage(url)
@@ -343,6 +423,8 @@ def getVideoMetadata(prog_url):
         networkParser = NetworkProgParser(NetworkProgParser.ARTETV)
     elif parsed_uri.netloc == "www.tf1.fr" or parsed_uri.netloc == "tf1.fr":
         networkParser = NetworkProgParser(NetworkProgParser.TF1)
+    elif parsed_uri.netloc == "www.lcp.fr" or parsed_uri.netloc == "lcp.fr":
+        networkParser = NetworkProgParser(NetworkProgParser.LCP)
     else:
         print("Network not supported")
 

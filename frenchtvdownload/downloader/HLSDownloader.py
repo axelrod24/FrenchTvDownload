@@ -6,6 +6,8 @@ import os
 import re
 import threading
 
+from urllib.parse import urljoin
+
 from GlobalRef import LOGGER_NAME
 from FakeAgent import FakeAgent
 from DownloadException import FrTvDownloadException
@@ -96,7 +98,9 @@ class HlsManifestParser(object):
 
         listFragments = []
         for u in listFragmentsUrl:
-            listFragments.append("%s%s" % (self.baseUrl, u))
+            # concatenate manifest base URL with seg url
+            nu = urljoin(url, u)
+            listFragments.append(nu)
 
         return listFragments
  
@@ -163,16 +167,3 @@ class HLSStreamDownloader(object):
                 logger.critical("Couldn't complete video download.  Stop at fragment %d/%d" % (i, maxNbrFrag))
 
             return toFile
-
-
-
-# if (__name__ == "__main__"):
-#     url = 'http://replayftv-vh.akamaihd.net/i/streaming-adaptatif/2018/S37/J2/186788763-5b97f442b65e5-,standard1,standard2,standard3,standard4,standard5,.mp4.csmil/master.m3u8?caption=2018%2F37%2F186788763-1536685602.m3u8%3Afra%3AFrancais&audiotrack=0%3Afra%3AFrancais'
-
-#     hlsDownloader = HlsDownloader(FakeAgent(), url)
-#     print(hlsDownloader.listOfResolutions())
-#     hrs = hlsDownloader.getHighestResolutionStream()
-#     print(hrs)
-#     l = hlsDownloader.getListOfSegment(hrs["URL"])
-#     for s in l:
-#         print(s)
