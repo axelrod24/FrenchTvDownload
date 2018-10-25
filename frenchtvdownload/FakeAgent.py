@@ -26,6 +26,7 @@ class FakeAgent:
         return response.content
 
     def readPage(self, url):
+        logger.info("read: %s" % url)
         page = self.readBin(url)
         return page.decode('utf-8')
 
