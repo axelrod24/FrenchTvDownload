@@ -18,6 +18,7 @@ import os
 import sys
 import tempfile
 import shutil
+import dicttoxml
 
 from DownloadException import *
 from ColorFormatter import ColorFormatter
@@ -46,6 +47,10 @@ if (__name__ == "__main__"):
 
     parser.add_argument("-o", "--outDir", action="store", default=".", help='output folder (default .)')
     # parser.add_argument("-x", "--extractedUrl", action="store_true", default=False, help='extract Selection URL (france.tv)')
+
+    parser.add_argument("--keepManifest", action='store_true', default=False, help="save the master HLS manifest (.m3u8)")
+    parser.add_argument("--keepMetaData", action='store_true', default=False, help="save the video metadata (.meta)")
+    parser.add_argument("--listProfiles", action='store_true', default=False, help="return list of available resolution (don't download the video)")
 
     parser.add_argument("--nocolor", action='store_true', default=False, help='turn of color in terminal')
     parser.add_argument("--version", action='version', version="FrenchTvDownloader %s" % (__version__))
@@ -97,9 +102,35 @@ if (__name__ == "__main__"):
         logger.error(error)
         exit()
  
+    # generic video filename (without ext)
+    dstFullPath = os.path.join(args.outDir, progMetadata["filename"])
 
+    # save the metadata
+    if (args.keepMetaData):
+        xmlMeta = dicttoxml.dicttoxml(progMetadata, attr_type=False)
+        with open(dstFullPath+".meta", "w") as text_file:
+            print(xmlMeta, file=text_file)
+
+    # working with the manifest
     if (progMetadata["mediaType"] == "hls"):
-        manifestParser = HlsManifestParser(fakeAgent=FakeAgent(), url=progMetadata["manifestUrl"], baseUrl=progMetadata["baseUrl"])
+        manifestParser = HlsManifestParser(fakeAgent=FakeAgent(), url=progMetadata["manifestUrl"])
+        
+        # save the manifest
+        if (args.keepManifest):
+            masterManifest = manifestParser.getMasterManifest()
+            with open(dstFullPath+".m3u8", "w") as text_file:
+                print(masterManifest, file=text_file)
+
+        # parse the manifest, get the highest definition and extract list of segments 
+        manifestParser.parseMasterManifest()
+
+        if (args.listProfiles):
+            d = manifestParser.listOfResolutions()
+            for k in d.keys():
+                print("%d:%s" % (k, d[k]))
+            
+            exit(1)
+
         streamData = manifestParser.getHighestResolutionStream()
         listOfSegment = manifestParser.getListOfSegment(url=streamData["URL"])
 
@@ -111,25 +142,22 @@ if (__name__ == "__main__"):
 
     # create the filename accoding to file meta-data
     dstFolder = tempfile.mkdtemp()
-    videoFullPath = os.path.join(dstFolder, progMetadata["filename"])
+    videoFullPath = os.path.join(dstFolder, progMetadata["filename"]+".ts")
 
     streamDownloader.download(toFile=videoFullPath, progressFnct=progressFnct)
 
     # convert to mp4
     if videoFullPath is not None:
-        basename = os.path.splitext(os.path.basename(videoFullPath))[0]
-        fname = basename + ".mp4"
-        dstFullPath = os.path.join(args.outDir, fname)
 
         # rename file if it already exist.
         fileIndex = 2
-        while os.path.isfile(dstFullPath) is True:
-            dstFullPath = os.path.join(args.outDir, basename + "_" + str(fileIndex) + ".mp4")
+        while os.path.isfile(dstFullPath + ".mp4") is True:
+            dstFullPath = os.path.join(args.outDir, progMetadata["filename"] + "_" + str(fileIndex))
             fileIndex += 1
 
-        CreateMP4(videoFullPath, dstFullPath)
+        CreateMP4(videoFullPath, dstFullPath + ".mp4")
 
-        # delete the
-        shutil.move(videoFullPath, os.path.join("~", "Dropbox", "Encoding/"))
+        # # delete the
+        # shutil.move(videoFullPath, os.path.join("~", "Dropbox", "Encoding/"))
         shutil.rmtree(dstFolder)
 

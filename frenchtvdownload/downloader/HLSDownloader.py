@@ -20,23 +20,26 @@ class HlsManifestParser(object):
     """
     Download and parse Hls manifest
     """
-    def __init__(self, fakeAgent, url, baseUrl):
+    def __init__(self, fakeAgent, url):
         self.fakeAgent = fakeAgent
         self.manifestUrl = url
-        self.baseUrl = baseUrl
-        self.HlsManifest = self.fakeAgent.readPage(self.manifestUrl)
+        self.masterHlsManifest = self.fakeAgent.readPage(self.manifestUrl)
         self.data = {}
-        self._parseManifest()
 
-    def _parseManifest(self):
-        lines = self.HlsManifest.split("\n")
+    def getMasterManifest(self):
+        return self.masterHlsManifest
+
+    def parseMasterManifest(self):
+        lines = self.masterHlsManifest.split("\n")
         i = 0
         while(i<len(lines)):
             l = lines[i] 
             if l.startswith("#EXT-X-STREAM-INF:"):
                 streamInfMeta = self._parseStreamInf(l)
-
-                streamInfMeta["URL"] = "%s%s" % (self.baseUrl,lines[i+1])
+                
+                # join if master manifest url if needed
+                nu = urljoin(self.manifestUrl, lines[i+1])
+                streamInfMeta["URL"] = nu
                 self.data[streamInfMeta["BANDWIDTH"]] = streamInfMeta
                 i+=2
                 continue
@@ -76,11 +79,13 @@ class HlsManifestParser(object):
         return metadata
 
     def listOfResolutions(self):
-        l=[]
-        for k in self.data:
+        l={}
+        keys = list(self.data.keys())
+        keys.sort()
+        for k in keys:
             if self.data[k].get("WIDTH") is None:
                 continue
-            l.append(str(self.data[k]["WIDTH"])+"x"+str(self.data[k]["HEIGHT"]))
+            l[k] = str(self.data[k]["WIDTH"])+"x"+str(self.data[k]["HEIGHT"])
 
         return l
 

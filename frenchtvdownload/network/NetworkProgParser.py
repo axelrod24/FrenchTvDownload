@@ -48,7 +48,7 @@ class FranceTvParser(NetworkParser):
     M3U8_LINK = "http://medias2.francetv.fr/catchup-mobile/france-dom-tom/non-token/non-drm/m3u8/_FILE_NAME_.m3u8"
    
     REGEX_M3U8 = "/([0-9]{4}/S[0-9]{2}/J[0-9]{1}/[0-9]*-[0-9]{6,8})-"
-    JSON_DESCRIPTION = "http://webservices.francetelevisions.fr/tools/getInfosOeuvre/v2/?idDiffusion=_ID_EMISSION_&catalogue=Pluzz"
+    JSON_DESCRIPTION = "http://webservices.francetelevisions.fr/tools/getInfosOeuvre/v2/?idDiffusion=_ID_EMISSION_"
     JSON2_DESC="https://sivideo.webservices.francetelevisions.fr/tools/getInfosOeuvre/v2/?idDiffusion=_ID_EMISSION_"
 
     def parsePage(self, url):
@@ -88,8 +88,7 @@ class FranceTvParser(NetworkParser):
         if metadata['manifestUrl'] is None:
             raise FrTvDwnManifestUrlNotFoundError()
         
-        metadata["baseUrl"] = ""
-        metadata["filename"] = "%s-%s.%s" % (datetime.datetime.fromtimestamp(metadata['timeStamp']).strftime("%Y%m%d"), metadata['progName'], "ts")
+        metadata["filename"] = "%s-%s" % (datetime.datetime.fromtimestamp(metadata['timeStamp']).strftime("%Y%m%d"), metadata['progName'])
         self.progMetaData = metadata
 
     def _getVideoId(self, page):
@@ -174,8 +173,7 @@ class ArteTvParser(NetworkParser):
         pageInfos = self.fakeAgent.readPage(self.JSON_API.replace("_ID_EMISSION_", progId))
         metadata = self._parseInfosJSON(pageInfos)
 
-        metadata["baseUrl"] = ""
-        metadata["filename"] = "%s-Arte-%s.%s" % (datetime.datetime.fromtimestamp(metadata['timeStamp']).strftime("%Y%m%d"), metadata['progTitle'], "ts")
+        metadata["filename"] = "%s-Arte-%s" % (datetime.datetime.fromtimestamp(metadata['timeStamp']).strftime("%Y%m%d"), metadata['progTitle'])
         self.progMetaData = metadata
        
     def _getProgId(self, url):
@@ -263,8 +261,7 @@ class Tf1Parser(NetworkParser):
         if metadata['manifestUrl'] is None:
             raise FrTvDownloadException("No manifest URL")
 
-        metadata["baseUrl"] = metadata['manifestUrl'].split("%s.m3u8" % idEmission)[0]
-        metadata["filename"] = "%s-Tf1-%s.%s" % (datetime.datetime.fromtimestamp(metadata['timeStamp']).strftime("%Y%m%d"), metadata['progTitle'], "ts")
+        metadata["filename"] = "%s-Tf1-%s" % (datetime.datetime.fromtimestamp(metadata['timeStamp']).strftime("%Y%m%d"), metadata['progTitle'])
         self.progMetaData = metadata
 
     def _getVideoId(self, page):
@@ -337,7 +334,7 @@ class LcpParser(NetworkParser):
         metaData['synopsis'] = self._getSynopsis(parsed)
         metaData['timeStamp'] = self._getTimestamp(parsed)
         metaData['progName'] = ""
-        metaData["filename"] = "%s-Lcp-%s.%s" % (datetime.datetime.fromtimestamp(metaData['timeStamp']).strftime("%Y%m%d"), metaData['progTitle'], "ts")
+        metaData["filename"] = "%s-Lcp-%s" % (datetime.datetime.fromtimestamp(metaData['timeStamp']).strftime("%Y%m%d"), metaData['progTitle'])
 
         # get the dailymotion video URL and extract manifest URL
         urlEmission = self._getVideoUrl(page)
@@ -348,7 +345,6 @@ class LcpParser(NetworkParser):
         metaData['manifestUrl'] = manifestUrl
         metaData['drm'] = False
         metaData["mediaType"] = "hls"
-        metaData["baseUrl"] = ""
 
         self.progMetaData = metaData
 
