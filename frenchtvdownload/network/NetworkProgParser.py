@@ -219,7 +219,7 @@ class ArteTvParser(NetworkParser):
                 if not k.startswith("HLS"):
                     continue
                 v = VSR[k]
-                if v["versionCode"] not in ["VF-STF", "VOF-STF", "VF", "VOF"]:
+                if v["versionCode"] not in ["VF-STF", "VOF-STF", "VF", "VOF", "VO-STF"]:
                     continue
 
                 metaData['manifestUrl'] = v['url']
