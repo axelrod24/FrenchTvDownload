@@ -35,6 +35,11 @@ class NetworkParser(object):
         self.fakeAgent = fakeAgent
         self.progMetaData = {} 
 
+    def normalizeProgTitle(self, filename):
+        s = re.sub("[()':,]", "", filename)
+        s = re.sub("/", "_", s)
+        s = re.sub('\s+', '_', s)
+        return s
 
 class FranceTvParser(NetworkParser):
     """
@@ -140,8 +145,8 @@ class FranceTvParser(NetworkParser):
             metaData['manifestUrl'] = None
             metaData['drm'] = None
             metaData['timeStamp'] = data['diffusion']['timestamp']
-            metaData['progName'] = data['code_programme']
-            metaData['progTitle'] = data['sous_titre']
+            metaData['progName'] = self.normalizeProgTitle(data['code_programme'])
+            metaData['progTitle'] = self.normalizeProgTitle(data['sous_titre'])
             metaData['synopsis'] = data['synopsis']
 
             # duration
@@ -199,8 +204,9 @@ class ArteTvParser(NetworkParser):
                 return metaData
             gregorian_date = data['VRA'].split(" ", 1)[0]
             metaData['timeStamp'] = time.mktime(datetime.datetime.strptime(gregorian_date, "%d/%m/%Y").timetuple()) 
-            metaData['progName'] = data['caseProgram']
-            metaData['progTitle'] = data['VTI'].replace(" : "," ").replace(", "," ").replace(":", "-").replace(" ","_").replace("/","_").replace("(",'').replace(")",'')
+            metaData['progName'] = self.normalizeProgTitle(data['caseProgram'])
+            # metaData['progTitle'] = data['VTI'].replace(" : "," ").replace(", "," ").replace(":", "-").replace(" ","_").replace("/","_").replace("(",'').replace(")",'')
+            metaData['progTitle'] = self.normalizeProgTitle(data['VTI'])
             metaData['duration'] = data['videoDurationSeconds']
             metaData["videoId"] = data['VID']
             metaData['synopsis'] = data['VDE']
@@ -301,7 +307,7 @@ class Tf1Parser(NetworkParser):
             data = json.loads(page)
             metaData = {}
             data = data["mediametrie"]["chapters"][0]
-            metaData['progTitle'] = data['title'].split("_PLAYLISTID_")[1]
+            metaData['progTitle'] = self.normalizeProgTitle(data['title'].split("_PLAYLISTID_")[1])
             gregorian_date = data['estatS4']
             metaData['timeStamp'] = time.mktime(datetime.datetime.strptime(gregorian_date, "%Y-%m-%d").timetuple()) 
             metaData['progName'] = ""
@@ -330,7 +336,7 @@ class LcpParser(NetworkParser):
         parsed = BeautifulSoup(page, "html.parser")
 
         metaData = {}
-        metaData['progTitle'] = self._getProgTitle(parsed).replace(" ", "_")
+        metaData['progTitle'] = self.normalizeProgTitle(self._getProgTitle(parsed))
         metaData['synopsis'] = self._getSynopsis(parsed)
         metaData['timeStamp'] = self._getTimestamp(parsed)
         metaData['progName'] = ""
