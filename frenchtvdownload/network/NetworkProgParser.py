@@ -76,15 +76,17 @@ class FranceTvParser(NetworkParser):
 
         logger.info("Program ID: %s" % idEmission)
         # go for JSON straight, don't even try XML
-        pageInfos = self.fakeAgent.readPage(self.JSON_DESCRIPTION.replace("_ID_EMISSION_", idEmission))
+        jurl = self.JSON_DESCRIPTION.replace("_ID_EMISSION_", idEmission)
+        pageInfos = self.fakeAgent.readPage(jurl)
         metadata = self._parseInfosJSON(pageInfos)
 
         #if no link to url try the other link
         if metadata['manifestUrl'] is None:
-            pageInfos = self.fakeAgent.readPage(self.JSON2_DESC.replace("_ID_EMISSION_", idEmission))
+            jurl = self.JSON2_DESC.replace("_ID_EMISSION_", idEmission)
+            pageInfos = self.fakeAgent.readPage(jurl)
             metadata = self._parseInfosJSON(pageInfos)
 
-        metadata["videoId"] = idEmission
+        metadata["videoId"] = jurl
         # Petit message en cas de DRM
         if metadata['drm']:
             logger.warning("Video with DRM, probably can't be played")
@@ -175,9 +177,11 @@ class ArteTvParser(NetworkParser):
     def parsePage(self, url):
         progId = self._getProgId(url)
 
-        pageInfos = self.fakeAgent.readPage(self.JSON_API.replace("_ID_EMISSION_", progId))
+        jurl = self.JSON_API.replace("_ID_EMISSION_", progId)
+        pageInfos = self.fakeAgent.readPage(jurl)
         metadata = self._parseInfosJSON(pageInfos)
 
+        metadata["videoId"] = jurl
         metadata["filename"] = "%s-Arte-%s" % (datetime.datetime.fromtimestamp(metadata['timeStamp']).strftime("%Y%m%d"), metadata['progTitle'])
         self.progMetaData = metadata
        
@@ -208,7 +212,6 @@ class ArteTvParser(NetworkParser):
             # metaData['progTitle'] = data['VTI'].replace(" : "," ").replace(", "," ").replace(":", "-").replace(" ","_").replace("/","_").replace("(",'').replace(")",'')
             metaData['progTitle'] = self.normalizeProgTitle(data['VTI'])
             metaData['duration'] = data['videoDurationSeconds']
-            metaData["videoId"] = data['VID']
             metaData['synopsis'] = data['VDE']
 
             if 'VSR' not in data.keys():
@@ -251,10 +254,11 @@ class Tf1Parser(NetworkParser):
         logger.info("Processing: %s" % videoUrl)
         page = self.fakeAgent.readPage(videoUrl)
         idEmission = self._getVideoId(page)
-
         logger.info("Program ID: %s" % idEmission)
+
         # go for JSON straight, don't even try XML
-        pageInfos = self.fakeAgent.readPage(self.JSON_API.replace("_ID_EMISSION_", idEmission))
+        jurl = self.JSON_API.replace("_ID_EMISSION_", idEmission)
+        pageInfos = self.fakeAgent.readPage(jurl)
         metadata1 = self._parseUrlJSON(pageInfos)
 
         pageInfos = self.fakeAgent.readPage(self.JSON_DESCRIPTION.replace("_ID_EMISSION_", idEmission))
@@ -263,6 +267,8 @@ class Tf1Parser(NetworkParser):
         for k in metadata1.keys():
             metadata[k] = metadata1[k]
         
+        metadata["videoId"] = jurl
+
         # check that URL exist
         if metadata['manifestUrl'] is None:
             raise FrTvDownloadException("No manifest URL")
@@ -319,12 +325,8 @@ class Tf1Parser(NetworkParser):
 
 class LcpParser(NetworkParser):
     """
-    Parse Tf1 pages and extract meta-data of a given program 
+    Parse LCP pages and extract meta-data of a given program 
     """
-
-    REGEX_M3U8 = "/([0-9]{4}/S[0-9]{2}/J[0-9]{1}/[0-9]*-[0-9]{6,8})-"
-    JSON_API = "https://delivery.tf1.fr/mytf1-wrd/_ID_EMISSION_"
-    JSON_DESCRIPTION = "https://www.wat.tv/interface/contentv4/_ID_EMISSION_?context=MYTF1"
 
     def parsePage(self, url):
         # check if url point to the video page, if not get list of video URl one by one
@@ -345,6 +347,7 @@ class LcpParser(NetworkParser):
         # get the dailymotion video URL and extract manifest URL
         urlEmission = self._getVideoUrl(page)
         page = self.fakeAgent.readPage(urlEmission)
+        metaData["videoId"] = urlEmission
 
         manifestUrl = self._getManifestUrl(page)
         logger.info("manifestUrl: %s" % manifestUrl)

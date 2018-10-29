@@ -20,6 +20,8 @@ import tempfile
 import shutil
 import dicttoxml
 
+from xml.dom.minidom import parseString
+
 from DownloadException import *
 from ColorFormatter import ColorFormatter
 from network.NetworkProgParser import getVideoMetadata 
@@ -108,8 +110,9 @@ if (__name__ == "__main__"):
     # save the metadata
     if (args.keepMetaData):
         xmlMeta = dicttoxml.dicttoxml(progMetadata, attr_type=False)
+        dom = parseString(xmlMeta)
         with open(dstFullPath+".meta", "w") as text_file:
-            print(xmlMeta, file=text_file)
+            print(dom.toprettyxml(), file=text_file)
 
     # working with the manifest
     if (progMetadata["mediaType"] == "hls"):
