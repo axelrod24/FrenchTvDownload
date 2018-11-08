@@ -36,7 +36,8 @@ class NetworkParser(object):
         self.progMetaData = {} 
 
     def normalizeProgTitle(self, filename):
-        s = re.sub("[()':,]", "", filename)
+        s = re.sub(" - ", "-", filename)
+        s = re.sub("[()':,\"]", "", s)
         s = re.sub("/", "_", s)
         s = re.sub('\s+', '_', s)
         return s
@@ -55,6 +56,21 @@ class FranceTvParser(NetworkParser):
     REGEX_M3U8 = "/([0-9]{4}/S[0-9]{2}/J[0-9]{1}/[0-9]*-[0-9]{6,8})-"
     JSON_DESCRIPTION = "http://webservices.francetelevisions.fr/tools/getInfosOeuvre/v2/?idDiffusion=_ID_EMISSION_"
     JSON2_DESC="https://sivideo.webservices.francetelevisions.fr/tools/getInfosOeuvre/v2/?idDiffusion=_ID_EMISSION_"
+
+    def getListOfUrlCollection(self, url):
+        # read the page and extract list of videoURL
+        page = self.fakeAgent.readPage(url)
+        allUrl = self._getVideoId(page, getAllUrl=True)
+
+        # sort out valid video URL based on baseUrl path
+        baseUrlPath = urlparse(url).path
+        urlList = []
+        for u in allUrl:
+            uPath = urlparse(u).path
+            if (uPath.startswith(baseUrlPath)):
+                urlList.append(u)
+
+        return urlList
 
     def parsePage(self, url):
 
@@ -98,7 +114,7 @@ class FranceTvParser(NetworkParser):
         metadata["filename"] = "%s-%s" % (datetime.datetime.fromtimestamp(metadata['timeStamp']).strftime("%Y%m%d"), metadata['progName'])
         self.progMetaData = metadata
 
-    def _getVideoId(self, page):
+    def _getVideoId(self, page, getAllUrl=False):
         """
         get Video ID from the video page
         """
@@ -107,13 +123,6 @@ class FranceTvParser(NetworkParser):
             parsed = BeautifulSoup(page, "html.parser")
             videoId = parsed.find_all("div",
                                       attrs={"class": "PlayerContainer", "data-main-video": re.compile("[0-9]+")})
-            # if len(videoId) == 0:
-            #     return None
-
-            # # logger.debug("ID de l'émission : %s" % (videoId[0]["data-main-video"]))
-            # return videoId[0]["data-main-video"]
-
-            # continue parsing if data-main-video
             if len(videoId) > 0:
                 return videoId[0]["data-main-video"]
 
@@ -121,7 +130,13 @@ class FranceTvParser(NetworkParser):
                                                     "data-video": re.compile("[0-9]+")})
 
             if len(videoUrlList) > 0:
-                return videoUrlList[0]["data-video"]
+                if (getAllUrl):
+                    listUrl = []
+                    for vs in videoUrlList:
+                        listUrl.append(vs["href"])
+                    return listUrl
+                else:
+                    return videoUrlList[0]["data-video"]
 
         except:
             raise FrTvDwnPageParsingError()
@@ -173,7 +188,30 @@ class FranceTvParser(NetworkParser):
 
 class ArteTvParser(NetworkParser):
     JSON_API = "https://api.arte.tv/api/player/v1/config/fr/_ID_EMISSION_"
- 
+    JSON_COLLECTION_API = "https://www.arte.tv/guide/api/api/zones/fr/collection_videos?id=_ID_EMISSION_&page=_ID_PAGE_"
+
+    def getListOfUrlCollection(self, url):
+
+        progId = self._getProgId(url)
+
+        # not a collection ID
+        if not progId.startswith("RC-"):
+            return None
+
+
+        allUrl = []
+        jurl = self.JSONJSON_COLLECTION_API.replace("_ID_EMISSION_", progId)
+        pageId = 1
+        while True:
+            jurlTemp = jurl.replace("_ID_PAGE_", str(pageId))
+            pageInfo = self.fakeAgent.readPage(jurlTemp)
+            if not self._getCollectionUrls(pageInfo, allUrl):
+                break
+
+            pageId += 1
+
+        return urlList
+
     def parsePage(self, url):
         progId = self._getProgId(url)
 
@@ -235,7 +273,9 @@ class ArteTvParser(NetworkParser):
         except:
             raise FrTvDwnMetaDataParsingError()
 
-
+    def _getCollectionUrls(pageInfo, allUrl):
+        pass
+           
 
 class Tf1Parser(NetworkParser):
     """
@@ -416,8 +456,10 @@ class NetworkProgParser(object):
     TF1 = 3 
     LCP = 4
 
-    def __init__(self, tvname):
+    def __init__(self, tvname, url):
         self._fakeAgent = FakeAgent()
+        self._url = url
+
         if tvname == self.FRANCETV:
             self._networkParser = FranceTvParser(self._fakeAgent)
         elif tvname == self.ARTETV:
@@ -427,26 +469,28 @@ class NetworkProgParser(object):
         elif tvname == self.LCP:
             self._networkParser = LcpParser(self._fakeAgent)
 
-    def getProgMetaData(self, url):
-        self._networkParser.parsePage(url)
-
+    def getProgMetaData(self):
+        self._networkParser.parsePage(self._url)
         return self._networkParser.progMetaData
 
+    def getListOfUrlCollection(self):
+        listOfUrl = self._networkParser.getListOfUrlCollection(self._url)
+        return listOfUrl
 
-def getVideoMetadata(prog_url):
-    logger.info(prog_url)
-    parsed_uri = urlparse(prog_url)
+def networkParserFactory(progUrl):
+    logger.info(progUrl)
+    parsed_uri = urlparse(progUrl)
 
     if parsed_uri.netloc == "www.france.tv" or parsed_uri.netloc == "france.tv":
-        networkParser = NetworkProgParser(NetworkProgParser.FRANCETV)
+        networkParser = NetworkProgParser(NetworkProgParser.FRANCETV, progUrl)
     elif parsed_uri.netloc == "www.arte.tv" or parsed_uri.netloc == "arte.tv":
-        networkParser = NetworkProgParser(NetworkProgParser.ARTETV)
+        networkParser = NetworkProgParser(NetworkProgParser.ARTETV, progUrl)
     elif parsed_uri.netloc == "www.tf1.fr" or parsed_uri.netloc == "tf1.fr":
-        networkParser = NetworkProgParser(NetworkProgParser.TF1)
+        networkParser = NetworkProgParser(NetworkProgParser.TF1, progUrl)
     elif parsed_uri.netloc == "www.lcp.fr" or parsed_uri.netloc == "lcp.fr":
-        networkParser = NetworkProgParser(NetworkProgParser.LCP)
+        networkParser = NetworkProgParser(NetworkProgParser.LCP, progUrl)
     else:
         print("Network not supported")
+        return None
 
-    progMetadata = networkParser.getProgMetaData(prog_url)  
-    return progMetadata
+    return networkParser
