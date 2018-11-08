@@ -24,7 +24,7 @@ from xml.dom.minidom import parseString
 
 from DownloadException import *
 from ColorFormatter import ColorFormatter
-from network.NetworkProgParser import getVideoMetadata 
+from network.NetworkProgParser import networkParserFactory 
 from downloader.HLSDownloader import HlsManifestParser, HLSStreamDownloader
 
 from FakeAgent import FakeAgent
@@ -53,6 +53,7 @@ if (__name__ == "__main__"):
     parser.add_argument("--keepManifest", action='store_true', default=False, help="save the master HLS manifest (.m3u8)")
     parser.add_argument("--keepMetaData", action='store_true', default=False, help="save the video metadata (.meta)")
     parser.add_argument("--listProfiles", action='store_true', default=False, help="return list of available resolution (don't download the video)")
+    parser.add_argument("--parseCollection", action='store_true', default=False, help="return a list of video URL which are part of a collection")
 
     parser.add_argument("--nocolor", action='store_true', default=False, help='turn of color in terminal')
     parser.add_argument("--version", action='version', version="FrenchTvDownloader %s" % (__version__))
@@ -87,7 +88,18 @@ if (__name__ == "__main__"):
         progressFnct = lambda x: None
 
     try:
-        progMetadata = getVideoMetadata(args.urlEmission)
+
+        networkParser = networkParserFactory(args.urlEmission)
+
+        # return the list of URL and exit
+        if (args.parseCollection):
+            listOfUrl = networkParser.getListOfUrlCollection()
+            for u in listOfUrl:
+                print(u)
+            
+            exit(1)
+        
+        progMetadata = networkParser.getProgMetaData()  
 
     except FrTvDownloadException as excepErr:
         if isinstance(excepErr, FrTvDwnVideoNotFound):
