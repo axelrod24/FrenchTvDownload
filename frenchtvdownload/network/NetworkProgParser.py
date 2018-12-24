@@ -21,7 +21,7 @@ import time
 
 #import BeautifulSoup
 from bs4 import BeautifulSoup
-from urllib.parse import urlparse
+from urllib.parse import urlparse, urljoin
 
 from FakeAgent import FakeAgent
 from DownloadException import *
@@ -126,17 +126,18 @@ class FranceTvParser(NetworkParser):
             if len(videoId) > 0:
                 return videoId[0]["data-main-video"]
 
-            videoUrlList = parsed.find_all("a", attrs={"class": "card-link", "data-link": "player",
-                                                    "data-video": re.compile("[0-9]+")})
+            return None
 
-            if len(videoUrlList) > 0:
-                if (getAllUrl):
-                    listUrl = []
-                    for vs in videoUrlList:
-                        listUrl.append(vs["href"])
-                    return listUrl
-                else:
-                    return videoUrlList[0]["data-video"]
+            # videoUrlList = parsed.find_all("a", attrs={"class": "c-card-video__link"})
+
+            # if len(videoUrlList) > 0:
+            #     if (getAllUrl):
+            #         listUrl = []
+            #         for vs in videoUrlList:
+            #             listUrl.append(vs["href"])
+            #         return listUrl
+            #     else:
+            #         return videoUrlList[0]["href"]
 
         except:
             raise FrTvDwnPageParsingError()
@@ -144,12 +145,12 @@ class FranceTvParser(NetworkParser):
     def _getListOfAvailableVideo(self, url, index):
         page = self.fakeAgent.readPage(url)
         parsed = BeautifulSoup(page, "html.parser")
-        videoUrlList = parsed.find_all("a", attrs={"class": "card-link", "data-link": "player",
-                                                   "data-video": re.compile("[0-9]+")})
+        videoUrlList = parsed.find_all("a", attrs={"class": "c-card-video__link"})
+
         if index > len(videoUrlList):
             return None
 
-        return "https:" + videoUrlList[index]["href"]
+        return urljoin(url, videoUrlList[index]["href"])
 
     def _parseInfosJSON(self, pageInfos):
         """
