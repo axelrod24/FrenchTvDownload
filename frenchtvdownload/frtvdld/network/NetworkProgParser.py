@@ -23,9 +23,9 @@ import time
 from bs4 import BeautifulSoup
 from urllib.parse import urlparse, urljoin
 
-from FakeAgent import FakeAgent
-from DownloadException import *
-from GlobalRef import LOGGER_NAME
+from frtvdld.FakeAgent import FakeAgent
+from frtvdld.DownloadException import *
+from frtvdld.GlobalRef import LOGGER_NAME
 
 logger = logging.getLogger(LOGGER_NAME)
 

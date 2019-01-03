@@ -1,7 +1,7 @@
 import logging
 import os
 
-from DownloadException import FrTvDownloadException
+from frtvdld.DownloadException import FrTvDownloadException
 
 logger = logging.getLogger("frtvdld")
 
@@ -17,7 +17,6 @@ def CreateMP4(src, dst):
 
     try:
         if (os.system(commande) == 0):
-#            os.remove(src)
             logger.info("-> %s" % dst)
         else:
             logger.warning(

@@ -2,3 +2,12 @@ bs4
 requests
 flask
 dicttoxml
+connexion
+Flask-SQLAlchemy
+flask-marshmallow
+marshmallow-sqlalchemy
+marshmallow
+celery
+redis
+
+

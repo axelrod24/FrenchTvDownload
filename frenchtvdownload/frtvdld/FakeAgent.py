@@ -5,7 +5,7 @@
 import requests
 import logging
 
-from GlobalRef import LOGGER_NAME
+from frtvdld.GlobalRef import LOGGER_NAME
 
 logger = logging.getLogger(LOGGER_NAME)
 

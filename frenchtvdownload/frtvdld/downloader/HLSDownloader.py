@@ -8,9 +8,9 @@ import threading
 
 from urllib.parse import urljoin
 
-from GlobalRef import LOGGER_NAME
-from FakeAgent import FakeAgent
-from DownloadException import FrTvDownloadException
+from frtvdld.GlobalRef import LOGGER_NAME
+from frtvdld.FakeAgent import FakeAgent
+from frtvdld.DownloadException import FrTvDownloadException
 
 logger = logging.getLogger(LOGGER_NAME)
 
@@ -121,7 +121,7 @@ class HLSStreamDownloader(object):
         self.fakeAgent = fakeAgent
         self.stopDownloadEvent = stopDownloadEvent
 
-    def download(self, toFile, progressFnct):
+    def download(self, to_file, progressFnct):
 
         maxNbrFrag = len(self.listOfSegments)
         logger.info("Nbr of fragments : %d" % (maxNbrFrag))
@@ -130,29 +130,29 @@ class HLSStreamDownloader(object):
         # Create video file
         #
         try:
-            videoFile = open(toFile, "wb")
+            fd_video_file = open(to_file, "wb")
         except:
             raise FrTvDownloadException("Can't create video file")
 
-        logger.info("Created: %s" % toFile)
+        logger.info("Created: %s" % to_file)
 
         # Download fragments and create the ts file
         logger.info("Start downloading fragments")
         try:
             i = 0
+            # maxNbrFrag = 50
             while i < maxNbrFrag and not self.stopDownloadEvent.isSet():
+                progressFnct((i, maxNbrFrag))
                 frag = self.fakeAgent.readBin(self.listOfSegments[i])
-                videoFile.write(frag)
+                fd_video_file.write(frag)
 
                 # display progress
                 i += 1
-                progressFnct((i,maxNbrFrag))
-                # progressFnct(min(int((i * 100) / maxNbrFrag), 100))
 
             if i == maxNbrFrag:
-                progressFnct((maxNbrFrag,maxNbrFrag))
+                progressFnct((i, maxNbrFrag))
                 logger.info("Download completed")
-                videoFile.close()
+                fd_video_file.close()
 
         except KeyboardInterrupt:
             logger.info("Keyboard Interrupt")
@@ -161,9 +161,9 @@ class HLSStreamDownloader(object):
         except Exception as inst:
             logger.critical("Critical error %s" % inst)
             # remove the file ... (cleanup)
-            videoFile.close()
-            if os.path.isfile(toFile):
-                os.remove(toFile)
+            fd_video_file.close()
+            if os.path.isfile(to_file):
+                os.remove(to_file)
 
             raise FrTvDownloadException("Critical error %s" % (inst))
 
@@ -171,4 +171,4 @@ class HLSStreamDownloader(object):
             if i != maxNbrFrag:
                 logger.critical("Couldn't complete video download.  Stop at fragment %d/%d" % (i, maxNbrFrag))
 
-            return toFile
+            return to_file

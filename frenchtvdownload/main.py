@@ -22,14 +22,14 @@ import dicttoxml
 
 from xml.dom.minidom import parseString
 
-from DownloadException import *
-from ColorFormatter import ColorFormatter
-from network.NetworkProgParser import networkParserFactory 
-from downloader.HLSDownloader import HlsManifestParser, HLSStreamDownloader
+from frtvdld.DownloadException import *
+from frtvdld.ColorFormatter import ColorFormatter
+from frtvdld.network.NetworkProgParser import networkParserFactory 
+from frtvdld.downloader.HLSDownloader import HlsManifestParser, HLSStreamDownloader
 
-from FakeAgent import FakeAgent
-from Converter import CreateMP4
-from GlobalRef import LOGGER_NAME
+from frtvdld.FakeAgent import FakeAgent
+from frtvdld.Converter import CreateMP4
+from frtvdld.GlobalRef import LOGGER_NAME
 #
 # Main
 #
@@ -60,7 +60,7 @@ if (__name__ == "__main__"):
     parser.add_argument("urlEmission", action="store", help="URL of video to download")
     args = parser.parse_args()
 
-    # Mise en place du logger
+    # set logger
     logger = logging.getLogger(LOGGER_NAME)
     console = logging.StreamHandler(sys.stdout)
     if (args.verbose):
@@ -159,7 +159,7 @@ if (__name__ == "__main__"):
     dstFolder = tempfile.mkdtemp()
     videoFullPath = os.path.join(dstFolder, progMetadata["filename"]+".ts")
 
-    streamDownloader.download(toFile=videoFullPath, progressFnct=progressFnct)
+    streamDownloader.download(to_file=videoFullPath, progressFnct=progressFnct)
 
     # convert to mp4
     if videoFullPath is not None:
