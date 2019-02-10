@@ -107,9 +107,9 @@ if (__name__ == "__main__"):
         elif isinstance(excepErr, FrTvDwnPageParsingError):
             error = "Can't get or parse video ID page: %s" % args.urlEmission
         elif isinstance(excepErr, FrTvDwnManifestUrlNotFoundError):
-            error = "Can't parse video metadata: %s" % args.urlEmission
+            error = "Can't get manifest URL (video link expired): %s" % args.urlEmission
         elif isinstance(excepErr, FrTvDwnMetaDataParsingError):
-            error = "Can't get manifest URL: %s" % args.urlEmission
+            error = "Can't parse video metadata: %s" % args.urlEmission
         else:
             error = "Unknown error getting metadata for %s" % args.urlEmission
 

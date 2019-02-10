@@ -202,6 +202,20 @@ paths:
       responses:
         200:
           description: Successfully start download a video
+    delete:
+      operationId: video.cancel
+      tags:
+        - Video
+      summary: Cancel a video download
+      description: Cancel a video download
+      parameters:
+        - name: video_id
+          in: path
+          type: string
+          required: True
+      responses:
+        200:
+          description: Successfully cancel a video download
 
   /status/{video_id}:
     get:

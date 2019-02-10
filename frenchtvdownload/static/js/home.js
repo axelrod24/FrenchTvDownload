@@ -46,6 +46,22 @@ ns.model = (function() {
             })
         },
 
+        'remove': function(video_id) {
+            let ajax_options = {
+                type: 'DELETE',
+                url: `api/video/${video_id}`,
+                accepts: 'application/json',
+                contentType: 'plain/text'
+            };
+            $.ajax(ajax_options)
+            .done(function(data) {
+                $event_pump.trigger('model_delete_success', [data]);
+            })
+            .fail(function(xhr, textStatus, errorThrown) {
+                $event_pump.trigger('model_error', [xhr, textStatus, errorThrown]);
+            })
+        },
+
         "download": function(video_id) {
             let ajax_options = {
                 type: 'GET',
@@ -62,21 +78,22 @@ ns.model = (function() {
             })
         },
 
-        'remove': function(video_id) {
+        "cancel": function(video_id) {
             let ajax_options = {
                 type: 'DELETE',
-                url: `api/video/${video_id}`,
+                url: `api/download/${video_id}`,
                 accepts: 'application/json',
                 contentType: 'plain/text'
             };
             $.ajax(ajax_options)
             .done(function(data) {
-                $event_pump.trigger('model_delete_success', [data]);
+                $event_pump.trigger('model_cancel_success', [data]);
             })
             .fail(function(xhr, textStatus, errorThrown) {
                 $event_pump.trigger('model_error', [xhr, textStatus, errorThrown]);
             })
         },
+
         'status': function(video_id) {
             let ajax_options = {
                 type: 'GET',
@@ -191,7 +208,14 @@ ns.view = (function() {
 
             // did we get a people array?
             if (url) {
+
+                // stop potential interval created during previous iteration 
+                for (var counter of counter_map.entries()) {
+                    counter[1].stop()
+                }
+                // then clear the map of all counter    
                 counter_map.clear()
+                
                 for (let i=0, l=url.length; i < l; i++) {
                     rows += `<tr data-video-id="${url[i].video_id}">`
                     rows += `<td class="video_url">${url[i].url}</td>`
@@ -239,17 +263,33 @@ ns.view = (function() {
             let $tbody = $('.people table > tbody') ;
             let $tr = $($tbody).find("tr[data-video-id='"+data.video_id+"']") ;
 
+            switch (data.status) {
+                // case "done":
+                //     // download completed, remove counter and mark the entry as done
+                //     var counter = counter_map.get(data.video_id)
+                //     counter.stop()
+                //     counter_map.delete(data.video_id)
+                //     $tr.find(".video_status").text("done") ;
+                //     $tr.find(".video_status").attr('bgcolor', 'green');
+                // break ;
 
-            if (data.status == "done") {
-                // download completed, remove counter and mark the entry as done
-                let counter = counter_map.get(data.video_id)
-                counter.stop()
-                counter_map.delete(data.video_id)
-                $tr.find(".video_status").text("done") ;
-                $tr.find(".video_status").attr('bgcolor', 'green');     
-            } else {
-               $tr.find(".video_status").text(data.progress) ;
-            }
+                // case "pending":
+                //     // download interruted, remove counter and mark the entry as done
+                //     var counter = counter_map.get(data.video_id)
+                //     counter.stop()
+                //     counter_map.delete(data.video_id)
+                //     $tr.find(".video_status").text("pending") ;
+                //     $tr.find(".video_status").attr('bgcolor', 'CornflowerBlue');
+                // break ;
+                case "no_update":
+                    return true ;
+                case "downloading":
+                    $tr.find(".video_status").text(data.progress) ;
+                    return true ;
+                break ;    
+            } 
+
+            return false ;
         },
         error: function(error_msg) {
             $('.error')
@@ -306,6 +346,16 @@ ns.controller = (function(m, v) {
 
         e.preventDefault();
         model.remove(video_id) ;
+        e.preventDefault();
+    });
+
+    $('#cancel').click(function(e) {
+        let $target = $(e.target) ;
+        let $video_id = $target.parent().attr('data-video-id');
+        let video_id = $video_id.val();
+
+        e.preventDefault();
+        model.cancel(video_id) ;
         e.preventDefault();
     });
 
@@ -390,12 +440,21 @@ ns.controller = (function(m, v) {
         model.read_all_url();
     });
 
+    $event_pump.on('model_cancel_success', function(e, data) {
+    });
+
     $event_pump.on('model_delete_success', function(e, data) {
         model.read_all_url();
     });
 
     $event_pump.on('model_get_status_success', function(e, data) {
-        view.update_status(data);
+        let resp = view.update_status(data);
+
+        if (resp == false)
+        {
+            model.read_all_url();
+        }
+
     });
 
     $event_pump.on('model_create_success', function(e, data) {
@@ -405,7 +464,6 @@ ns.controller = (function(m, v) {
     $event_pump.on('model_update_success', function(e, data) {
         model.read();
     });
-
 
     $event_pump.on('model_error', function(e, xhr, textStatus, errorThrown) {
         let error_msg = textStatus + ': ' + errorThrown + ' - ' + xhr.responseJSON.detail;
