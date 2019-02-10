@@ -46,6 +46,22 @@ ns.model = (function() {
             })
         },
 
+        'remove': function(video_id) {
+            let ajax_options = {
+                type: 'DELETE',
+                url: `api/video/${video_id}`,
+                accepts: 'application/json',
+                contentType: 'plain/text'
+            };
+            $.ajax(ajax_options)
+            .done(function(data) {
+                $event_pump.trigger('model_delete_success', [data]);
+            })
+            .fail(function(xhr, textStatus, errorThrown) {
+                $event_pump.trigger('model_error', [xhr, textStatus, errorThrown]);
+            })
+        },
+
         "download": function(video_id) {
             let ajax_options = {
                 type: 'GET',
@@ -62,21 +78,38 @@ ns.model = (function() {
             })
         },
 
-        'remove': function(video_id) {
+        "cancel": function(video_id) {
             let ajax_options = {
                 type: 'DELETE',
-                url: `api/video/${video_id}`,
+                url: `api/download/${video_id}`,
                 accepts: 'application/json',
                 contentType: 'plain/text'
             };
             $.ajax(ajax_options)
             .done(function(data) {
-                $event_pump.trigger('model_delete_success', [data]);
+                $event_pump.trigger('model_cancel_success', [data]);
             })
             .fail(function(xhr, textStatus, errorThrown) {
                 $event_pump.trigger('model_error', [xhr, textStatus, errorThrown]);
             })
         },
+
+        'status': function(video_id) {
+            let ajax_options = {
+                type: 'GET',
+                url: `api/status/${video_id}`,
+                accepts: 'application/json',
+                contentType: 'plain/text'
+            };
+            $.ajax(ajax_options)
+            .done(function(data) {
+                $event_pump.trigger('model_get_status_success', [data]);
+            })
+            .fail(function(xhr, textStatus, errorThrown) {
+                $event_pump.trigger('model_error', [xhr, textStatus, errorThrown]);
+            })
+        },
+
         'status': function(video_id) {
             let ajax_options = {
                 type: 'GET',
@@ -239,17 +272,32 @@ ns.view = (function() {
             let $tbody = $('.people table > tbody') ;
             let $tr = $($tbody).find("tr[data-video-id='"+data.video_id+"']") ;
 
+            switch (data.status) {
+                case "done":
+                    // download completed, remove counter and mark the entry as done
+                    var counter = counter_map.get(data.video_id)
+                    counter.stop()
+                    counter_map.delete(data.video_id)
+                    $tr.find(".video_status").text("done") ;
+                    $tr.find(".video_status").attr('bgcolor', 'green');
+                break ;
 
-            if (data.status == "done") {
-                // download completed, remove counter and mark the entry as done
-                let counter = counter_map.get(data.video_id)
-                counter.stop()
-                counter_map.delete(data.video_id)
-                $tr.find(".video_status").text("done") ;
-                $tr.find(".video_status").attr('bgcolor', 'green');     
-            } else {
-               $tr.find(".video_status").text(data.progress) ;
-            }
+                case "DownloadInterrupted":
+                    // download interruted, remove counter and mark the entry as done
+                    var counter = counter_map.get(data.video_id)
+                    counter.stop()
+                    counter_map.delete(data.video_id)
+                    $tr.find(".video_status").text("pending") ;
+                    $tr.find(".video_status").attr('bgcolor', 'CornflowerBlue');
+                break ;
+
+                case "DownloadError":
+                break ;
+    
+                case "Downloading":
+                    $tr.find(".video_status").text(data.progress) ;
+                break ;    
+            } 
         },
         error: function(error_msg) {
             $('.error')
@@ -306,6 +354,16 @@ ns.controller = (function(m, v) {
 
         e.preventDefault();
         model.remove(video_id) ;
+        e.preventDefault();
+    });
+
+    $('#cancel').click(function(e) {
+        let $target = $(e.target) ;
+        let $video_id = $target.parent().attr('data-video-id');
+        let video_id = $video_id.val();
+
+        e.preventDefault();
+        model.cancel(video_id) ;
         e.preventDefault();
     });
 
@@ -387,6 +445,10 @@ ns.controller = (function(m, v) {
     });
 
     $event_pump.on('model_download_success', function(e, data) {
+        model.read_all_url();
+    });
+
+    $event_pump.on('model_cancel_success', function(e, data) {
         model.read_all_url();
     });
 

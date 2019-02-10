@@ -1,16 +1,15 @@
 
-import os, threading
-
-from frenchtvdownload.config import db, app
-from config import db, app
-from models import Video, VideoSchema
+import os, threading, logging
 from flask import make_response, abort, jsonify
 
-from dataclasses import dataclass
-from typing import Any
+from config import db, app
+from models import Video, VideoSchema 
 
+from frtvdld.GlobalRef import LOGGER_NAME
 from frtvdld.download import download_video
 from frtvdld.DownloadException import *
+
+logger = logging.getLogger(LOGGER_NAME)
 
 class DldThread():
     def __init__(self, url, video_id):
@@ -18,6 +17,7 @@ class DldThread():
         self.url = url
         self.video_id = video_id
 
+        # create a named pipe, deal with file already exist
         self.pipe_name = os.path.join(app.config["DLD_FOLDER"], app.config["PIPE_NAME_HEADER"] % self.thread.name)
         i=1
         while os.path.exists(self.pipe_name) is True:
@@ -25,7 +25,10 @@ class DldThread():
             i+=1
 
         os.mkfifo(self.pipe_name)
-        print("video id:{video_id}, pipe name:{pipe_name}".format(video_id=self.video_id, pipe_name=self.pipe_name))
+        logger.info("video id:{video_id}, pipe name:{pipe_name}".format(video_id=self.video_id, pipe_name=self.pipe_name))
+
+        # create the stop event
+        self.stop_download_event=threading.Event()
 
     def write_to_pipe(self, msg):
         pipeout = os.open(self.pipe_name, os.O_WRONLY)
@@ -36,33 +39,35 @@ class DldThread():
         # loging progress to client thread        
         def p(x):
             # log to console
-            print("Video id:%d - progress:%3d - %d/%d" % (self.video_id, min(int((x[0] * 100) / x[1]), 100), x[0], x[1]))
+            logger.info("Video id:%d - progress:%3d - %d/%d" % (self.video_id, min(int((x[0] * 100) / x[1]), 100), x[0], x[1]))
             # write to pipe for client update
             self.write_to_pipe(str.encode("%d\n" % (x[1]-x[0]+1)))
 
         try:
-            download_video(self.url, base_folder=app.config["DLD_FOLDER"], progressFnct = p)
+            download_video(self.url, base_folder=app.config["DLD_FOLDER"], progressFnct = p, stopDownloadEvent=self.stop_download_event)
 
         except FrTvDownloadException as excepErr:
-            if isinstance(excepErr, FrTvDwnVideoNotFound):
+            if isinstance(excepErr, FrTvDwnUserInterruption):
+                error_info = "DownloadInterrupted"
+                error_msg = "Download Interrupted by user"
+            elif isinstance(excepErr, FrTvDwnVideoNotFound):
+                error_info = "DownloadError"
                 error_msg = "Can't find video: %s" % self.url
             elif isinstance(excepErr, FrTvDwnPageParsingError):
+                error_info = "DownloadError"
                 error_msg = "Can't get or parse video ID page: %s" % self.url
             elif isinstance(excepErr, FrTvDwnManifestUrlNotFoundError):
+                error_info = "DownloadError"
                 error_msg = "Can't parse video metadata: %s" % self.url
             elif isinstance(excepErr, FrTvDwnMetaDataParsingError):
+                error_info = "DownloadError"
                 error_msg = "Can't get manifest URL: %s" % self.url
             else:
+                error_info = "DownloadError"
                 error_msg = "Unknown error getting metadata for %s" % self.url
 
-            # logger.error(error)
-            self.write_to_pipe(error_msg)
-
-
-        # # write "done" to indicate end of download
-        # pipeout = os.open(self.pipe_name, os.O_WRONLY)
-        # os.write(pipeout, str.encode("done" ))
-        # os.close(pipeout)
+            logger.info(error_msg)
+            self.write_to_pipe(error_info)
         
     def start(self):
         # start the thread and read from the pipe
@@ -74,7 +79,7 @@ class DldThread():
 
     def read_status(self):
         lines = self.pipein.readlines()
-        print("line is:", lines)
+        logger.debug("line is:%s" % lines)
         status = lines[-1:]
         return status
 
@@ -82,6 +87,8 @@ class DldThread():
         # remove the pipe
         os.remove(self.pipe_name)
 
+    def cancel_download(self):
+        pass
 
 def read_all():
     """
@@ -98,7 +105,7 @@ def read_all():
     return data
 
 def addurl(url):
-    print("url is : "+url)
+    logger.debug("url is : "+url)
     """
     This function creates a new person in the people structure
     based on the passed in person data
@@ -172,6 +179,52 @@ def download(video_id):
             "Can't find video {video_id}".format(video_id=video_id),
         )
 
+def cancel(video_id):
+    """
+    This function cancel video download
+    :param video_id:   Id of the video 
+    :return:            200 on successful cancel, 404 if not found
+    """
+
+    video_id = int(video_id)
+    dld_thread = app.config["DLD_THREAD"][video_id]
+
+    # \TODO manage error here, dld_thread can not be found
+
+    dld_thread.cancel_download()
+
+    if dld_thread.is_alive() is True:
+        status = "downloading"
+        progress = dld_thread.read_status()
+    else:
+        status = "done"
+        progress = "0"
+        # clean up the thread and remove it from dict.
+        dld_thread.clean_up()
+        del app.config["DLD_THREAD"][video_id]
+
+        # find the video entry and mark it as done
+        video = Video.query.filter(Video.video_id == video_id).one_or_none()
+        print("video:", video)
+        if video is not None:
+            # # turn the video into a db object
+            # schema = VideoSchema()
+            # update = schema.load(video, session=db.session).data
+            # print("update:", update)
+            video.status = "done"
+            # merge the new object into the old and commit it to the db
+            db.session.merge(video)
+            db.session.commit()
+
+    # return json response
+    json_response = jsonify(video_id=video_id, status=status, progress=progress)
+    return json_response, 200
+    # # Otherwise, nope, didn't find that person
+    # else:
+    #     abort(
+    #         404,
+    #         "Person not found for Id: {video_id}".format(video_id=video_id),
+    #     )
 
 def delete(video_id):
     """
@@ -210,6 +263,9 @@ def get_status(video_id):
     if dld_thread.is_alive() is True:
         status = "downloading"
         progress = dld_thread.read_status()
+        # if nothing is the pipe, we assume no new update
+        if not progress:
+            status = "no_update"
     else:
         status = "done"
         progress = "0"
@@ -219,7 +275,7 @@ def get_status(video_id):
 
         # find the video entry and mark it as done
         video = Video.query.filter(Video.video_id == video_id).one_or_none()
-        print("video:", video)
+        logger.debug("video is :%s" % video)
         if video is not None:
             # # turn the video into a db object
             # schema = VideoSchema()

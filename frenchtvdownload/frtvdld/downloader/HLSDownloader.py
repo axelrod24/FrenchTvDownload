@@ -10,7 +10,7 @@ from urllib.parse import urljoin
 
 from frtvdld.GlobalRef import LOGGER_NAME
 from frtvdld.FakeAgent import FakeAgent
-from frtvdld.DownloadException import FrTvDownloadException
+from frtvdld.DownloadException import *
 
 logger = logging.getLogger(LOGGER_NAME)
 
@@ -141,7 +141,11 @@ class HLSStreamDownloader(object):
         try:
             i = 0
             # maxNbrFrag = 50
-            while i < maxNbrFrag and not self.stopDownloadEvent.isSet():
+            while i < maxNbrFrag:
+                if self.stopDownloadEvent.isSet() is True:
+                    logger.info("Download interupted by user")
+                    raise FrTvDwnUserInteruption("User Interrupt")
+
                 progressFnct((i, maxNbrFrag))
                 frag = self.fakeAgent.readBin(self.listOfSegments[i])
                 fd_video_file.write(frag)
@@ -155,8 +159,8 @@ class HLSStreamDownloader(object):
                 fd_video_file.close()
 
         except KeyboardInterrupt:
-            logger.info("Keyboard Interrupt")
-            raise FrTvDownloadException("Keyboard Interrupt")
+            logger.info("Download interupted by Keyboard Interrupt")
+            raise FrTvDwnUserInteruption("Keyboard Interrupt")
 
         except Exception as inst:
             logger.critical("Critical error %s" % inst)

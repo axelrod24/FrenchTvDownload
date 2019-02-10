@@ -26,3 +26,6 @@ class FrTvDwnManifestUrlNotFoundError(FrTvDownloadException):
 
 class FrTvDwnMetaDataParsingError(FrTvDownloadException):
     pass
+
+class FrTvDwnUserInterruption(FrTvDownloadException):
+    pass

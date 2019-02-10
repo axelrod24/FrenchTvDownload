@@ -6,24 +6,20 @@ import sys
 import tempfile
 import shutil
 import dicttoxml
+import threading
 
 from frtvdld.ColorFormatter import ColorFormatter
 from frtvdld.network.NetworkProgParser import networkParserFactory 
 from frtvdld.downloader.HLSDownloader import HlsManifestParser, HLSStreamDownloader
+from frtvdld.DownloadException import FrTvDownloadException, FrTvDwnUserInterruption
 
 from frtvdld.FakeAgent import FakeAgent
 from frtvdld.Converter import CreateMP4
 from frtvdld.GlobalRef import LOGGER_NAME
 
 logger = logging.getLogger(LOGGER_NAME)
-console = logging.StreamHandler(sys.stdout)
-logger.setLevel(logging.INFO)
-console.setLevel(logging.INFO)
-console.setFormatter(ColorFormatter(True))
-logger.addHandler(console)
 
-
-def download_video(url, base_folder, progressFnct):
+def download_video(url, base_folder, progressFnct, stopDownloadEvent=threading.Event()):
 
     networkParser = networkParserFactory(url)
     progMetadata = networkParser.getProgMetaData()  
@@ -51,12 +47,20 @@ def download_video(url, base_folder, progressFnct):
     streamData = manifestParser.getHighestResolutionStream()
     listOfSegment = manifestParser.getListOfSegment(url=streamData["URL"])
 
-    streamDownloader = HLSStreamDownloader(fakeAgent=FakeAgent(), seglist=listOfSegment)    
+    streamDownloader = HLSStreamDownloader(fakeAgent=FakeAgent(), seglist=listOfSegment, stopDownloadEvent=stopDownloadEvent)    
 
     # create the filename accoding to file meta-data
     ts_file_full_path = os.path.join(dst_folder, progMetadata["filename"]+".ts")
 
-    streamDownloader.download(to_file=ts_file_full_path, progressFnct=progressFnct)
+    try:
+        streamDownloader.download(to_file=ts_file_full_path, progressFnct=progressFnct)
+    except FrTvDownloadException as excepErr:
+        if isinstance(excepErr, FrTvDwnUserInterruption):
+            # cleanup download folder and files
+            shutil.rmtree(dst_folder)
+            raise FrTvDwnUserInterruption()
+        else:
+            raise excepErr
 
     # rename file if it already exist.
     mp4_file_full_path = os.path.join(dst_folder, progMetadata["filename"]+".mp4")
@@ -66,7 +70,3 @@ def download_video(url, base_folder, progressFnct):
         i += 1
 
     CreateMP4(ts_file_full_path, mp4_file_full_path)
-
-    # # # delete the
-    # # shutil.move(videoFullPath, os.path.join("~", "Dropbox", "Encoding/"))
-    # shutil.rmtree(dstFolder)
