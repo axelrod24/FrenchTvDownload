@@ -222,25 +222,35 @@ ns.view = (function() {
 
                     // set status color
                     let color ;
+                    let labeltext ;
                     let tdbutton = `<td><button id="remove" onclick="ns.model.remove(${url[i].video_id})">Remove</button>` ;
                     switch (url[i].status) {
                         case "done":
                             color = "Aquamarine" ;
-                            tdbutton += `</td>`
+                            tdbutton += `</td>` ;
+                            labeltext = "Done" ;
                             break
                         case "pending":
                             color = "CornflowerBlue" ;
                             tdbutton += `<button id="download" onclick="ns.model.download(${url[i].video_id})">Download</button></td>`
+                            labeltext = "Pending" ;
                             break
                         case "downloading":
                             // set an interval counter to get download progress
                             counter_map.set(url[i].video_id, new Counter(url[i].video_id, 2000))
                             color = "Plum" ;
-                            tdbutton += `<button id="cancel" onclick="ns.model.cancel(${url[i].video_id})">Cancel</button></td>`
+                            tdbutton = `<td><button id="cancel" onclick="ns.model.cancel(${url[i].video_id})">Cancel</button></td>`
+                            labeltext = "" ;
+                            break ;
+                        case "not_available":
+                            // set an interval counter to get download progress
+                            color = "greenyellow" ;
+                            tdbutton += `<button id="download" onclick="ns.model.download(${url[i].video_id})">Download</button></td>`
+                            labeltext = "Not Available" ;
                             break ;
                     }
 
-                    rows += `<td class="video_status" bgcolor="${color}">${url[i].status}</td>`
+                    rows += `<td class="video_status" bgcolor="${color}">${labeltext}</td>`
 
                     // convert date
                     var date = new Date(url[i].timestamp);

@@ -59,19 +59,18 @@ class DldThread():
             # write "done" status.
             self.write_to_pipe(JsonStatus(status="done", progress = 0))
 
-
         except FrTvDownloadException as excepErr:
             if isinstance(excepErr, FrTvDwnUserInterruption):
                 info_msg = "interrupted"
                 error_msg = "Download Interrupted by user"
             elif isinstance(excepErr, FrTvDwnVideoNotFound):
-                info_msg = "error"
+                info_msg = "not_available"
                 error_msg = "Can't find video: %s" % self.url
             elif isinstance(excepErr, FrTvDwnPageParsingError):
                 info_msg = "error"
                 error_msg = "Can't get or parse video ID page: %s" % self.url
             elif isinstance(excepErr, FrTvDwnManifestUrlNotFoundError):
-                info_msg = "error"
+                info_msg = "not_available"
                 error_msg = "Can't parse video metadata: %s" % self.url
             elif isinstance(excepErr, FrTvDwnMetaDataParsingError):
                 info_msg = "error"
@@ -83,7 +82,11 @@ class DldThread():
             # assuming file cleaning as been done by downloaded.  Mark video as pending and notify client of erro/interrupted status
             video = Video.query.filter(Video.video_id == self.video_id).one_or_none()
             if video is not None:
-                video.status = "pending"
+                if info_msg in ["interrupted"]:
+                    video.status = "pending"
+                else:
+                    video.status = info_msg
+
                 db.session.merge(video)
                 db.session.commit()
 
