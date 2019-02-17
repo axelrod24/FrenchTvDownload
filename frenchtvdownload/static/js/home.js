@@ -215,7 +215,7 @@ ns.view = (function() {
                 }
                 // then clear the map of all counter    
                 counter_map.clear()
-                
+
                 for (let i=0, l=url.length; i < l; i++) {
                     rows += `<tr data-video-id="${url[i].video_id}">`
                     rows += `<td class="video_url">${url[i].url}</td>`
@@ -260,10 +260,13 @@ ns.view = (function() {
         },
         // update downloading progress 
         update_status: function(data) {
+            console.log("status:", data)
+            data.update = JSON.parse(data.status)
+
             let $tbody = $('.people table > tbody') ;
             let $tr = $($tbody).find("tr[data-video-id='"+data.video_id+"']") ;
 
-            switch (data.status) {
+            switch (data.update.status) {
                 // case "done":
                 //     // download completed, remove counter and mark the entry as done
                 //     var counter = counter_map.get(data.video_id)
@@ -284,7 +287,7 @@ ns.view = (function() {
                 case "no_update":
                     return true ;
                 case "downloading":
-                    $tr.find(".video_status").text(data.progress) ;
+                    $tr.find(".video_status").text(data.update.progress) ;
                     return true ;
                 break ;    
             } 

@@ -1,5 +1,5 @@
 
-import os, threading, logging
+import os, threading, logging, json
 from flask import make_response, abort, jsonify
 
 from config import db, app
@@ -10,6 +10,9 @@ from frtvdld.download import download_video
 from frtvdld.DownloadException import *
 
 logger = logging.getLogger(LOGGER_NAME)
+
+def JsonStatus(status, progress):
+    return json.dumps({"status":status, "progress":("%d" % progress)})
 
 class DldThread():
     def __init__(self, url, video_id):
@@ -37,7 +40,7 @@ class DldThread():
             # log to console
             logger.info("Video id:%d - progress:%3d - %d/%d" % (self.video_id, min(int((x[0] * 100) / x[1]), 100), x[0], x[1]))
             # write to pipe for client update
-            self.write_to_pipe("%d\n" % (x[1]-x[0]+1))
+            self.write_to_pipe(JsonStatus(status="downloading", progress = (x[1]-x[0]+1)))
 
         try:
             info_msg = "done"
@@ -54,7 +57,7 @@ class DldThread():
                 db.session.commit()
 
             # write "done" status.
-            self.write_to_pipe("done")
+            self.write_to_pipe(JsonStatus(status="done", progress = 0))
 
 
         except FrTvDownloadException as excepErr:
@@ -85,7 +88,7 @@ class DldThread():
                 db.session.commit()
 
             logger.info(error_msg)
-            self.write_to_pipe(info_msg)
+            self.write_to_pipe(JsonStatus(status=info_msg, progress = 0))
 
 
     def start(self):
@@ -98,14 +101,20 @@ class DldThread():
 
     def write_to_pipe(self, msg):
         pipeout = os.open(self.pipe_name, os.O_WRONLY)
-        os.write(pipeout, str.encode(msg))
+        # add msg to pipe with line termination
+        os.write(pipeout, str.encode(("%s\n"%msg))) 
         os.close(pipeout)
 
     def read_status(self):
         lines = self.pipein.readlines()
         logger.debug("line is:%s" % lines)
+        
         status = lines[-1:]
-        return status
+        # if no progress, no update
+        if (len(status) == 0):
+            return JsonStatus(status="no_update", progress = 0)
+
+        return status[0]
 
     def cancel_download(self):
         logger.info("Cancel download for video id:%d" % (self.video_id))
@@ -256,28 +265,17 @@ def get_status(video_id):
     video_id = int(video_id)
     dld_thread = app.config["DLD_THREAD"][video_id]
 
-    dld_status = dld_thread.read_status()
-
     # we read download progress
+    dld_status = dld_thread.read_status()
     logger.debug("dld_status is %s" % dld_status)
-    if dld_status not in [["done"], ["error"], ["interrupted"]]:
+    status = json.loads(dld_status)
+    logger.debug("status is %s" % status)
 
-        progress = dld_status
-            # if nothing is the pipe, we assume no new update
-        if not progress:
-            status = "no_update"
-        else:
-            status = "downloading"
-
-    else:
-        # download process completed either successfully or unsuccessfully 
-        progress = "0"
-        status = dld_status[0]
-        
+    if status["status"] == "done":
         # clean up the thread and remove it from dict.
         dld_thread.cleanup() 
         del app.config["DLD_THREAD"][video_id]
 
     # return json response
-    json_response = jsonify(video_id=video_id, status=status, progress=progress)
+    json_response = jsonify(video_id=video_id, status=dld_status)
     return json_response, 200
