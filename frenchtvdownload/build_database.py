@@ -13,6 +13,9 @@ ALL_URL = [
     {"url": "https://www.france.tv/series-et-fictions/telefilms/832397-mystere-place-vendome.html", "status": "pending"},
     {"url": "https://www.france.tv/france-5/c-dans-l-air/832347-petitions-en-ligne-ric-des-outils-democratiques.html", "status": "done"},
     {"url": "https://www.france.tv/france-5/c-dans-l-air/832583-c-dans-l-air.html", "status": "done"},
+    {"url": "https://www.france.tv/france-3/cassandre/cassandre-saison-3/897829-loup-gris.html", "pending"},
+    {"url": "https://www.france.tv/france-2/tout-compte-fait/887251-decathlon-les-secrets-d-un-champion.html", "pending"},
+    {"url": "https://www.france.tv/france-2/on-n-est-pas-couche/on-n-est-pas-couche-saison-13/898067-on-n-est-pas-couche.html", "pending"}
 ]
 
 # Delete database file if it exists currently
