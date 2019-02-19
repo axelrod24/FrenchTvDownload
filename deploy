@@ -1,5 +1,5 @@
 cp frenchtvdownload/apache/FlaskApp.conf /etc/apache2/sites-available/
 cp frenchtvdownload/apache/FrTvDld.wsgi ../
-cp frenchtvdownload/apache/activate_this.py .env/bin/
+cp frenchtvdownload/apache/activate_this.py .venv/bin/
 
 
