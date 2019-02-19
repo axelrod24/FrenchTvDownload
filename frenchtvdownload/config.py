@@ -18,7 +18,12 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 app.config["DLD_THREAD"] = dict() # hashmap to store active download thread
 app.config["PIPE_NAME_HEADER"] = "fifo-%s-dld"
-app.config["DLD_FOLDER"] = "FRTV_DLD_FOLDER"
+
+if app.config["ENV"] == 'production':
+    app.config["DLD_FOLDER"] = os.path.join("/home", "lbr", "Dropbox", "FRTV_DLD_FOLDER")
+else:
+    app.config["DLD_FOLDER"] = os.path.join(basedir, "FRTV_DLD_FOLDER")
+
 
 if not os.path.exists(app.config["DLD_FOLDER"]):
     os.mkdir(app.config["DLD_FOLDER"])

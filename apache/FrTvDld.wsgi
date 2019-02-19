@@ -6,9 +6,9 @@ with open(activate_this) as file_:
 import sys
 import logging
 logging.basicConfig(stream=sys.stderr)
-sys.path.insert(0,"/var/www/FlaskApp/FrTvDld")
+sys.path.insert(0,"/var/www/FlaskApp/FrTvDld/frenchtvdownload")
 
-from frenchtvdownload.app import app as application
+from app import connex_app as application
 application.secret_key = 'Add your secret key'
 
 
