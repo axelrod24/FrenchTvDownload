@@ -8,7 +8,7 @@ import logging
 logging.basicConfig(stream=sys.stderr)
 sys.path.insert(0,"/var/www/FlaskApp/")
 
-from FrTvDld.app import app as application
+from FrTvDld.frenchtvdownload.app import app as application
 application.secret_key = 'Add your secret key'
 
 
