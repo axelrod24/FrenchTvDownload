@@ -11,7 +11,7 @@
 #
 
 import datetime
-import yaml
+import json, yaml
 import logging
 import os
 import re
@@ -28,6 +28,7 @@ from frtvdld.DownloadException import *
 from frtvdld.GlobalRef import LOGGER_NAME
 
 logger = logging.getLogger(LOGGER_NAME)
+
 
 class NetworkParser(object):
     def __init__(self, fakeAgent):
@@ -56,6 +57,7 @@ class FranceTvParser(NetworkParser):
     REGEX_M3U8 = "/([0-9]{4}/S[0-9]{2}/J[0-9]{1}/[0-9]*-[0-9]{6,8})-"
     JSON_DESCRIPTION = "http://webservices.francetelevisions.fr/tools/getInfosOeuvre/v2/?idDiffusion=_ID_EMISSION_"
     JSON2_DESC="https://sivideo.webservices.francetelevisions.fr/tools/getInfosOeuvre/v2/?idDiffusion=_ID_EMISSION_"
+    JSON3_DESC="https://player.webservices.francetelevisions.fr/v1/videos/_ID_EMISSION_?country_code=FR&w=1920&h=1080&version=5.5.2&domain=www.france.tv&device_type=desktop&browser=chrome&browser_version=71&os=macos&os_version=10_13_6"
 
     def getListOfUrlCollection(self, url):
         # read the page and extract list of videoURL
@@ -139,7 +141,8 @@ class FranceTvParser(NetworkParser):
             data = data[0]
             return data["videoId"]
 
-        except:
+        except Exception as e:
+            logger.error(e)
             raise FrTvDwnPageParsingError()
 
     def _getListOfAvailableVideo(self, url, index):
@@ -152,13 +155,12 @@ class FranceTvParser(NetworkParser):
 
         return urljoin(url, videoUrlList[index]["href"])
 
-
     def _parseInfosJSON(self, pageInfos):
         """
         Parse le fichier de description JSON d'une emission
         """
         try:
-            data = yaml.load(pageInfos)
+            data = json.loads(pageInfos)
             metaData = {}
             metaData["mediaType"] = None
             metaData['manifestUrl'] = None
@@ -184,7 +186,9 @@ class FranceTvParser(NetworkParser):
             logger.debug("Manifest URL: %s" % (metaData['manifestUrl']))
             logger.debug("Drm : %s" % (metaData['drm']))
             return metaData
-        except:
+
+        except Exception as e:
+            logger.error(e)
             raise FrTvDwnMetaDataParsingError()
 
 
@@ -237,7 +241,7 @@ class ArteTvParser(NetworkParser):
 
     def _parseInfosJSON(self, page):
         try:
-            data = yaml.load(page)
+            data = json.loads(page)
             metaData = {}
             metaData["mediaType"] = None
             metaData['manifestUrl'] = None
@@ -272,7 +276,8 @@ class ArteTvParser(NetworkParser):
 
             return metaData
 
-        except:
+        except Exception as e:
+            logger.error(e)
             raise FrTvDwnMetaDataParsingError()
 
     def _getCollectionUrls(pageInfo, allUrl):
@@ -333,12 +338,13 @@ class Tf1Parser(NetworkParser):
             # logger.debug("ID de l'émission : %s" % (videoId[0]["data-main-video"]))
             return videoId[0]["data-watid"]
 
-        except:
+        except Exception as e:
+            logger.error(e)
             raise FrTvDownloadException("Can't get or parse video ID page")
  
     def _parseUrlJSON(self, page):
         try:
-            data = yaml.load(page)
+            data = json.loads(page)
             metaData = {}
             if data["code"] != 200:
                 raise FrTvDownloadException("Can't parse json url for Tf1")    
@@ -347,12 +353,13 @@ class Tf1Parser(NetworkParser):
             metaData["mediaType"] = data["format"]
             return metaData
 
-        except:
+        except Exception as e:
+            logger.error(e)
             raise FrTvDownloadException("Can't parse json for Arte.tv")
  
     def _parseInfoJSON(self, page):
         try:
-            data = yaml.load(page)
+            data = json.loads(page)
             metaData = {}
             data = data["mediametrie"]["chapters"][0]
             metaData['progTitle'] = self.normalizeProgTitle(data['title'].split("_PLAYLISTID_")[1])
@@ -361,7 +368,8 @@ class Tf1Parser(NetworkParser):
             metaData['progName'] = ""
             return metaData
 
-        except:
+        except Exception as e:
+            logger.error(e)
             raise FrTvDownloadException("Can't parse json for Arte.tv")
 
 
@@ -405,7 +413,9 @@ class LcpParser(NetworkParser):
             meta = parsed.find_all("meta", attrs={"itemprop": "name"})
             title = meta[0]["content"] 
             return title
-        except:
+
+        except Exception as e:
+            logger.error(e)
             raise FrTvDwnMetaDataParsingError("Can't get program title")
 
     def _getSynopsis(self, parsed):
@@ -413,7 +423,9 @@ class LcpParser(NetworkParser):
             meta = parsed.find_all("meta", attrs={"name": "abstract"})
             synopsis = meta[0]["content"]
             return synopsis
-        except:
+
+        except Exception as e:
+            logger.error(e)
             raise FrTvDwnMetaDataParsingError("Can't get program synopsis")
 
     def _getTimestamp(self, parsed):
@@ -422,7 +434,9 @@ class LcpParser(NetworkParser):
             d = meta[0].text.split(" ")
             timestamp = time.mktime(datetime.datetime.strptime(d[2], "%d/%m/%Y").timetuple()) 
             return timestamp
-        except:
+
+        except Exception as e:
+            logger.error(e)
             raise FrTvDwnMetaDataParsingError("Can't get program timestamp")
 
     def _getVideoUrl(self, page):
@@ -438,7 +452,8 @@ class LcpParser(NetworkParser):
             nurl = purl._replace(scheme="https")
             return nurl.geturl()
 
-        except:
+        except Exception as e:
+            logger.error(e)
             raise FrTvDwnVideoNotFound()
 
     def _getManifestUrl(self, page):
@@ -448,7 +463,9 @@ class LcpParser(NetworkParser):
             ie = page.find('"', ib+len(k))
             manifestUrl = page[ib+len(k):ie].replace("\\","")
             return manifestUrl 
-        except:
+
+        except Exception as e:
+            logger.error(e)
             raise FrTvDwnManifestUrlNotFoundError()
 
 
