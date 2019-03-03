@@ -140,7 +140,7 @@ class FranceTvParser(NetworkParser):
             return data["videoId"]
 
         except:
-            raise FrTvDwnMetaDataParsingError()
+            raise FrTvDwnPageParsingError()
 
     def _getListOfAvailableVideo(self, url, index):
         page = self.fakeAgent.readPage(url)
