@@ -9,6 +9,27 @@
             "type": "python",
             "request": "launch",
             "program": "${file}",
+            "args": [
+                "-o", ".", "-b", "https://www.france.tv/france-5/c-dans-l-air/"
+            ],
+            // "args": [
+            //     "-o", ".", "-b", "https://www.france.tv/france-5/c-dans-l-air/906971-algerie-la-rue-contre-bouteflika.html"
+            // ],
+            // "args": [
+            //     "-o", ".", "-b", "https://www.france.tv/france-2/nicolas-le-floch/769463-le-noye-du-grand-canal.html"
+            // ],
+            // "args": [
+            //     "-o", ".", "-b", "--keepManifest", "--keepMetaData", "https://www.arte.tv/fr/videos/067866-001-A/le-charbon-1-2/"
+            // ],
+            // "args": [
+            //     "-o", ".", "-b", "--keepManifest", "--listProfiles", "https://www.arte.tv/fr/videos/075596-000-A/mission-verite-le-new-york-times-et-donald-trump-1-4/"
+            // ],
+            // "args": [
+            //     "-o", ".", "-b", "--keepManifest", "--keepMetaData", "https://www.tf1.fr/tmc/quotidien-avec-yann-barthes/videos/quotidien-premiere-partie-25-octobre-2018.html"
+            // ],
+            // "args": [
+            //     "-o", ".", "-b", "--keepManifest", "--keepMetaData", "http://lcp.fr/emissions/290321-emission-speciale"
+            // ],
             "console": "integratedTerminal"
         },
         {

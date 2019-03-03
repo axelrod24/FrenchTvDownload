@@ -139,6 +139,9 @@ class FranceTvParser(NetworkParser):
             data = data[0]
             return data["videoId"]
 
+        except:
+            raise FrTvDwnMetaDataParsingError()
+
     def _getListOfAvailableVideo(self, url, index):
         page = self.fakeAgent.readPage(url)
         parsed = BeautifulSoup(page, "html.parser")
@@ -148,6 +151,7 @@ class FranceTvParser(NetworkParser):
             return None
 
         return urljoin(url, videoUrlList[index]["href"])
+
 
     def _parseInfosJSON(self, pageInfos):
         """
