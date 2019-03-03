@@ -11,7 +11,7 @@
 #
 
 import datetime
-import json
+import yaml
 import logging
 import os
 import re
@@ -121,26 +121,23 @@ class FranceTvParser(NetworkParser):
         # \todo LBR: process error exceptions in case page can't be loaded or videoId can't be found
         try:
             parsed = BeautifulSoup(page, "html.parser")
-            videoId = parsed.find_all("div",
-                                      attrs={"class": "PlayerContainer", "data-main-video": re.compile("[0-9]+")})
-            if len(videoId) > 0:
-                return videoId[0]["data-main-video"]
+            div_tag = parsed.find_all("div", class_="c-player-content")
+            if len(div_tag) == 0:
+                return None
 
-            return None
+            script_tag = div_tag[0].find_all("script")
+            if len(script_tag) == 0:
+                return None
 
-            # videoUrlList = parsed.find_all("a", attrs={"class": "c-card-video__link"})
+            # assume script is the first element of the array
+            script_tag = script_tag[0]
+            json_text = script_tag.text
+            json_text = json_text[json_text.find("["):json_text.rfind("]")+1]
 
-            # if len(videoUrlList) > 0:
-            #     if (getAllUrl):
-            #         listUrl = []
-            #         for vs in videoUrlList:
-            #             listUrl.append(vs["href"])
-            #         return listUrl
-            #     else:
-            #         return videoUrlList[0]["href"]
+            data = yaml.load(json_text)
 
-        except:
-            raise FrTvDwnPageParsingError()
+            data = data[0]
+            return data["videoId"]
 
     def _getListOfAvailableVideo(self, url, index):
         page = self.fakeAgent.readPage(url)
@@ -157,7 +154,7 @@ class FranceTvParser(NetworkParser):
         Parse le fichier de description JSON d'une emission
         """
         try:
-            data = json.loads(pageInfos)
+            data = yaml.load(pageInfos)
             metaData = {}
             metaData["mediaType"] = None
             metaData['manifestUrl'] = None
@@ -236,7 +233,7 @@ class ArteTvParser(NetworkParser):
 
     def _parseInfosJSON(self, page):
         try:
-            data = json.loads(page)
+            data = yaml.load(page)
             metaData = {}
             metaData["mediaType"] = None
             metaData['manifestUrl'] = None
@@ -337,7 +334,7 @@ class Tf1Parser(NetworkParser):
  
     def _parseUrlJSON(self, page):
         try:
-            data = json.loads(page)
+            data = yaml.load(page)
             metaData = {}
             if data["code"] != 200:
                 raise FrTvDownloadException("Can't parse json url for Tf1")    
@@ -351,7 +348,7 @@ class Tf1Parser(NetworkParser):
  
     def _parseInfoJSON(self, page):
         try:
-            data = json.loads(page)
+            data = yaml.load(page)
             metaData = {}
             data = data["mediametrie"]["chapters"][0]
             metaData['progTitle'] = self.normalizeProgTitle(data['title'].split("_PLAYLISTID_")[1])
