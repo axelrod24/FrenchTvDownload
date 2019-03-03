@@ -35,11 +35,17 @@ def home():
     localhost:5000/
     :return:        the rendered template 'home.html'
     """
-    return render_template('home.html')
+    # return render_template('home.html')
+    return render_template('index.html')
 
 
 # If we're running in stand alone mode, run the application
 if __name__ == '__main__':
+    template_dir = os.path.join(os.path.abspath(os.path.dirname(__file__)), "frontend", "build" )
+    static_dir = os.path.join(os.path.abspath(os.path.dirname(__file__)), "frontend", "build", "static")
+    connex_app.app.template_folder = template_dir
+    connex_app.app.static_folder = static_dir
+    connex_app.app.static_url_path = "/static"
     if connex_app.app.config["ENV"] == 'production':
         connex_app.run(debug=True)
     else:
