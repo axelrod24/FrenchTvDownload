@@ -2,8 +2,8 @@
 import os, threading, logging, json
 from flask import make_response, abort, jsonify
 
-from config import db, app
-from models import Video, VideoSchema 
+from flaskr.config import db, app
+from flaskr.models import Video, VideoSchema 
 
 from frtvdld.GlobalRef import LOGGER_NAME
 from frtvdld.download import download_video

@@ -4,8 +4,8 @@ people data
 """
 
 from flask import make_response, abort
-from config import db
-from models import Person, PersonSchema
+from flaskr.config import db
+from flaskr.models import Person, PersonSchema
 
 
 def read_all():

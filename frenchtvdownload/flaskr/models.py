@@ -1,5 +1,5 @@
 from datetime import datetime
-from config import db, ma
+from flaskr.config import db, ma
 
 class Person(db.Model):
     __tablename__ = 'person'

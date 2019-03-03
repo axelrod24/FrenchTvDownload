@@ -21,6 +21,9 @@
             "type": "python",
             "request": "launch",
             "program": "${file}",
+            "env": {
+                "FLASK_ENV": "debug"
+            },
             "args": [
                 "-o", ".", "-b", "https://www.france.tv/france-5/c-dans-l-air/"
             ],

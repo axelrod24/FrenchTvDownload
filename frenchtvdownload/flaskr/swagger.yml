@@ -14,7 +14,7 @@ basePath: /api
 paths:
   /people:
     get:
-      operationId: people.read_all
+      operationId: flaskr.people.read_all
       tags:
         - People
       summary: Read the entire list of people
@@ -45,7 +45,7 @@ paths:
                   type: string
 
     post:
-      operationId: people.create
+      operationId: flaskr.people.create
       tags:
         - People
       summary: Create a person and add it to the people list
@@ -70,7 +70,7 @@ paths:
 
   /people/{person_id}:
     get:
-      operationId: people.read_one
+      operationId: flaskr.people.read_one
       tags:
         - People
       summary: Read one person from the people list
@@ -94,7 +94,7 @@ paths:
                 type: string
 
     put:
-      operationId: people.update
+      operationId: flaskr.people.update
       tags:
         - People
       summary: Update a person in the people list
@@ -119,7 +119,7 @@ paths:
           description: Successfully updated person in people list
 
     delete:
-      operationId: people.delete
+      operationId: flaskr.people.delete
       tags:
         - People
       summary: Delete a person from the people list
@@ -135,7 +135,7 @@ paths:
 
   /video:
     get:
-      operationId: video.read_all
+      operationId: flaskr.video.read_all
       tags:
         - Video
       summary: Read list of video
@@ -155,7 +155,7 @@ paths:
                   type: string
 
     post:
-      operationId: video.addurl
+      operationId: flaskr.video.addurl
       tags:
         - Video
       summary: Add a video
@@ -173,7 +173,7 @@ paths:
 
   /video/{video_id}:
     delete:
-      operationId: video.delete
+      operationId: flaskr.video.delete
       tags:
         - Video
       summary: Delete a video from db
@@ -189,7 +189,7 @@ paths:
 
   /download/{video_id}:
     get:
-      operationId: video.download
+      operationId: flaskr.video.download
       tags:
         - Video
       summary: Download a video from db
@@ -203,7 +203,7 @@ paths:
         200:
           description: Successfully start download a video
     delete:
-      operationId: video.cancel
+      operationId: flaskr.video.cancel
       tags:
         - Video
       summary: Cancel a video download
@@ -219,7 +219,7 @@ paths:
 
   /status/{video_id}:
     get:
-      operationId: video.get_status
+      operationId: flaskr.video.get_status
       tags:
         - Video
       summary: Get a video download status

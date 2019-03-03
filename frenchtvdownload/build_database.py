@@ -1,6 +1,6 @@
 import os
-from config import db
-from models import Person, Video
+from flaskr.config import db
+from flaskr.models import Person, Video
 
 # Data to initialize database with
 PEOPLE = [
@@ -19,8 +19,9 @@ ALL_URL = [
 ]
 
 # Delete database file if it exists currently
-if os.path.exists("people.db"):
-    os.remove("people.db")
+db_path = os.path.join("flaskr","people.db")
+if os.path.exists(db_path):
+    os.remove(db_path)
 
 # Create the database
 db.create_all()

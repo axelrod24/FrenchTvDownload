@@ -1,9 +1,9 @@
-import sys
+import sys, os
 import logging
 from flask import render_template
 
 # local modules
-import config
+from flaskr import config
 from frtvdld.GlobalRef import LOGGER_NAME
 from frtvdld.ColorFormatter import ColorFormatter
 
@@ -25,7 +25,7 @@ logger.addHandler(console)
 connex_app = config.connex_app
 
 # Read the swagger.yml file to configure the endpoints
-connex_app.add_api('swagger.yml')
+connex_app.add_api("swagger.yml")
 
 # Create a URL route in our application for "/"
 @connex_app.route('/')
