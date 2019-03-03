@@ -40,7 +40,7 @@ def home():
 
 # If we're running in stand alone mode, run the application
 if __name__ == '__main__':
-    if app.config["ENV"] == 'production':
+    if connex_app.app.config["ENV"] == 'production':
         connex_app.run(debug=True)
     else:
         connex_app.run(host='0.0.0.0', port=5000, debug=True)
