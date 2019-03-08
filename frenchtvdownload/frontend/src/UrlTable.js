@@ -1,17 +1,18 @@
 import React, { Component } from 'react';
 
 
-const Item = ({classname, value}) => <td className={classname}>{value}</td>
+const Item = ({classname, value, style}) => <td className={classname} style={style}>{value}</td>
 
 class Row extends Component {
 
     render() {
+        var thecolor = "green"
         return ( 
             <tr>
                 <Item value={this.props.index + 1} />
                 <Item classname="url" value={this.props.data.url} />
                 <Item />
-                <Item value={this.props.data.status}/>
+                <Item value={this.props.data.status} style={{color: thecolor}}/>
             </tr>
         )
     }
