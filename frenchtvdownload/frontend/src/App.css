@@ -1,33 +1,96 @@
-.App {
-  text-align: center;
-}
+/*
+ * This is the CSS stylesheet for the demo people application
+ */
 
-.App-logo {
-  animation: App-logo-spin infinite 20s linear;
-  height: 40vmin;
-  pointer-events: none;
-}
+ @import url(http://fonts.googleapis.com/css?family=Roboto:400,300,500,700);
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
-}
+ body, .ui-btn {
+     font-family: Roboto;
+ }
+ 
+ .container {
+     padding: 10px;
+ }
+ 
+ .banner {
+     text-align: center;
+ }
+ 
+ .editor {
+     width: 80%;
+    
+     margin-left: auto;
+     margin-right: auto;
 
-.App-link {
-  color: #61dafb;
-}
+     padding: 5px;
+     border: 1px solid lightgrey;
+     border-radius: 3px;
+     margin-bottom: 5px;
+ }
+ 
+ label {
+     display: inline-block;
+     margin-bottom: 5px;
+ }
+ 
+ button {
+     padding: 5px;
+     margin-right: 5px;
+     border-radius: 3px;
+     background-color: #eee;
+ }
+ 
+ .people {
+     width: 80%;
+    
+     margin-left: auto;
+     margin-right: auto;
+     
+     padding: 5px;
+     border: 1px solid lightgrey;
+     border-radius: 3px;
+     margin-bottom: 5px;
+ }
+ 
+ table {
+     width: 100%;
+     border-collapse: collapse;
+ }
+ 
+ table, caption, th, td {
+     border: 1px solid lightgrey;
+ }
+ 
+ table caption {
+     height: 33px;
+     font-weight: bold;
+     padding-top: 5px;
+     border-bottom: none;
+ }
+ 
+ tr {
+     height: 33px;
+ }
+ 
+ tr:nth-child(even) {
+     background-color: #f0f0f0
+ }
+ 
+ td {
+     text-align: center;
+ }
+ 
+ td.video_url {
+    text-align: left; 
+ }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
+ .error {
+     width: 50%;
+     margin-left: auto;
+     margin-right: auto;
+     padding: 5px;
+     border: 1px solid lightgrey;
+     border-radius: 3px;
+     background-color: #fbb;
+     visibility: hidden;
+ }
