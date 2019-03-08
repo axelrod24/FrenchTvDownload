@@ -1,15 +1,17 @@
 import React, { Component } from 'react';
 
 
+const Item = ({classname, value}) => <td className={classname}>{value}</td>
+
 class Row extends Component {
 
     render() {
         return ( 
             <tr>
-                <td>{this.props.index + 1}</td>
-                <td>{this.props.data.url}</td>
-                <td></td>
-                <td>{this.props.data.status}</td>
+                <Item value={this.props.index + 1} />
+                <Item classname="url" value={this.props.data.url} />
+                <Item />
+                <Item value={this.props.data.status}/>
             </tr>
         )
     }
