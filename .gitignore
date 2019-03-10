@@ -104,3 +104,8 @@ ENV/
 #project related
 *.db
 FRTV_DLD_FOLDER/
+
+#MAC
+.DS_Store
+
+

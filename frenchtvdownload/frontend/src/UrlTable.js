@@ -4,15 +4,50 @@ import React, { Component } from 'react';
 const Item = ({classname, value, style}) => <td className={classname} style={style}>{value}</td>
 
 class Row extends Component {
+    constructor(props) {
+        super(props) ;
+        this.state = {
+            status: this.props.data.status
+        }
+    }
 
     render() {
-        var thecolor = "green"
+
+        var statusText, statusBgColor ;
+
+        switch(this.state.status) {
+            case "done":
+                statusText = "Done" 
+                statusBgColor = "Aquamarine" 
+            break ;
+
+            case "pending":
+                statusText = "Pending"
+                statusBgColor = "CornflowerBlue"
+            break ;
+
+            case "downloading":
+                statusText = "..."
+                statusBgColor = "Plum"
+            break ;
+            
+            case "not_availabl":
+                statusText = "Not Available"
+                statusBgColor = "greenyellow"
+            break ;
+
+            default:
+                statusText = "Unknown"
+                statusBgColor = "red"
+            break ;
+        }
+
         return ( 
             <tr>
                 <Item value={this.props.index + 1} />
                 <Item classname="url" value={this.props.data.url} />
-                <Item />
-                <Item value={this.props.data.status} style={{color: thecolor}}/>
+                <Item value={this.props.data.timestamp}/>
+                <Item value={statusText} style={{background: statusBgColor}}/>
             </tr>
         )
     }
