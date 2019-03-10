@@ -23,10 +23,10 @@ const VideoMetaData = (manifest, synopsis, progTitle, filename, mediaType, durat
         timeStamp: timeStamp, 
         progName: progName})
 
-const UrlModel = (url, status, timestamp, videoMetaData) => ({url: url, status: status, timestamp:timestamp, metadata: videoMetaData})
+const UrlModel = (uid, url, status, timestamp, videoMetaData) => ({uid:uid, url: url, status: status, timestamp:timestamp, metadata: videoMetaData})
 
 var AllUrls =[
-    UrlModel("https://www.france.tv/documentaires/art-culture/910287-la-petite-histoire-des-super-heros.html", "pending", 1551913200.0,
+    UrlModel(5, "https://www.france.tv/documentaires/art-culture/910287-la-petite-histoire-des-super-heros.html", "pending", 1551913200.0,
         VideoMetaData("https://ios-q1-ssl.tf1.fr/2/USP-0x0/07/89/13620789/ssm/13620789.ism/13620789.m3u8?e=1552203278&amp;max_bitrate=1500000&amp;st=ycJXVYakBvN79p6bW-hYPg&amp;vk=MTM2MjA3ODkubTN1OA%3D%3D",
             "quotidien-premiere-partie-du-7-mars-2019",
             "20190307-Tf1-quotidien-premiere-partie-du-7-mars-2019",
@@ -37,7 +37,8 @@ var AllUrls =[
             1551913200.0,
             "quotidien")
     ),
-    UrlModel("https://www.france.tv/documentaires/science-sante/910533-haut-le-corps.html", "done",1551913200.0,
+
+    UrlModel(6, "https://www.france.tv/documentaires/science-sante/910533-haut-le-corps.html", "done",1551913200.0,
         VideoMetaData("the/manifest/url/2",
         "prog title_2",
         "the_filename_2",
@@ -48,7 +49,8 @@ var AllUrls =[
         1551913200.0,
         "Haut le corps")
     ),
-    UrlModel("https://www.france.tv/documentaires/politique/874585-guyane-la-frontiere-invisible.html", "pending",1551913200.0,
+
+    UrlModel(9, "https://www.france.tv/documentaires/politique/874585-guyane-la-frontiere-invisible.html", "pending",1551913200.0,
         VideoMetaData("the/manifest/url/3",
         "prog title_3",
         "the_filename_3",
@@ -59,7 +61,8 @@ var AllUrls =[
         1551913200.0,
         "guyane-la-frontiere-invisible")
         ),
-    UrlModel("https://www.france.tv/documentaires/societe/911315-le-sexisme-en-politique-un-mal-dominant.html", "pending",1551913200.0,
+
+    UrlModel(11, "https://www.france.tv/documentaires/societe/911315-le-sexisme-en-politique-un-mal-dominant.html", "pending",1551913200.0,
         VideoMetaData("the/manifest/url/4",
         "prog title_4",
         "the_filename_4",
