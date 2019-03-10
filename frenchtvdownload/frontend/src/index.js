@@ -3,27 +3,8 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
+import {UrlModel, VideoMetaData} from "./model.js"
 
-// class UrlModel {
-//     constructor(url, status) {
-//         this.url = url ;
-//         this.status = status ;
-//     }
-// } 
-
-const VideoMetaData = (manifest, synopsis, progTitle, filename, mediaType, duration, videoId, drm, timeStamp, progName) => (
-    {manifest: manifest, 
-        synopsis: synopsis, 
-        progTitle: progTitle, 
-        filename: filename,
-        mediaType: mediaType, 
-        duration: duration, 
-        videoId: videoId, 
-        drm: drm, 
-        timeStamp: timeStamp, 
-        progName: progName})
-
-const UrlModel = (uid, url, status, timestamp, videoMetaData) => ({uid:uid, url: url, status: status, timestamp:timestamp, metadata: videoMetaData})
 
 var AllUrls =[
     UrlModel(5, "https://www.france.tv/documentaires/art-culture/910287-la-petite-histoire-des-super-heros.html", "pending", 1551913200.0,
