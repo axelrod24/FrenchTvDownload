@@ -4,12 +4,16 @@ import {UrlModel, VideoMetaData} from "./model.js"
 const Item = ({classname, value, style}) => <td className={classname} style={style}>{value}</td>
 const Button = ({classname, value, style, onClick}) => <button className={classname} style={style} onClick={onClick}>{value}</button>
 
+
 class Row extends Component {
     constructor(props) {
         super(props) ;
         this.state = {
             status: this.props.data.status
         }
+
+        this.onDownloadVideo = this.onDownloadVideo.bind(this)
+        this.onCancelDownload = this.onCancelDownload.bind(this)
     }
 
     render() {
@@ -43,23 +47,27 @@ class Row extends Component {
             break ;
         }
 
-        return ( 
+            return ( 
             <tr>
                 <Item value={this.props.data.uid} />
                 <Item classname="url" value={this.props.data.url} />
                 <Item value={this.props.data.timestamp}/>
                 <Item value={statusText} style={{background: statusBgColor}}/>
-                <td><Button value="Remove" onClick={() => this.props.onRemoveUrl(this.props.index)}/></td>
+                <td>
+                    {(this.state.status==="downloading") ? 
+                        <Button value="Cancel" onClick={this.onCancelDownload}/> : <Button value="Remove" onClick={() => this.props.onRemoveUrl(this.props.index)}/>}
+                    {(this.state.status==="pending") && <Button value="Download" onClick={this.onDownloadVideo}/>}
+                </td>
             </tr>
         )
     }
 
     onDownloadVideo() {
-
+        console.log("onDownloadVideo:",this.props.index)
     }
 
     onCancelDownload() {
-
+        console.log("onCancelDownload:",this.props.index)
     }
 }
 
@@ -79,8 +87,8 @@ class UrlEditor extends Component {
         return (
             <div className="editor">
                 <label htmlFor="url" style={{width: '80%'}}>Url :
-                    <input id="url" ref={this.myRef} type="text" style={{width: '80%'}} onChange={evt => this.onChange(evt)}/>
-                    <button disabled={!this.state.addUrlButtonEnable} onClick={() => this.props.onAddUrl(this.myRef.current.value)}>Add Url</button>
+                    <input id="url" ref="_url" type="text" style={{width: '80%'}} onChange={evt => this.onChange(evt)}/>
+                    <button disabled={!this.state.addUrlButtonEnable} onClick={()=> this.props.onAddUrl(this.refs._url.value)}>Add Url</button>
                 </label>
             </div>
         )
@@ -140,8 +148,8 @@ class UrlTable extends Component {
                             <tr>
                                 <th>Id</th>
                                 <th>Url</th>
-                                <th>Status</th>
                                 <th>Timestamp</th>
+                                <th>Status</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
