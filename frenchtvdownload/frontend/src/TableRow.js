@@ -7,21 +7,23 @@ const ButtonItem = ({classname, value, style, onClick}) => <Item className={clas
 const MetaDataTable = ({data}) => {
                     return (
                           <table className="matadata-table">
-                            <tr>
-                              <td style={{width: "80px"}}>Title:</td><td>{data.metadata.progTitle}</td>
-                            </tr>
-                            <tr>
-                              <td>Name:</td><td>{data.metadata.progName}</td>
-                            </tr>
-                            <tr>
-                              <td>Synopsis:</td><td>{data.metadata.synopsis}</td>
-                            </tr>
-                            <tr>
-                              <td>Filename:</td><td>{data.metadata.filename}</td>
-                            </tr>
-                            <tr>
-                              <td>Manifest:</td><td><a href={data.metadata.manifest}>{data.metadata.manifest}</a></td>
-                            </tr>
+                            <tbody>
+                              <tr>
+                                <td style={{width: "80px"}}>Title:</td><td>{data.metadata.progTitle}</td>
+                              </tr>
+                              <tr>
+                                <td>Name:</td><td>{data.metadata.progName}</td>
+                              </tr>
+                              <tr>
+                                <td>Synopsis:</td><td>{data.metadata.synopsis}</td>
+                              </tr>
+                              <tr>
+                                <td>Filename:</td><td>{data.metadata.filename}</td>
+                              </tr>
+                              <tr>
+                                <td>Manifest:</td><td><a href={data.metadata.manifest}>{data.metadata.manifest}</a></td>
+                              </tr>
+                            </tbody>
                           </table>
                           ) 
                   }
@@ -31,12 +33,14 @@ class TableRow extends Component {
         super(props) ;
         this.state = {
             status: this.props.data.status,
-            showMetadata: false
+            showMetadata: false,
+            progress: -1
         }
 
         this.onDownloadVideo = this.onDownloadVideo.bind(this)
         this.onCancelDownload = this.onCancelDownload.bind(this)
         this.onClick = this.onClick.bind(this)
+        this.onUpdateStatus = this.onUpdateStatus.bind(this)
     }
 
     render() {
@@ -55,7 +59,7 @@ class TableRow extends Component {
             break ;
 
             case "downloading":
-                statusText = "..."
+                statusText = "" + ((this.state.progress===-1) ? "..." : ""+this.state.progress)
                 statusBgColor = "Plum"
             break ;
             
@@ -89,7 +93,29 @@ class TableRow extends Component {
     }
 
     onDownloadVideo() {
-        console.log("onDownloadVideo:",this.props.index)
+        console.log("onDownloadVideo:",this.props.index,":",this.props.data.uid)
+        var url = "http://localhost:5000/api/download/"+this.props.data.uid
+        fetch(url)
+        .then(res => res.json())
+        .then(data => {
+                this.setState({status: data.status})
+                this.interval = setInterval(this.onUpdateStatus,2000)
+              })
+        .catch(error => console.log('Request failed', error))  
+    }
+
+    onUpdateStatus() {
+      console.log("onUpdateStatus:",this.props.index,":",this.props.data.uid)
+      var url = "http://localhost:5000/api/status/"+this.props.data.uid
+      fetch(url)
+      .then(res => res.json())
+      .then(data => {
+              data = JSON.parse(data.status)
+              if (data.status === "downloading")
+                this.setState({progress: data.progress})
+            })
+      .catch(error => console.log('Request failed', error))  
+
     }
 
     onCancelDownload() {

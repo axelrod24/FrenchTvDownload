@@ -16,12 +16,7 @@ class App extends Component {
     this.onAddUrl = this.onAddUrl.bind(this)
   }
 
-  componentDidMount()
-  {
-    const { _urleditor, _urltable } = this.refs
-    this.urlEditor = _urleditor
-    this.urlTable = _urltable
-
+  componentWillMount() {
     // fetch original table data
     var url = "http://localhost:5000/api/video"
     fetch(url)
@@ -33,6 +28,12 @@ class App extends Component {
         }
       )
       .catch(error => console.log('Request failed', error))  
+  }
+  componentDidMount()
+  {
+    const { _urleditor, _urltable } = this.refs
+    this.urlEditor = _urleditor
+    this.urlTable = _urltable
   }
 
   render() {
