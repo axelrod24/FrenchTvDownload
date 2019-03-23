@@ -15,7 +15,8 @@ ALL_URL = [
     {"url": "https://www.france.tv/france-5/c-dans-l-air/929925-c-dans-l-air.html", "status": "pending"},
     {"url": "https://www.france.tv/france-5/c-dans-l-air/929133-elysee-senat-ca-chaufe.html", "status": "pending"},
     {"url": "https://www.france.tv/france-5/c-dans-l-air/927697-violences-et-maintenant-l-armee.html", "status": "pending"},
-    {"url": "https://www.france.tv/france-5/c-dans-l-air/927977-europe-la-tentation-populiste.html", "status": "pending"}
+    {"url": "https://www.france.tv/france-5/c-dans-l-air/927977-europe-la-tentation-populiste.html", "status": "pending"},
+    {"url": "https://www.france.tv/france-2/un-si-grand-soleil/un-si-grand-soleil-saison-1/930031-un-si-grand-soleil.html", "status": "pending"}
     ]
 
 # Delete database file if it exists currently

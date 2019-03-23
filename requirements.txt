@@ -7,6 +7,7 @@ Flask-SQLAlchemy
 flask-marshmallow
 marshmallow-sqlalchemy
 marshmallow
+flask_cors
 
 
 

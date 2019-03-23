@@ -41,6 +41,7 @@ class TableRow extends Component {
         this.onCancelDownload = this.onCancelDownload.bind(this)
         this.onClick = this.onClick.bind(this)
         this.onUpdateStatus = this.onUpdateStatus.bind(this)
+        this.interval = null
     }
 
     render() {
@@ -92,6 +93,34 @@ class TableRow extends Component {
         )
     }
 
+    componentDidMount() {
+        if (this.state.status === "downloading" && this.interval == null) {
+            this.interval = setInterval(this.onUpdateStatus, 2000)
+            return 
+       }
+    }
+
+    componentDidUpdate(prevProps, prevState)
+    {
+        console.log("componentDidUpdate:",this.props.data.uid)
+        console.log("this.state",this.state)
+        if (this.interval == null) {
+
+            if (this.state.status === "downloading") 
+                this.interval = setInterval(this.onUpdateStatus, 2000)
+        } else {
+
+            if (this.state.status === "done")
+                clearInterval(this.interval)
+        }
+   }
+
+   componentWillUnmount()
+   {
+        if (this.interval != null)
+            clearInterval(this.interval)
+   } 
+
     onDownloadVideo() {
         console.log("onDownloadVideo:",this.props.index,":",this.props.data.uid)
         var url = "http://localhost:5000/api/download/"+this.props.data.uid
@@ -99,28 +128,41 @@ class TableRow extends Component {
         .then(res => res.json())
         .then(data => {
                 this.setState({status: data.status})
-                this.interval = setInterval(this.onUpdateStatus,2000)
               })
         .catch(error => console.log('Request failed', error))  
     }
 
     onUpdateStatus() {
-      console.log("onUpdateStatus:",this.props.index,":",this.props.data.uid)
-      var url = "http://localhost:5000/api/status/"+this.props.data.uid
-      fetch(url)
-      .then(res => res.json())
-      .then(data => {
-              data = JSON.parse(data.status)
-              if (data.status === "downloading")
+        console.log("onUpdateStatus:",this.props.index,":",this.props.data.uid)
+        var url = "http://localhost:5000/api/status/"+this.props.data.uid
+        fetch(url)
+        .then(res => res.json())
+        .then(data => {
+            data = JSON.parse(data.status)
+            
+            if (data.status !== "no_update")
+                this.setState({status:  data.status})
+            if (data.status === "downloading")
                 this.setState({progress: data.progress})
-            })
-      .catch(error => console.log('Request failed', error))  
-
+            
+        })
+        .catch(error => console.log('Request failed', error))  
     }
 
     onCancelDownload() {
-        console.log("onCancelDownload:",this.props.index)
-    }
+        console.log("onCancelDownload:",this.props.index,":",this.props.data.uid)
+        var url = "http://localhost:5000/api/download/"+this.props.data.uid
+        fetch(url, {method: "DELETE"})
+        .then(res => res.json())
+        .then(data => {
+            if (this.interval != null) {
+                console.log("Clear interval:", this.interval)
+                clearInterval(this.interval)
+            }
+            this.setState({status: "pending", progress: -1})
+        })
+        .catch(error => console.log('Request failed', error))  
+      }
 
     onClick() {
       this.setState({showMetadata: !this.state.showMetadata})

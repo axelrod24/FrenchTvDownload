@@ -84,7 +84,7 @@ celerybeat-schedule
 .env
 
 # virtualenv
-.venv
+.venv/
 venv/
 ENV/
 
@@ -108,4 +108,5 @@ FRTV_DLD_FOLDER/
 #MAC
 .DS_Store
 
+.idea/
 
