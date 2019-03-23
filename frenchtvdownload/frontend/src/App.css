@@ -52,6 +52,11 @@
      margin-bottom: 5px;
  }
  
+ /* table.no-zebra tbody tr:nth-child(even) td,
+ table.no-zebra tbody tr.even td {
+   background: transparent;
+ } */
+
  table {
      width: 100%;
      border-collapse: collapse;
@@ -72,16 +77,37 @@
      height: 33px;
  }
  
- tr:nth-child(even) {
+ /* tr:nth-child(even) {
      background-color: #f0f0f0
- }
+ } */
  
  td {
      text-align: center;
  }
  
- td.url {
+ /* td.url {
     text-align: left; 
+    width: 80%;
+    background-color: blue;
+ } */
+
+ .url {
+    background-color: CornflowerBlue;
+ }
+
+ .url div {
+    /* border: 2px solid lightpink;  */
+    margin-top: 8px;
+    margin-bottom: 8px;
+}
+
+ .matadata-table {
+    /* border: 2px solid lightpink; */
+    background-color: lightblue ;
+ }
+
+ .matadata-table td {
+    text-align: left ; 
  }
 
  .error {

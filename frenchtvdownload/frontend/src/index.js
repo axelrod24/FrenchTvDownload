@@ -9,14 +9,15 @@ import {UrlModel, VideoMetaData} from "./model.js"
 var AllUrls =[
     UrlModel(5, "https://www.france.tv/documentaires/art-culture/910287-la-petite-histoire-des-super-heros.html", "pending", 1551913200.0,
         VideoMetaData("https://ios-q1-ssl.tf1.fr/2/USP-0x0/07/89/13620789/ssm/13620789.ism/13620789.m3u8?e=1552203278&amp;max_bitrate=1500000&amp;st=ycJXVYakBvN79p6bW-hYPg&amp;vk=MTM2MjA3ODkubTN1OA%3D%3D",
-            "quotidien-premiere-partie-du-7-mars-2019",
-            "20190307-Tf1-quotidien-premiere-partie-du-7-mars-2019",
+            "Pour le quatrième numéro de «L'Emission politique», Léa Salamé reçoit Marine Le Pen, présidente du Rassemblement national. A quelques semaines du scrutin européen, les sondages sont favorables au parti de celle qui était au deuxième tour de l'élection présidentielle. Mais sa position sur l'Europe n'est pas toujours claire. Les diverses rubriques de l'émission permettent d'en savoir plus. «Le Film de l'actualité» de Thomas Sotto aborde avec l'invitée les temps forts de l'actualité. Dans le «Grand Débat», elle est confrontée à des Français et des membres de la société civile. Au programme également : le «Face-à-face politique» et le reportage «Sans filet» de Guillaume Daret. Nathalie Saint-Cricq, chef du service politique de France Télévisions, intervient en fin d'émission, ainsi que Jean-Baptiste Marteau, qui donne le verdict du sondage.",
+            "L'emission politique",
+            "20190314-l_emission_politique",
             "hls",
             2100,
-            "https://delivery.tf1.fr/mytf1-wrd/13620789",
+            "http://webservices.francetelevisions.fr/tools/getInfosOeuvre/v2/?idDiffusion=92303955-6487-4c1c-a937-6cc468af5f49",
             false,
             1551913200.0,
-            "quotidien")
+            "emission politique")
     ),
 
     UrlModel(6, "https://www.france.tv/documentaires/science-sante/910533-haut-le-corps.html", "done",1551913200.0,
