@@ -113,7 +113,7 @@ class FranceTvParser(NetworkParser):
         if metadata['manifestUrl'] is None:
             raise FrTvDwnManifestUrlNotFoundError()
         
-        metadata["filename"] = "%s-%s" % (datetime.datetime.fromtimestamp(metadata['timeStamp']).strftime("%Y%m%d"), metadata['progName'])
+        metadata["filename"] = "%s-%s" % (datetime.datetime.fromtimestamp(metadata['timeStamp']).strftime("%Y%m%d"), self.normalizeProgTitle(metadata['progName']))
         self.progMetaData = metadata
 
     def _getVideoId(self, page, getAllUrl=False):
@@ -166,8 +166,8 @@ class FranceTvParser(NetworkParser):
             metaData['manifestUrl'] = None
             metaData['drm'] = None
             metaData['timeStamp'] = data['diffusion']['timestamp']
-            metaData['progName'] = self.normalizeProgTitle(data['code_programme'])
-            metaData['progTitle'] = self.normalizeProgTitle(data['sous_titre'])
+            metaData['progName'] = data['code_programme']
+            metaData['progTitle'] = data['sous_titre']
             metaData['synopsis'] = data['synopsis']
 
             # duration
@@ -206,7 +206,7 @@ class ArteTvParser(NetworkParser):
 
 
         allUrl = []
-        jurl = self.JSONJSON_COLLECTION_API.replace("_ID_EMISSION_", progId)
+        jurl = self.JSON_COLLECTION_API.replace("_ID_EMISSION_", progId)
         pageId = 1
         while True:
             jurlTemp = jurl.replace("_ID_PAGE_", str(pageId))
@@ -216,7 +216,7 @@ class ArteTvParser(NetworkParser):
 
             pageId += 1
 
-        return urlList
+        return allUrl
 
     def parsePage(self, url):
         progId = self._getProgId(url)
@@ -226,7 +226,7 @@ class ArteTvParser(NetworkParser):
         metadata = self._parseInfosJSON(pageInfos)
 
         metadata["videoId"] = jurl
-        metadata["filename"] = "%s-Arte-%s" % (datetime.datetime.fromtimestamp(metadata['timeStamp']).strftime("%Y%m%d"), metadata['progTitle'])
+        metadata["filename"] = "%s-Arte-%s" % (datetime.datetime.fromtimestamp(metadata['timeStamp']).strftime("%Y%m%d"), self.normalizeProgTitle(metadata['progTitle']))
         self.progMetaData = metadata
        
     def _getProgId(self, url):
@@ -252,9 +252,8 @@ class ArteTvParser(NetworkParser):
                 return metaData
             gregorian_date = data['VRA'].split(" ", 1)[0]
             metaData['timeStamp'] = time.mktime(datetime.datetime.strptime(gregorian_date, "%d/%m/%Y").timetuple()) 
-            metaData['progName'] = self.normalizeProgTitle(data['caseProgram'])
-            # metaData['progTitle'] = data['VTI'].replace(" : "," ").replace(", "," ").replace(":", "-").replace(" ","_").replace("/","_").replace("(",'').replace(")",'')
-            metaData['progTitle'] = self.normalizeProgTitle(data['VTI'])
+            metaData['progName'] = data['caseProgram']
+            metaData['progTitle'] = data['VTI']
             metaData['duration'] = data['videoDurationSeconds']
             metaData['synopsis'] = data['VDE']
 
@@ -280,7 +279,7 @@ class ArteTvParser(NetworkParser):
             logger.error(e)
             raise FrTvDwnMetaDataParsingError()
 
-    def _getCollectionUrls(pageInfo, allUrl):
+    def _getCollectionUrls(self, pageInfo, allUrl):
         pass
            
 
@@ -320,7 +319,7 @@ class Tf1Parser(NetworkParser):
         if metadata['manifestUrl'] is None:
             raise FrTvDownloadException("No manifest URL")
 
-        metadata["filename"] = "%s-Tf1-%s" % (datetime.datetime.fromtimestamp(metadata['timeStamp']).strftime("%Y%m%d"), metadata['progTitle'])
+        metadata["filename"] = "%s-Tf1-%s" % (datetime.datetime.fromtimestamp(metadata['timeStamp']).strftime("%Y%m%d"), self.normalizeProgTitle(metadata['progTitle']))
         self.progMetaData = metadata
 
     def _getVideoId(self, page):
@@ -362,7 +361,7 @@ class Tf1Parser(NetworkParser):
             data = json.loads(page)
             metaData = {}
             data = data["mediametrie"]["chapters"][0]
-            metaData['progTitle'] = self.normalizeProgTitle(data['title'].split("_PLAYLISTID_")[1])
+            metaData['progTitle'] = data['title'].split("_PLAYLISTID_")[1]
             gregorian_date = data['estatS4']
             metaData['timeStamp'] = time.mktime(datetime.datetime.strptime(gregorian_date, "%Y-%m-%d").timetuple()) 
             metaData['progName'] = ""
@@ -388,11 +387,11 @@ class LcpParser(NetworkParser):
         parsed = BeautifulSoup(page, "html.parser")
 
         metaData = {}
-        metaData['progTitle'] = self.normalizeProgTitle(self._getProgTitle(parsed))
+        metaData['progTitle'] = self._getProgTitle(parsed)
         metaData['synopsis'] = self._getSynopsis(parsed)
         metaData['timeStamp'] = self._getTimestamp(parsed)
         metaData['progName'] = ""
-        metaData["filename"] = "%s-Lcp-%s" % (datetime.datetime.fromtimestamp(metaData['timeStamp']).strftime("%Y%m%d"), metaData['progTitle'])
+        metaData["filename"] = "%s-Lcp-%s" % (datetime.datetime.fromtimestamp(metaData['timeStamp']).strftime("%Y%m%d"), self.normalizeProgTitle(metaData['progTitle']))
 
         # get the dailymotion video URL and extract manifest URL
         urlEmission = self._getVideoUrl(page)

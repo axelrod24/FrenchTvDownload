@@ -121,12 +121,7 @@ class DldThread():
 
 
 def read_all():
-    """
-    This function responds to a request for /api/video
-    with the complete lists of video
-    :return:        json string of list of video
-    """
-    # Create the list of people from our data
+    # Create the list of video from our data
     video = VideoModel.query.order_by(VideoModel.timestamp).all()
 
     # Serialize the data for the response
@@ -134,18 +129,32 @@ def read_all():
     data = video_schema.dump(video).data
     return data
 
+
+def read_one(video_id):
+
+    # Create the list of video from our data
+    video_id = int(video_id)
+    video = VideoModel.query.filter(VideoModel.video_id == video_id).one_or_none()
+
+    # Did we find a video?
+    if video is not None:
+            
+        # Serialize the data for the response
+        video_schema = VideoSchema()
+        data = video_schema.dump(video).data
+        return data, 200
+    else:
+        abort(
+            409,
+            "Can't find video {video_id}".format(video_id=video_id),
+        )
+
+
 def addurl(url):
     logger.debug("url is : "+url)
-    """
-    This function creates a new person in the people structure
-    based on the passed in person data
-    :param person:  person to create in people structure
-    :return:        201 on success, 406 on person exists
-    """
 
     existing_url = (
-        VideoModel.query.filter(VideoModel.url == url)
-        .one_or_none()
+        VideoModel.query.filter(VideoModel.url == url).one_or_none()
     )
 
     # Can we insert this person?
@@ -172,14 +181,10 @@ def addurl(url):
             "Video {url} exists already".format(url=url),
         )
 
-def download(video_id):
-    """
-    This function creates a new person in the people structure
-    based on the passed in person data
-    :param person:  person to create in people structure
-    :return:        201 on success, 406 on person exists
-    """
 
+def download(video_id):
+
+    video_id = int(video_id)
     video = _updateVideoModelAndMetadata(video_id, "downloading")
 
     if video is not None:
@@ -201,12 +206,8 @@ def download(video_id):
             "Can't find video {video_id}".format(video_id=video_id),
         )
 
+
 def cancel(video_id):
-    """
-    This function cancel video download
-    :param video_id:   Id of the video 
-    :return:            200 on successful cancel, 404 if not found
-    """
 
     video_id = int(video_id)
     dld_thread = app.config["DLD_THREAD"][video_id]
@@ -219,11 +220,6 @@ def cancel(video_id):
    
 
 def delete(video_id):
-    """
-    This function deletes a video meta data from db
-    :param video_id:   Id of the video to delete
-    :return:            200 on successful delete, 404 if not found
-    """
     # Get the video requested
     video = VideoModel.query.filter(VideoModel.video_id == video_id).one_or_none()
 
@@ -244,12 +240,6 @@ def delete(video_id):
 
 
 def get_status(video_id):
-    """
-    This function return video download status
-    :param video_id:   Id of the video to delete
-    :return:            200 on successful delete, 404 if not found
-    """
-
     video_id = int(video_id)
     dld_thread = app.config["DLD_THREAD"][video_id]
 
@@ -273,8 +263,15 @@ def _updateVideoModelAndMetadata(video_id, status, metadata=None):
     video = VideoModel.query.filter(VideoModel.video_id == video_id).one_or_none()
     if video is not None:
         video.status = status
+
+        if metadata is not None:
+            video.mdata = json.dumps(metadata)
+        else:
+            video.mdata = ''
+
         db.session.merge(video)
         db.session.commit()
         return video
     
     return None
+

@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { MapVideoModelToAppModel } from "./model.js"
 
 const Item = ({classname, value, style}) => <td className={classname} style={style}>{value}</td>
 const Button = ({classname, value, style, onClick}) => <button className={classname} style={style} onClick={onClick}>{value}</button>
@@ -13,6 +14,14 @@ const MetaDataTable = ({data}) => {
                               </tr>
                               <tr>
                                 <td>Name:</td><td>{data.metadata.progName}</td>
+                              </tr>
+                              <tr>
+                                <td>Duration:</td><td>{(() => {
+                                    var h = Math.floor(data.metadata.duration/3600)
+                                    var rs = data.metadata.duration - (h*3600)
+                                    var m = Math.floor(rs/60)
+                                    rs = rs - (m*60)
+                                    return (""+h+":"+m+":"+rs) })()}</td>
                               </tr>
                               <tr>
                                 <td>Synopsis:</td><td>{data.metadata.synopsis}</td>
@@ -31,6 +40,9 @@ const MetaDataTable = ({data}) => {
 class TableRow extends Component {
     constructor(props) {
         super(props) ;
+
+        this.data = this.props.data
+        this.interval = null
         this.state = {
             status: this.props.data.status,
             showMetadata: false,
@@ -41,7 +53,6 @@ class TableRow extends Component {
         this.onCancelDownload = this.onCancelDownload.bind(this)
         this.onClick = this.onClick.bind(this)
         this.onUpdateStatus = this.onUpdateStatus.bind(this)
-        this.interval = null
     }
 
     render() {
@@ -77,12 +88,12 @@ class TableRow extends Component {
 
         return ( 
           <tr>
-            <Item value={this.props.data.uid} />
+            <Item value={this.data.uid} />
             <td className="url" onClick={this.onClick}>
-              <div>{this.props.data.url}</div>
-              {(this.state.showMetadata) ? <MetaDataTable data={this.props.data} /> : null}
+              <div>{this.data.url}</div>
+              {(this.state.showMetadata) ? <MetaDataTable data={this.data} /> : null}
             </td>
-            <Item value={this.props.data.timestamp}/>
+            <Item value={this.data.timestamp}/>
             <Item value={statusText} style={{background: statusBgColor}}/>
             <td>
                 {(this.state.status==="downloading") ? 
@@ -102,7 +113,7 @@ class TableRow extends Component {
 
     componentDidUpdate(prevProps, prevState)
     {
-        console.log("componentDidUpdate:",this.props.data.uid)
+        console.log("componentDidUpdate:",this.data.uid)
         console.log("this.state",this.state)
         if (this.interval == null) {
 
@@ -122,8 +133,8 @@ class TableRow extends Component {
    } 
 
     onDownloadVideo() {
-        console.log("onDownloadVideo:",this.props.index,":",this.props.data.uid)
-        var url = "http://localhost:5000/api/download/"+this.props.data.uid
+        console.log("onDownloadVideo:",this.props.index,":",this.data.uid)
+        var url = "http://localhost:5000/api/download/"+this.data.uid
         fetch(url)
         .then(res => res.json())
         .then(data => {
@@ -133,13 +144,23 @@ class TableRow extends Component {
     }
 
     onUpdateStatus() {
-        console.log("onUpdateStatus:",this.props.index,":",this.props.data.uid)
-        var url = "http://localhost:5000/api/status/"+this.props.data.uid
+        console.log("onUpdateStatus:",this.props.index,":",this.data.uid)
+        var url = "http://localhost:5000/api/status/"+this.data.uid
         fetch(url)
         .then(res => res.json())
         .then(data => {
             data = JSON.parse(data.status)
             
+            if (data.status === "done") {
+                fetch("http://localhost:5000/api/video/"+this.data.uid)
+                .then(res => res.json())
+                .then(data => {
+                        this.data = MapVideoModelToAppModel(data)
+                        this.setState({status: "done"})
+                      })
+                .catch(error => console.log('Request failed', error))  
+        
+            }
             if (data.status !== "no_update")
                 this.setState({status:  data.status})
             if (data.status === "downloading")
@@ -150,8 +171,8 @@ class TableRow extends Component {
     }
 
     onCancelDownload() {
-        console.log("onCancelDownload:",this.props.index,":",this.props.data.uid)
-        var url = "http://localhost:5000/api/download/"+this.props.data.uid
+        console.log("onCancelDownload:",this.props.index,":",this.data.uid)
+        var url = "http://localhost:5000/api/download/"+this.data.uid
         fetch(url, {method: "DELETE"})
         .then(res => res.json())
         .then(data => {

@@ -3,7 +3,7 @@ import logo from './logo.svg';
 import './App.css';
 import UrlTable from './UrlTable.js';
 import UrlEditor from './UrlEditor.js';
-import {UrlModel, VideoMetaData} from "./model.js"
+import {UrlModel, VideoMetaData, MapVideoModelToAppModel} from "./model.js"
 
 class App extends Component {
   constructor(props) {
@@ -24,7 +24,8 @@ class App extends Component {
       .then(res => res.json())
       .then(data => {
           var table = []
-          data.map(url => table.push(UrlModel(url.video_id, url.url, url.status, url.timestamp, VideoMetaData())))
+          // data.map(url => table.push(UrlModel(url.video_id, url.url, url.status, url.timestamp, VideoMetaData())))
+          data.map(url => table.push(MapVideoModelToAppModel(url)))
           this.setState({loading: false, data: table})
         }
       )

@@ -13,16 +13,19 @@ class PersonSchema(ma.ModelSchema):
         model = Person
         sqla_session = db.session
 
+
 class VideoModel(db.Model):
     __tablename__ = 'video'
     video_id = db.Column(db.Integer, primary_key=True)
     url = db.Column(db.String(255), index=True)
     status = db.Column(db.String(32))
     timestamp = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    mdata = db.Column(db.JSON)
 
 class VideoSchema(ma.ModelSchema):
     class Meta:
         model = VideoModel
         sqla_session = db.session
 
-        
+
+

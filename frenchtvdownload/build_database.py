@@ -33,7 +33,7 @@ for person in PEOPLE:
     db.session.add(p)
 
 for url in ALL_URL:
-    v = VideoModel(url=url.get("url"), status=url.get("status"))
+    v = VideoModel(url=url.get("url"), status=url.get("status"), mdata="")
     db.session.add(v)
 
 db.session.commit()
