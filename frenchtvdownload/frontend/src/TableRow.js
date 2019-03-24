@@ -89,8 +89,8 @@ class TableRow extends Component {
         return ( 
           <tr>
             <Item value={this.data.uid} />
-            <td className="url" onClick={this.onClick}>
-              <div>{this.data.url}</div>
+            <td className="url" >
+              <div onClick={this.onClick}>{this.data.url}</div>
               {(this.state.showMetadata) ? <MetaDataTable data={this.data} /> : null}
             </td>
             <Item value={this.data.timestamp}/>
