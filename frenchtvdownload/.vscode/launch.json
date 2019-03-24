@@ -25,7 +25,7 @@
                 "FLASK_ENV": "debug"
             },
             "args": [
-                "-o", ".", "-b", "https://www.france.tv/france-5/c-dans-l-air/"
+                "-o", ".", "-b", "https://www.france.tv/france-5/c-dans-l-air/929133-elysee-senat-ca-chaufe.html"
             ],
             // "args": [
             //     "-o", ".", "-b", "https://www.france.tv/france-5/c-dans-l-air/906971-algerie-la-rue-contre-bouteflika.html"

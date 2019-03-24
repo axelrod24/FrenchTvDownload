@@ -1,6 +1,6 @@
 import os
 from flaskr.config import db
-from flaskr.models import Person, Video
+from flaskr.models import Person, VideoModel
 
 # Data to initialize database with
 PEOPLE = [
@@ -33,7 +33,7 @@ for person in PEOPLE:
     db.session.add(p)
 
 for url in ALL_URL:
-    v = Video(url=url.get("url"), status=url.get("status"))
+    v = VideoModel(url=url.get("url"), status=url.get("status"))
     db.session.add(v)
 
 db.session.commit()

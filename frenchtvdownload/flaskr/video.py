@@ -3,7 +3,7 @@ import os, threading, logging, json
 from flask import make_response, abort, jsonify
 
 from flaskr.config import db, app
-from flaskr.models import Video, VideoSchema 
+from flaskr.models import VideoModel, VideoSchema 
 
 from frtvdld.GlobalRef import LOGGER_NAME
 from frtvdld.download import download_video
@@ -44,17 +44,13 @@ class DldThread():
 
         try:
             info_msg = "done"
-            download_video(self.url, base_folder=app.config["DLD_FOLDER"], progressFnct = callback_progress, stopDownloadEvent=self.stop_download_event)
+            metadata = download_video(self.url, base_folder=app.config["DLD_FOLDER"], progressFnct = callback_progress, stopDownloadEvent=self.stop_download_event)
 
             # download sucessfuly completed
             logger.info("Video id:%d - downloaded sucessfully" % self.video_id)
 
             # find the video entry and mark it as "done"
-            video = Video.query.filter(Video.video_id == self.video_id).one_or_none()
-            if video is not None:
-                video.status = "done"
-                db.session.merge(video)
-                db.session.commit()
+            _updateVideoModelAndMetadata(video_id = self.video_id, status = "done", metadata=metadata)
 
             # write "done" status.
             self.write_to_pipe(JsonStatus(status="done", progress = 0))
@@ -80,15 +76,12 @@ class DldThread():
                 error_msg = "Unknown error getting metadata for %s" % self.url
 
             # assuming file cleaning as been done by downloaded.  Mark video as pending and notify client of erro/interrupted status
-            video = Video.query.filter(Video.video_id == self.video_id).one_or_none()
-            if video is not None:
-                if info_msg in ["interrupted"]:
-                    video.status = "pending"
-                else:
-                    video.status = info_msg
+            if info_msg in ["interrupted"]:
+                status = "pending"
+            else:
+                status = info_msg
 
-                db.session.merge(video)
-                db.session.commit()
+            _updateVideoModelAndMetadata(self.video_id, status)
 
             logger.info(error_msg)
             self.write_to_pipe(JsonStatus(status=info_msg, progress = 0))
@@ -134,7 +127,7 @@ def read_all():
     :return:        json string of list of video
     """
     # Create the list of people from our data
-    video = Video.query.order_by(Video.timestamp).all()
+    video = VideoModel.query.order_by(VideoModel.timestamp).all()
 
     # Serialize the data for the response
     video_schema = VideoSchema(many=True)
@@ -151,7 +144,7 @@ def addurl(url):
     """
 
     existing_url = (
-        Video.query.filter(Video.url == url)
+        VideoModel.query.filter(VideoModel.url == url)
         .one_or_none()
     )
 
@@ -187,17 +180,9 @@ def download(video_id):
     :return:        201 on success, 406 on person exists
     """
 
-    # Get the video requested
-    video = Video.query.filter(Video.video_id == video_id).one_or_none()
+    video = _updateVideoModelAndMetadata(video_id, "downloading")
 
-    # Did we find a video?
     if video is not None:
-
-        video.status = "downloading"
-        # merge the new object into the old and commit it to the db
-        db.session.merge(video)
-        db.session.commit()
-
         # create, store the thread and start it 
         dld_thread = DldThread(video.url, video.video_id)
         app.config["DLD_THREAD"][video.video_id] = dld_thread
@@ -240,7 +225,7 @@ def delete(video_id):
     :return:            200 on successful delete, 404 if not found
     """
     # Get the video requested
-    video = Video.query.filter(Video.video_id == video_id).one_or_none()
+    video = VideoModel.query.filter(VideoModel.video_id == video_id).one_or_none()
 
     # Did we find a video?
     if video is not None:
@@ -282,3 +267,14 @@ def get_status(video_id):
     # return json response
     json_response = jsonify(video_id=video_id, status=dld_status)
     return json_response, 200
+
+
+def _updateVideoModelAndMetadata(video_id, status, metadata=None):
+    video = VideoModel.query.filter(VideoModel.video_id == video_id).one_or_none()
+    if video is not None:
+        video.status = status
+        db.session.merge(video)
+        db.session.commit()
+        return video
+    
+    return None

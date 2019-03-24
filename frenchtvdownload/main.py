@@ -76,11 +76,6 @@ if (__name__ == "__main__"):
     logger.debug("FrenchTvDownload %s with Python %s (%s)" % (__version__, platform.python_version(), platform.machine()))
     logger.debug("OS : %s %s" % (platform.system(), platform.version()))
 
-    # if (re.match("https://www.france.tv/[^\.]+?\.html", args.urlEmission) is None):
-    #     logger.error("L'URL \"%s\" n'est pas valide" % (args.urlEmission))
-    #     sys.exit(-1)
-
-
     # progress function
     if (args.progressbar):
         progressFnct = lambda x: logger.info("progress : %3d%% - %d/%d" % (min(int((x[0] * 100) / x[1]), 100), x[0], x[1]))
@@ -88,7 +83,6 @@ if (__name__ == "__main__"):
         progressFnct = lambda x: None
 
     try:
-
         networkParser = networkParserFactory(args.urlEmission)
 
         # return the list of URL and exit

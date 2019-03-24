@@ -23,6 +23,7 @@ def download_video(url, base_folder, progressFnct, stopDownloadEvent=threading.E
 
     networkParser = networkParserFactory(url)
     progMetadata = networkParser.getProgMetaData()  
+    print("progMetadata:", progMetadata)
 
     # create video download specific folder
     dst_folder = os.path.join(base_folder, progMetadata["filename"])
@@ -38,7 +39,7 @@ def download_video(url, base_folder, progressFnct, stopDownloadEvent=threading.E
     # working with the manifest
     if (progMetadata["mediaType"] != "hls"):
         print("Protocol not supported:%s" % progMetadata["streamType"])
-        return  
+        return None
 
     # parse the manifest, get the highest definition and extract list of segments 
     manifestParser = HlsManifestParser(fakeAgent=FakeAgent(), url=progMetadata["manifestUrl"])
@@ -70,3 +71,6 @@ def download_video(url, base_folder, progressFnct, stopDownloadEvent=threading.E
         i += 1
 
     CreateMP4(ts_file_full_path, mp4_file_full_path)
+
+    progMetadata["videoFullPath"] = mp4_file_full_path
+    return progMetadata

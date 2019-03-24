@@ -13,7 +13,7 @@ class PersonSchema(ma.ModelSchema):
         model = Person
         sqla_session = db.session
 
-class Video(db.Model):
+class VideoModel(db.Model):
     __tablename__ = 'video'
     video_id = db.Column(db.Integer, primary_key=True)
     url = db.Column(db.String(255), index=True)
@@ -22,7 +22,7 @@ class Video(db.Model):
 
 class VideoSchema(ma.ModelSchema):
     class Meta:
-        model = Video
+        model = VideoModel
         sqla_session = db.session
 
         
