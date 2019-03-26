@@ -6,6 +6,7 @@
 
  body, .ui-btn {
      font-family: Roboto;
+     background: #F6F6F8
  }
  
  .container {
@@ -47,7 +48,7 @@
      margin-right: auto;
      
      padding: 5px;
-     border: 1px solid lightgrey;
+     /* border: 1px solid lightgrey; */
      border-radius: 3px;
      margin-bottom: 5px;
  }
@@ -63,18 +64,19 @@
  }
  
  table, caption, th, td {
-     border: 1px solid lightgrey;
+     border-bottom: 1px solid #DFDCE3;
  }
  
  table caption {
-     height: 33px;
-     font-weight: bold;
+     height: 35px;
+     font-weight: bolder;
+     font-size: 80% ;
      padding-top: 5px;
-     border-bottom: none;
+     /* border-bottom: none; */
  }
  
  tr {
-     height: 33px;
+     height: 35px;
  }
  
  /* tr:nth-child(even) {
@@ -82,7 +84,7 @@
  } */
  
  td {
-     text-align: center;
+     text-align: left;
  }
  
  /* td.url {
@@ -92,7 +94,8 @@
  } */
 
  .url {
-    background-color: CornflowerBlue;
+    /* background-color: CornflowerBlue; */
+    /* width: 50% */
  }
 
  .url div {
@@ -103,11 +106,13 @@
 
  .matadata-table {
     /* border: 2px solid lightpink; */
-    background-color: lightblue ;
+    /* background-color:rgb(76, 204, 185) ; */
+    background: linear-gradient(to bottom, rgb(74, 189, 172) 0%, rgb(126, 190, 181) 100%);
  }
 
  .matadata-table td {
     text-align: left ; 
+    border: 0px
  }
 
  .error {

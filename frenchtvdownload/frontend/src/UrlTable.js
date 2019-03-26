@@ -49,7 +49,7 @@ class UrlTable extends Component {
     addUrl(url) {
         console.log("adddUrl:"+url)
         var lastId = this.props.data[this.props.data.length-1].uid 
-        this.props.data.push(UrlModel(lastId+1, url, "pending", 1551913200.0, VideoMetaData()))
+        this.props.data.push(UrlModel(lastId+1, url, "pending", new Date().getTime(), VideoMetaData()))
         this.setState({data: this.props.data})
     }   
 }

@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import { MapVideoModelToAppModel } from "./model.js"
+import { moment } from 'moment'
+
 
 const Item = ({classname, value, style}) => <td className={classname} style={style}>{value}</td>
 const Button = ({classname, value, style, onClick}) => <button className={classname} style={style} onClick={onClick}>{value}</button>
@@ -86,6 +88,7 @@ class TableRow extends Component {
             break ;
         }
 
+        const moment = require('moment');
         return ( 
           <tr>
             <Item value={this.data.uid} />
@@ -93,7 +96,7 @@ class TableRow extends Component {
               <div onClick={this.onClick}>{this.data.url}</div>
               {(this.state.showMetadata) ? <MetaDataTable data={this.data} /> : null}
             </td>
-            <Item value={this.data.timestamp}/>
+            <Item value={moment(this.data.timestamp).format("ddd DD MMM YY [ - ] hh:mm:ss a")}/>
             <Item value={statusText} style={{background: statusBgColor}}/>
             <td>
                 {(this.state.status==="downloading") ? 
