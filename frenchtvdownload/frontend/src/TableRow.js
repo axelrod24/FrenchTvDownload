@@ -175,8 +175,8 @@ class TableRow extends Component {
 
     onCancelDownload() {
         console.log("onCancelDownload:",this.props.index,":",this.data.uid)
-        var url = "http://localhost:5000/api/download/"+this.data.uid
-        fetch(url, {method: "DELETE"})
+        var url = "http://localhost:5000/api/cancel/"+this.data.uid
+        fetch(url, {method: "POST"})
         .then(res => res.json())
         .then(data => {
             if (this.interval != null) {

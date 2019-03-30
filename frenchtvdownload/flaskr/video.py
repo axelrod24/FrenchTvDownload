@@ -197,14 +197,11 @@ def download(video_id):
         schema = VideoSchema()
         data = schema.dump(video).data
 
-        return data, 201
+        return data
 
     # Otherwise, nope, person exists already
     else:
-        abort(
-            409,
-            "Can't find video {video_id}".format(video_id=video_id),
-        )
+        return None
 
 
 def cancel(video_id):
@@ -254,9 +251,7 @@ def get_status(video_id):
         dld_thread.cleanup() 
         del app.config["DLD_THREAD"][video_id]
 
-    # return json response
-    json_response = jsonify(video_id=video_id, status=dld_status)
-    return json_response, 200
+    return {"video_id":video_id, "status":dld_status}
 
 
 def _updateVideoModelAndMetadata(video_id, status, metadata=None):
