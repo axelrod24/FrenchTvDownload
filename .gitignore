@@ -109,4 +109,7 @@ FRTV_DLD_FOLDER/
 .DS_Store
 
 .idea/
+**/.vscode/settings.json
 
+#reacts
+**/node_modules/
