@@ -1,5 +1,6 @@
 import sys, os
 import logging
+import flask
 from flask import render_template, jsonify, make_response, abort
 
 # local modules
@@ -37,17 +38,44 @@ app.static_url_path = "/static"
 def not_found(error):
     return make_response(jsonify({'error': 'Not found'}), 404)
 
+@app.errorhandler(409)
+def duplicate(error):
+    return make_response(jsonify({'error': 'duplicate'}), 409)
 
-@app.route('/api/video', methods=['GET'])
-def read_all_video():
-    print("read_all_video")
-    return jsonify(flaskr.video.read_all())
+@app.route('/api/video', methods=['GET', 'POST'])
+def get_post_video():
+    print("get_post_video")
+    r = flask.request
+
+    # read list of all video 
+    if r.method == 'GET':
+        return jsonify(flaskr.video.read_all())
+
+    # add a video url
+    if r.method == 'POST':
+        video_url = r.args.get("url", "")
+        if len(video_url) == 0:
+            return make_response(jsonify({'error': 'wrong post url'}), 404)
+        
+        video = flaskr.video.add_url(video_url)
+        if video is None:
+            abort(409)
+
+        return jsonify(video)
+
+    
 
 
 @app.route('/api/video/<string:video_id>', methods=['GET'])
 def read_one_video(video_id):
     print("read_one_video:", video_id)
     return jsonify(flaskr.video.read_one(video_id))
+
+
+@app.route('/api/video/<string:video_url>', methods=['POST'])
+def add_url(video_url):
+    print("add_url:", video_url)
+    return jsonify(flaskr.video.add_url(video_url))
 
 
 @app.route('/api/download/<string:video_id>', methods=['GET'])
@@ -72,7 +100,18 @@ def get_download_status(video_id):
     return jsonify(flaskr.video.get_status(video_id))
 
 
+@app.route('/api/delete/<string:video_id>', methods=['GET'])
+def remove_video(video_id):
+    print("remove_video:", video_id)
+    resp = flaskr.video.delete(video_id)
+
+    if resp is None:
+            abort(404)
+
+    return make_response(jsonify({'status': 'success', 'message':"Video %s successfuly removed" % (video_id)}), 200)
     
+
+
 # # Create a URL route in our application for "/"
 # @connex_app.route('/')
 # def home():

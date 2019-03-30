@@ -100,7 +100,7 @@ class TableRow extends Component {
             <Item value={statusText} style={{background: statusBgColor}}/>
             <td>
                 {(this.state.status==="downloading") ? 
-                    <Button value="Cancel" onClick={this.onCancelDownload}/> : <Button value="Remove" onClick={() => this.props.onRemoveUrl(this.props.index)}/>}
+                    <Button value="Cancel" onClick={this.onCancelDownload}/> : <Button value="Remove" onClick={() => this.props.onRemoveUrl(this.props.index, this.data.uid)}/>}
                 {(this.state.status==="pending") && <Button value="Download" onClick={this.onDownloadVideo}/>}
             </td>
           </tr>
