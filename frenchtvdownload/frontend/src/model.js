@@ -16,7 +16,7 @@ const UrlModel = (uid, url, status, timestamp, videoMetaData) => ({uid:uid, url:
 
 const MapVideoModelToAppModel = (data) => {
 
-    var vmd = (data.mdata.length === 0) ? VideoMetaData() : (() => {
+    var vmd = (!data.mdata || data.mdata.length === 0) ? VideoMetaData() : (() => {
     
         var d = JSON.parse(data.mdata)
         return VideoMetaData(d.manifestUrl, d.synopsis, d.progTitle, d.videoFullPath, d.mediaType, d.duration, d.videoId, d.drm, d.timeStamp, d.progName) 

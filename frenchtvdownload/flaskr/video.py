@@ -142,15 +142,12 @@ def read_one(video_id):
         # Serialize the data for the response
         video_schema = VideoSchema()
         data = video_schema.dump(video).data
-        return data, 200
-    else:
-        abort(
-            409,
-            "Can't find video {video_id}".format(video_id=video_id),
-        )
+        return data
+
+    return None
 
 
-def addurl(url):
+def add_url(url):
     logger.debug("url is : "+url)
 
     existing_url = (
@@ -172,14 +169,10 @@ def addurl(url):
         # Serialize and return the newly created person in the response
         data = schema.dump(new_video).data
 
-        return data, 201
+        return data
 
     # Otherwise, nope, person exists already
-    else:
-        abort(
-            409,
-            "Video {url} exists already".format(url=url),
-        )
+    return None
 
 
 def download(video_id):
@@ -197,14 +190,10 @@ def download(video_id):
         schema = VideoSchema()
         data = schema.dump(video).data
 
-        return data, 201
+        return data
 
     # Otherwise, nope, person exists already
-    else:
-        abort(
-            409,
-            "Can't find video {video_id}".format(video_id=video_id),
-        )
+    return None
 
 
 def cancel(video_id):
@@ -227,17 +216,10 @@ def delete(video_id):
     if video is not None:
         db.session.delete(video)
         db.session.commit()
-        return make_response(
-            "Video {video_id} deleted".format(video_id=video_id), 200
-        )
+        return True
 
-    # Otherwise, nope, didn't find that person
-    else:
-        abort(
-            404,
-            "Person not found for Id: {video_id}".format(video_id=video_id),
-        )
-
+    return None
+    
 
 def get_status(video_id):
     video_id = int(video_id)
@@ -254,9 +236,7 @@ def get_status(video_id):
         dld_thread.cleanup() 
         del app.config["DLD_THREAD"][video_id]
 
-    # return json response
-    json_response = jsonify(video_id=video_id, status=dld_status)
-    return json_response, 200
+    return {"video_id":video_id, "status":dld_status}
 
 
 def _updateVideoModelAndMetadata(video_id, status, metadata=None):
