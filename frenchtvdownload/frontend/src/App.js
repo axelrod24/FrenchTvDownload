@@ -1,9 +1,10 @@
-import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
-import UrlTable from './UrlTable.js';
-import UrlEditor from './UrlEditor.js';
+import React, { Component } from 'react'
+import logo from './logo.svg'
+import './App.css'
+import UrlTable from './UrlTable.js'
+import UrlEditor from './UrlEditor.js'
 import {UrlModel, VideoMetaData, MapVideoModelToAppModel} from "./model.js"
+import WebApi from './WebApi.js'
 
 class App extends Component {
   constructor(props) {
@@ -18,18 +19,13 @@ class App extends Component {
 
   componentDidMount()
   {
-    // fetch original table data
-    var url = "http://localhost:5000/api/video"
-    fetch(url)
-      .then(res => res.json())
-      .then(data => {
-          var table = []
-          // data.map(url => table.push(UrlModel(url.video_id, url.url, url.status, url.timestamp, VideoMetaData())))
-          data.map(url => table.push(MapVideoModelToAppModel(url)))
-          this.setState({loading: false, data: table})
-        }
-      )
-      .catch(error => console.log('Request failed', error))  
+    var fetcher = new WebApi(data => {
+      var table = []
+      data.map(url => table.push(MapVideoModelToAppModel(url)))
+      this.setState({loading: false, data: table})
+    })
+
+    fetcher.getVideoList()
   }
 
   componentDidUpdate(prevProps, prevState)

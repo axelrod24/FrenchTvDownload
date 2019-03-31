@@ -42,6 +42,7 @@ def not_found(error):
 def duplicate(error):
     return make_response(jsonify({'error': 'duplicate'}), 409)
 
+
 @app.route('/api/video', methods=['GET', 'POST'])
 def get_post_video():
     print("get_post_video")
@@ -49,66 +50,87 @@ def get_post_video():
 
     # read list of all video 
     if r.method == 'GET':
-        return jsonify(flaskr.video.read_all())
+
+        # check for a video_id
+        video_id = r.args.get("id", "")
+        if len(video_id) == 0:
+            return jsonify(flaskr.video.read_all())
+        
+        # read a specific video_id
+        video = flaskr.video.read_one(video_id)
+        if video is None:
+            return make_response(jsonify({'error': 'Video Id not found:%s'%(video_id)}))
+
+        return jsonify(video)
 
     # add a video url
     if r.method == 'POST':
         video_url = r.args.get("url", "")
         if len(video_url) == 0:
-            return make_response(jsonify({'error': 'wrong post url'}), 404)
+            return make_response(jsonify({'error': 'wrong post url'}))
         
         video = flaskr.video.add_url(video_url)
         if video is None:
-            abort(409)
+            return make_response(jsonify({'error': 'duplicate'}))
 
         return jsonify(video)
 
-    
 
+@app.route('/api/video/download', methods=['GET'])
+def download_video():
+    # check for a video_id
+    r = flask.request
+    video_id = r.args.get("id", "")
+    if len(video_id) == 0:
+        return make_response(jsonify({'error': 'Wrong request'}))
 
-@app.route('/api/video/<string:video_id>', methods=['GET'])
-def read_one_video(video_id):
-    print("read_one_video:", video_id)
-    return jsonify(flaskr.video.read_one(video_id))
-
-
-@app.route('/api/video/<string:video_url>', methods=['POST'])
-def add_url(video_url):
-    print("add_url:", video_url)
-    return jsonify(flaskr.video.add_url(video_url))
-
-
-@app.route('/api/download/<string:video_id>', methods=['GET'])
-def download_video(video_id):
-    print("Download video:", video_id)
     video = flaskr.video.download(video_id)
     if video is None:
-        abort(404)
+        return make_response(jsonify({'error': 'Video Id not found:%s'%(video_id)}))
 
     return jsonify(video)
 
+    
+@app.route('/api/video/delete', methods=['GET'])
+def remove_video():
+    r = flask.request
+    video_id = r.args.get("id", "")
+    if len(video_id) == 0:
+        return make_response(jsonify({'error': 'Wrong request'}))
 
-@app.route('/api/cancel/<string:video_id>', methods=['POST'])
-def cancel_download_video(video_id):
+    resp = flaskr.video.delete(video_id)
+    if resp is None:
+        return make_response(jsonify({'error': "Can't remove Video id:%s"%(video_id)}))
+
+    return make_response(jsonify({'status': 'success', 'message':"Video %s successfuly removed" % (video_id)}), 200)
+
+
+@app.route('/api/video/cancel', methods=['GET'])
+def cancel_download_video():
+    r = flask.request
+    video_id = r.args.get("id", "")
+    if len(video_id) == 0:
+        return make_response(jsonify({'error': 'Wrong request'}))
+
     print("cancel_download_video:", video_id)
-    return jsonify(flaskr.video.cancel(video_id))
+    resp = flaskr.video.cancel(video_id)
+    if resp is not True:
+        return make_response(jsonify({'error': "Can't cancel download Video id:%s"%(video_id)}))
+
+    return make_response(jsonify({}))
 
 
-@app.route('/api/status/<string:video_id>', methods=['GET'])
-def get_download_status(video_id):
+@app.route('/api/video/status', methods=['GET'])
+def get_download_status():
+    r = flask.request
+    video_id = r.args.get("id", "")
+    if len(video_id) == 0:
+        return make_response(jsonify({'error': 'Wrong request'}))
+
     print("get_download_status:", video_id)
     return jsonify(flaskr.video.get_status(video_id))
 
 
-@app.route('/api/delete/<string:video_id>', methods=['GET'])
-def remove_video(video_id):
-    print("remove_video:", video_id)
-    resp = flaskr.video.delete(video_id)
-
-    if resp is None:
-            abort(404)
-
-    return make_response(jsonify({'status': 'success', 'message':"Video %s successfuly removed" % (video_id)}), 200)
     
 
 

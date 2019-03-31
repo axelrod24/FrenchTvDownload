@@ -205,7 +205,7 @@ def cancel(video_id):
 
     dld_thread.cancel_download()
 
-    return {}, 200
+    return True
    
 
 def delete(video_id):
