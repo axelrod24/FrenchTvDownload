@@ -36,7 +36,10 @@ class NetworkParser(object):
         self.fakeAgent = fakeAgent
         self.progMetaData = {} 
 
-    def normalizeProgTitle(self, filename):
+    def normalizeProgTitle(self, filename, default="default-name"):
+        if filename is None or len(filename)==0:
+            return default
+
         s = re.sub(" - ", "-", filename)
         s = re.sub("[()':,\"]", "", s)
         s = re.sub("/", "_", s)
@@ -166,8 +169,8 @@ class FranceTvParser(NetworkParser):
             metaData['manifestUrl'] = None
             metaData['drm'] = None
             metaData['timeStamp'] = data['diffusion']['timestamp']
-            metaData['progName'] = self.normalizeProgTitle(data['code_programme'])
-            metaData['progTitle'] = self.normalizeProgTitle(data['sous_titre'])
+            metaData['progName'] = self.normalizeProgTitle(data.get('code_programme'), "default_prog_name")
+            metaData['progTitle'] = self.normalizeProgTitle(data.get('sous_titre'), "default_prog_titled.")
             metaData['synopsis'] = data['synopsis']
 
             # duration
@@ -252,9 +255,9 @@ class ArteTvParser(NetworkParser):
                 return metaData
             gregorian_date = data['VRA'].split(" ", 1)[0]
             metaData['timeStamp'] = time.mktime(datetime.datetime.strptime(gregorian_date, "%d/%m/%Y").timetuple()) 
-            metaData['progName'] = self.normalizeProgTitle(data['caseProgram'])
+            metaData['progName'] = self.normalizeProgTitle(data.get('caseProgram'),"default_prog_name")
             # metaData['progTitle'] = data['VTI'].replace(" : "," ").replace(", "," ").replace(":", "-").replace(" ","_").replace("/","_").replace("(",'').replace(")",'')
-            metaData['progTitle'] = self.normalizeProgTitle(data['VTI'])
+            metaData['progTitle'] = self.normalizeProgTitle(data.get('VTI'),"default_prog_title")
             metaData['duration'] = data['videoDurationSeconds']
             metaData['synopsis'] = data['VDE']
 
