@@ -23,6 +23,11 @@ class VideoModel(db.Model):
     # mdata = db.Column(db.JSON)
     mdata = db.Column(db.String(2048))
 
+    def get_video_by_id(self, video_id):
+        video = self.query.filter(VideoModel.video_id == video_id).one_or_none()
+        return video
+
+
 class VideoSchema(ma.ModelSchema):
     class Meta:
         model = VideoModel

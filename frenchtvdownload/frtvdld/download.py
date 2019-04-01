@@ -19,11 +19,13 @@ from frtvdld.GlobalRef import LOGGER_NAME
 
 logger = logging.getLogger(LOGGER_NAME)
 
-def download_video(url, base_folder, progressFnct, stopDownloadEvent=threading.Event()):
-
+def get_video_metadata(url):
     networkParser = networkParserFactory(url)
     progMetadata = networkParser.getProgMetaData()  
-    print("progMetadata:", progMetadata)
+    return progMetadata
+
+
+def download_video(progMetadata, base_folder, progressFnct, stopDownloadEvent=threading.Event()):
 
     # create video download specific folder
     dst_folder = os.path.join(base_folder, progMetadata["filename"])

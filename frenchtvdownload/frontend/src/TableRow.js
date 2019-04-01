@@ -35,6 +35,9 @@ const MetaDataTable = ({data}) => {
                               <tr>
                                 <td>Manifest:</td><td><a href={data.metadata.manifest}>{data.metadata.manifest}</a></td>
                               </tr>
+                              <tr>
+                                <td>Video:</td><td>{data.metadata.videoFullpath}</td>
+                              </tr>
                             </tbody>
                           </table>
                           ) 
@@ -78,7 +81,7 @@ class TableRow extends Component {
                 statusBgColor = "Plum"
             break ;
             
-            case "not_availabl":
+            case "not_available":
                 statusText = "Not Available"
                 statusBgColor = "greenyellow"
             break ;

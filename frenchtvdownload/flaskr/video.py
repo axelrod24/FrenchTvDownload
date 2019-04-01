@@ -6,7 +6,7 @@ from flaskr.config import db, app
 from flaskr.models import VideoModel, VideoSchema 
 
 from frtvdld.GlobalRef import LOGGER_NAME
-from frtvdld.download import download_video
+from frtvdld.download import get_video_metadata, download_video
 from frtvdld.DownloadException import *
 
 logger = logging.getLogger(LOGGER_NAME)
@@ -15,9 +15,10 @@ def JsonStatus(status, progress):
     return json.dumps({"status":status, "progress":("%d" % progress)})
 
 class DldThread():
-    def __init__(self, url, video_id):
+    def __init__(self, url, progMetadata, video_id):
         self.thread = threading.Thread(target=self.run)
         self.url = url
+        self.progMetadata = json.loads(progMetadata)
         self.video_id = video_id
 
         # create a named pipe, deal with file already exist
@@ -44,7 +45,7 @@ class DldThread():
 
         try:
             info_msg = "done"
-            metadata = download_video(self.url, base_folder=app.config["DLD_FOLDER"], progressFnct = callback_progress, stopDownloadEvent=self.stop_download_event)
+            metadata = download_video(self.progMetadata, base_folder=app.config["DLD_FOLDER"], progressFnct = callback_progress, stopDownloadEvent=self.stop_download_event)
 
             # download sucessfuly completed
             logger.info("Video id:%d - downloaded sucessfully" % self.video_id)
@@ -154,12 +155,19 @@ def add_url(url):
         VideoModel.query.filter(VideoModel.url == url).one_or_none()
     )
 
-    # Can we insert this person?
+    # Can we insert this video?
     if existing_url is None:
 
-        # Create a video instance using the schema and the passed in person
+        # check video metadata
+        metadata = get_video_metadata(url)
+        if metadata["manifestUrl"] is None or len(metadata["manifestUrl"]) == 0:
+            status = "not_available"
+        else:
+            status = "pending"
+
+        # Create a video instance using the schema and the passed in video
         schema = VideoSchema()
-        video = { "url": url, "status":"pending"}
+        video = { "url": url, "status":status, "mdata":json.dumps(metadata)}
         new_video = schema.load(video, session=db.session).data
 
         # Add the person to the database
@@ -174,7 +182,7 @@ def add_url(url):
     # Otherwise, nope, person exists already
     return None
 
-
+        
 def download(video_id):
 
     video_id = int(video_id)
@@ -182,7 +190,7 @@ def download(video_id):
 
     if video is not None:
         # create, store the thread and start it 
-        dld_thread = DldThread(video.url, video.video_id)
+        dld_thread = DldThread(video.url, video.mdata, video.video_id)
         app.config["DLD_THREAD"][video.video_id] = dld_thread
         dld_thread.start() 
 
@@ -246,8 +254,6 @@ def _updateVideoModelAndMetadata(video_id, status, metadata=None):
 
         if metadata is not None:
             video.mdata = json.dumps(metadata)
-        else:
-            video.mdata = ''
 
         db.session.merge(video)
         db.session.commit()

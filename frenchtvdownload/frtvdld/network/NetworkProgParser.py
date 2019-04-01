@@ -109,9 +109,9 @@ class FranceTvParser(NetworkParser):
         if metadata['drm']:
             logger.warning("Video with DRM, probably can't be played")
 
-        # Verification qu'un lien existe
-        if metadata['manifestUrl'] is None:
-            raise FrTvDwnManifestUrlNotFoundError()
+        # # Verification qu'un lien existe
+        # if metadata['manifestUrl'] is None:
+        #     raise FrTvDwnManifestUrlNotFoundError()
         
         metadata["filename"] = "%s-%s" % (datetime.datetime.fromtimestamp(metadata['timeStamp']).strftime("%Y%m%d"), self.normalizeProgTitle(metadata['progName']))
         self.progMetaData = metadata
