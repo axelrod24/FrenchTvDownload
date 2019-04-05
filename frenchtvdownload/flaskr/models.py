@@ -21,7 +21,7 @@ class VideoModel(db.Model):
     status = db.Column(db.String(32))
     timestamp = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     # mdata = db.Column(db.JSON)
-    mdata = db.Column(db.String(2048))
+    mdata = db.Column(db.String(4096))
 
     def get_video_by_id(self, video_id):
         video = self.query.filter(VideoModel.video_id == video_id).one_or_none()

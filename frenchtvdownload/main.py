@@ -20,7 +20,7 @@ import tempfile
 import shutil
 import dicttoxml
 
-from xml.dom.minidom import parseString
+from xml.dom import minidom
 
 from frtvdld.DownloadException import *
 from frtvdld.ColorFormatter import ColorFormatter
@@ -110,61 +110,59 @@ if (__name__ == "__main__"):
         logger.error(error)
         exit()
  
-    # generic video filename (without ext)
-    dstFullPath = os.path.join(args.outDir, progMetadata["filename"])
-
-    # save the metadata
-    if (args.keepMetaData):
-        xmlMeta = dicttoxml.dicttoxml(progMetadata, attr_type=False)
-        dom = parseString(xmlMeta)
-        with open(dstFullPath+".meta", "w") as text_file:
-            print(dom.toprettyxml(), file=text_file)
-
     # working with the manifest
-    if (progMetadata["mediaType"] == "hls"):
-        manifestParser = HlsManifestParser(fakeAgent=FakeAgent(), url=progMetadata["manifestUrl"])
+    if (progMetadata.mediaType != "hls"):
+        print("Protocol not supported:%s" % progMetadata.streamType)
+        exit()
+
+    # parse the manifest, get the highest definition and extract list of segments 
+    manifestParser = HlsManifestParser(fakeAgent=FakeAgent(), url=progMetadata.manifestUrl)    
+    manifestParser.parseMasterManifest()
+
+    if (args.listProfiles):
+        d = manifestParser.listOfResolutions()
+        for k in d.keys():
+            print("%d:%s" % (k, d[k]))
         
+        exit(1)
+
+    # create the filename accoding to file meta-data
+    dstFolder = tempfile.mkdtemp()
+    videoFullPath = os.path.join(dstFolder, progMetadata.filename+".ts")
+
+    # downlaod the video
+    streamData = manifestParser.getHighestResolutionStream()
+    listOfSegment = manifestParser.getListOfSegment(url=streamData["URL"])
+    streamDownloader = HLSStreamDownloader(fakeAgent=FakeAgent(), seglist=listOfSegment)
+    streamDownloader.download(to_file=videoFullPath, progressFnct=progressFnct)
+   
+   # write the final video files
+    if videoFullPath is not None:
+
+        # generic video filename (without ext)
+        dstFullPath = os.path.join(args.outDir, progMetadata.filename)
+
+        # rename file if it already exist.
+        fileIndex = 2
+        while os.path.isfile(dstFullPath + ".mp4") is True:
+            dstFullPath = os.path.join(args.outDir, progMetadata.filename + "_" + str(fileIndex))
+            fileIndex += 1
+
+        # convert to mp4
+        CreateMP4(videoFullPath, dstFullPath + ".mp4")
+
+        # save the metadata
+        if (args.keepMetaData):
+            xmlMeta = dicttoxml.dicttoxml(progMetadata._asdict(), attr_type=False)
+            dom = minidom.parseString(xmlMeta)
+            with open(dstFullPath+".meta", "w") as text_file:
+                print(dom.toprettyxml(), file=text_file)
+
         # save the manifest
         if (args.keepManifest):
             masterManifest = manifestParser.getMasterManifest()
             with open(dstFullPath+".m3u8", "w") as text_file:
                 print(masterManifest, file=text_file)
-
-        # parse the manifest, get the highest definition and extract list of segments 
-        manifestParser.parseMasterManifest()
-
-        if (args.listProfiles):
-            d = manifestParser.listOfResolutions()
-            for k in d.keys():
-                print("%d:%s" % (k, d[k]))
-            
-            exit(1)
-
-        streamData = manifestParser.getHighestResolutionStream()
-        listOfSegment = manifestParser.getListOfSegment(url=streamData["URL"])
-
-        streamDownloader = HLSStreamDownloader(fakeAgent=FakeAgent(), seglist=listOfSegment)
- 
-    else:
-       print("Protocol not supported:%s" % progMetadata["streamType"])   
-
-
-    # create the filename accoding to file meta-data
-    dstFolder = tempfile.mkdtemp()
-    videoFullPath = os.path.join(dstFolder, progMetadata["filename"]+".ts")
-
-    streamDownloader.download(to_file=videoFullPath, progressFnct=progressFnct)
-
-    # convert to mp4
-    if videoFullPath is not None:
-
-        # rename file if it already exist.
-        fileIndex = 2
-        while os.path.isfile(dstFullPath + ".mp4") is True:
-            dstFullPath = os.path.join(args.outDir, progMetadata["filename"] + "_" + str(fileIndex))
-            fileIndex += 1
-
-        CreateMP4(videoFullPath, dstFullPath + ".mp4")
 
         # # delete the
         # shutil.move(videoFullPath, os.path.join("~", "Dropbox", "Encoding/"))

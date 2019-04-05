@@ -160,14 +160,14 @@ def add_url(url):
 
         # check video metadata
         metadata = get_video_metadata(url)
-        if metadata["manifestUrl"] is None or len(metadata["manifestUrl"]) == 0:
+        if metadata.manifestUrl is None:
             status = "not_available"
         else:
             status = "pending"
 
         # Create a video instance using the schema and the passed in video
         schema = VideoSchema()
-        video = { "url": url, "status":status, "mdata":json.dumps(metadata)}
+        video = { "url": url, "status":status, "mdata":json.dumps(metadata._asdict())}
         new_video = schema.load(video, session=db.session).data
 
         # Add the person to the database
@@ -207,7 +207,9 @@ def download(video_id):
 def cancel(video_id):
 
     video_id = int(video_id)
-    dld_thread = app.config["DLD_THREAD"][video_id]
+    dld_thread = app.config["DLD_THREAD"].get(video_id, None)
+    if dld_thread is None:
+        return False
 
     # \TODO manage error here, dld_thread can not be found
 
@@ -231,7 +233,10 @@ def delete(video_id):
 
 def get_status(video_id):
     video_id = int(video_id)
-    dld_thread = app.config["DLD_THREAD"][video_id]
+    
+    dld_thread = app.config["DLD_THREAD"].get(video_id, None)
+    if dld_thread is None:
+        return False
 
     # we read download progress
     dld_status = dld_thread.read_status()
