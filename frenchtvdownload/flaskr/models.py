@@ -31,11 +31,11 @@ def get_video_by_id(video_id):
 
 
 def get_video_by_status(status):
-    video = VideoModel.query.filter(VideoModel.status == status).one_or_none()
+    video = VideoModel.query.filter(VideoModel.status == status).all()
     # did we find a video?
     if video is not None:
         # serialize the data for the response
-        schema = VideoSchema()
+        schema = VideoSchema(many=True)
         data = schema.dump(video).data
         return data
 
@@ -116,4 +116,6 @@ def update_video_by_id(video_id, status, url=None, mdata=None):
 
 
 def clean_model_at_startup():
-    pass
+    videos = get_video_by_status('downloading')
+    for v in videos:
+        update_video_by_id(v["video_id"],"pending")

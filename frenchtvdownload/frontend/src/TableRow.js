@@ -103,12 +103,9 @@ class TableRow extends Component {
             <Item value={moment(this.data.timestamp).format("ddd DD MMM YY [ - ] hh:mm:ss a")}/>
             <Item value={statusText} style={{background: statusBgColor}}/>
             <td>
-                {/* {(this.state.status==="downloading") ? 
+                {(this.state.status==="downloading") ? 
                     <Button value="Cancel" onClick={this.onCancelDownload}/>
-                    : <Button value="Remove" onClick={() => this.props.onRemoveUrl(this.props.index, this.data.uid)}/>} */}
-                <Button value="Cancel" onClick={this.onCancelDownload}/>
-                <Button value="Remove" onClick={() => this.props.onRemoveUrl(this.props.index, this.data.uid)}/>
-
+                    : <Button value="Remove" onClick={() => this.props.onRemoveUrl(this.props.index, this.data.uid)}/>}
                 {(this.state.status==="pending") && <Button value="Download" onClick={this.onDownloadVideo}/>}
             </td>
           </tr>

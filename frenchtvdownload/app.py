@@ -4,7 +4,7 @@ import flask
 from flask import render_template, jsonify, make_response, abort
 
 # local modules
-from flaskr import config
+from flaskr import config, models
 from frtvdld.GlobalRef import LOGGER_NAME
 from frtvdld.ColorFormatter import ColorFormatter
 
@@ -34,6 +34,8 @@ app.template_folder = template_dir
 app.static_folder = static_dir
 app.static_url_path = "/static"
 
+# clean up downloading status, replace by pending
+models.clean_model_at_startup()
 
 @app.errorhandler(404)
 def not_found(error):
