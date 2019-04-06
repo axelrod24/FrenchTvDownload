@@ -16,7 +16,7 @@ class UrlTable extends Component {
         this.errorMsg = ""
         this.onRemoveUrl = this.onRemoveUrl.bind(this)
         this.addUrl = this.addUrl.bind(this)
-    
+        this.onError = this.onError.bind(this)
     }
 
     render() {
@@ -34,7 +34,7 @@ class UrlTable extends Component {
                             </tr>
                         </thead>
                         <tbody>
-                            {this.state.data.map((data, index) => <TableRow key={data.uid} data={data} index={index} onRemoveUrl={this.onRemoveUrl}/>)}
+                            {this.state.data.map((data, index) => <TableRow key={data.uid} data={data} index={index} onRemoveUrl={this.onRemoveUrl} onError={this.onError}/>)}
                         </tbody>
                     </table>
                 </div>
@@ -55,15 +55,11 @@ class UrlTable extends Component {
     onRemoveUrl(index, video_id) {
         console.log("onRemoveUrl:"+video_id)
         var fetcher = new WebApi(data => {
-            if (!data.error) {
-                this.state.data.splice(index,1)
-                this.setState({data: this.props.data})
-            } else {
-                // duplicated URL
-                this.errorMsg = "Can't delete video id:"+video_id
-                this.setState({error: true})
-            }
-        })
+            this.state.data.splice(index,1)
+            this.setState({data: this.props.data})
+            },
+            data => {this.onError("Can't delete video id:"+video_id)}
+        )
 
         fetcher.removeVideoById(video_id)
         console.log("state:", this.state)
@@ -73,18 +69,21 @@ class UrlTable extends Component {
     addUrl(video_url) {
         console.log("adddUrl:"+video_url)
         var fetcher = new WebApi(data => {
-            if (!data.error) {
                 this.props.data.push(MapVideoModelToAppModel(data))
                 this.setState({data: this.props.data})
-            } else {
-                // duplicated URL
-                this.errorMsg = "Duplicated URL : \n"+video_url
-                this.setState({error: true})
-            }
-        })
+            },
+        
+            data => {this.onError("Duplicated URL : "+video_url)}
+        
+        )
 
         fetcher.addVideoUrl(video_url)
-    }   
+    }  
+    
+    onError(errorMsg) {
+        this.errorMsg = errorMsg
+        this.setState({error: true})
+    }
 }
 
 export default UrlTable ;

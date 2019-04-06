@@ -103,8 +103,12 @@ class TableRow extends Component {
             <Item value={moment(this.data.timestamp).format("ddd DD MMM YY [ - ] hh:mm:ss a")}/>
             <Item value={statusText} style={{background: statusBgColor}}/>
             <td>
-                {(this.state.status==="downloading") ? 
-                    <Button value="Cancel" onClick={this.onCancelDownload}/> : <Button value="Remove" onClick={() => this.props.onRemoveUrl(this.props.index, this.data.uid)}/>}
+                {/* {(this.state.status==="downloading") ? 
+                    <Button value="Cancel" onClick={this.onCancelDownload}/>
+                    : <Button value="Remove" onClick={() => this.props.onRemoveUrl(this.props.index, this.data.uid)}/>} */}
+                <Button value="Cancel" onClick={this.onCancelDownload}/>
+                <Button value="Remove" onClick={() => this.props.onRemoveUrl(this.props.index, this.data.uid)}/>
+
                 {(this.state.status==="pending") && <Button value="Download" onClick={this.onDownloadVideo}/>}
             </td>
           </tr>
@@ -141,75 +145,60 @@ class TableRow extends Component {
 
     onDownloadVideo() {
         console.log("onDownloadVideo:",this.props.index,":",this.data.uid)
-        var fetcher = new WebApi(data => {
-          this.setState({status: data.status})
-        })
+        var fetcher = new WebApi(
+            data => { this.setState({status: data.status})},
+
+            data => { this.props.onError(data)}
+        )
         
         fetcher.downloadVideoById(this.data.uid)  
     }
 
     onUpdateStatus() {
         console.log("onUpdateStatus:",this.props.index,":",this.data.uid)
-        var fetcher = new WebApi(data => {
-            data = JSON.parse(data.status)
-            
-            if (data.status === "done") {
-              var fetcher = new WebApi(data => {
-                    this.data = MapVideoModelToAppModel(data)
-                    this.setState({status: "done"})
-                  })
+        var fetcher = new WebApi(
+            data => {
+                data = JSON.parse(data.status)
+                
+                if (data.status === "done") {
+                    var fetcher = new WebApi(
+                        data => {
+                            this.data = MapVideoModelToAppModel(data)
+                            this.setState({status: "done"})
+                        },
+                        data => {this.props.onError(data)}
+                    )
 
-              fetcher.getVideoById(this.data.uid)
-            }
+                    fetcher.getVideoById(this.data.uid)
+                }
             
-            if (data.status !== "no_update")
-              this.setState({status:  data.status})
-            
-            if (data.status === "downloading")
-              this.setState({progress: data.progress})
-          })
+                if (data.status !== "no_update")
+                this.setState({status:  data.status})
+                
+                if (data.status === "downloading")
+                this.setState({progress: data.progress})
+            },
+            data => { this.props.onError(data) }
+          )
         
         fetcher.getDownloadStatusById(this.data.uid)
-
-        // var url = "http://localhost:5000/api/status/"+this.data.uid
-        // fetch(url)
-        // .then(res => res.json())
-        // .then(data => {
-        //     data = JSON.parse(data.status)
-            
-        //     if (data.status === "done") {
-        //         fetch("http://localhost:5000/api/video/"+this.data.uid)
-        //         .then(res => res.json())
-        //         .then(data => {
-        //                 this.data = MapVideoModelToAppModel(data)
-        //                 this.setState({status: "done"})
-        //               })
-        //         .catch(error => console.log('Request failed', error))  
-        
-        //     }
-        //     if (data.status !== "no_update")
-        //         this.setState({status:  data.status})
-        //     if (data.status === "downloading")
-        //         this.setState({progress: data.progress})
-            
-        // })
-        // .catch(error => console.log('Request failed', error))  
     }
 
     onCancelDownload() {
         console.log("onCancelDownload:",this.props.index,":",this.data.uid)
-        var url = "http://localhost:5000/api/cancel/"+this.data.uid
-        fetch(url, {method: "POST"})
-        .then(res => res.json())
-        .then(data => {
-            if (this.interval != null) {
-                console.log("Clear interval:", this.interval)
-                clearInterval(this.interval)
-            }
-            this.setState({status: "pending", progress: -1})
-        })
-        .catch(error => console.log('Request failed', error))  
-      }
+        var fetcher = new WebApi(
+            data => {
+                if (this.interval != null) {
+                    console.log("Clear interval:", this.interval)
+                    clearInterval(this.interval)
+                }
+                this.setState({status: "pending", progress: -1})
+            },
+            data => {this.props.onError(data)}
+        )
+        
+        fetcher.cancelDownloadById(this.data.uid)
+    }
 
     onClick() {
       this.setState({showMetadata: !this.state.showMetadata})

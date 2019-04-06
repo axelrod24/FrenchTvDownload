@@ -3,8 +3,9 @@ import logo from './logo.svg'
 import './App.css'
 import UrlTable from './UrlTable.js'
 import UrlEditor from './UrlEditor.js'
-import {UrlModel, VideoMetaData, MapVideoModelToAppModel} from "./model.js"
+import { MapVideoModelToAppModel } from "./model.js"
 import WebApi from './WebApi.js'
+
 
 class App extends Component {
   constructor(props) {

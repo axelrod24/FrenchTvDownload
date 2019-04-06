@@ -3,13 +3,14 @@ import os, threading, logging, json
 from flask import make_response, abort, jsonify
 
 from flaskr.config import db, app
-from flaskr.models import VideoModel, VideoSchema 
+from flaskr import models
 
 from frtvdld.GlobalRef import LOGGER_NAME
 from frtvdld.download import get_video_metadata, download_video
 from frtvdld.DownloadException import *
 
 logger = logging.getLogger(LOGGER_NAME)
+
 
 def JsonStatus(status, progress):
     return json.dumps({"status":status, "progress":("%d" % progress)})
@@ -51,7 +52,7 @@ class DldThread():
             logger.info("Video id:%d - downloaded sucessfully" % self.video_id)
 
             # find the video entry and mark it as "done"
-            _updateVideoModelAndMetadata(video_id = self.video_id, status = "done", metadata=metadata)
+            models.update_video_by_id(self.video_id, status="done", mdata=metadata)
 
             # write "done" status.
             self.write_to_pipe(JsonStatus(status="done", progress = 0))
@@ -82,7 +83,7 @@ class DldThread():
             else:
                 status = info_msg
 
-            _updateVideoModelAndMetadata(self.video_id, status)
+            models.update_video_by_id(self.video_id, status=status)
 
             logger.info(error_msg)
             self.write_to_pipe(JsonStatus(status=info_msg, progress = 0))
@@ -122,121 +123,70 @@ class DldThread():
 
 
 def read_all():
-    # Create the list of video from our data
-    video = VideoModel.query.order_by(VideoModel.timestamp).all()
-
-    # Serialize the data for the response
-    video_schema = VideoSchema(many=True)
-    data = video_schema.dump(video).data
+    data = models.get_all_video()
     return data
 
 
 def read_one(video_id):
-
-    # Create the list of video from our data
     video_id = int(video_id)
-    video = VideoModel.query.filter(VideoModel.video_id == video_id).one_or_none()
-
-    # Did we find a video?
-    if video is not None:
-            
-        # Serialize the data for the response
-        video_schema = VideoSchema()
-        data = video_schema.dump(video).data
-        return data
-
-    return None
+    video = models.get_video_by_id(video_id)
+    return video
 
 
 def add_url(url):
-    logger.debug("url is : "+url)
+    existing_url = models.get_video_by_url(url)
 
-    existing_url = (
-        VideoModel.query.filter(VideoModel.url == url).one_or_none()
-    )
-
-    # Can we insert this video?
+    # can we insert this video?
     if existing_url is None:
-
-        # check video metadata
+        # get video metadata
         metadata = get_video_metadata(url)
         if metadata.manifestUrl is None:
             status = "not_available"
         else:
             status = "pending"
 
-        # Create a video instance using the schema and the passed in video
-        schema = VideoSchema()
-        video = { "url": url, "status":status, "mdata":json.dumps(metadata._asdict())}
-        new_video = schema.load(video, session=db.session).data
+        video = models.add_new_video(url=url, status=status, mdata=json.dumps(metadata._asdict()))
+        return video
 
-        # Add the person to the database
-        db.session.add(new_video)
-        db.session.commit()
-
-        # Serialize and return the newly created person in the response
-        data = schema.dump(new_video).data
-
-        return data
-
-    # Otherwise, nope, person exists already
+    # video exists already
     return None
 
         
 def download(video_id):
-
     video_id = int(video_id)
-    video = _updateVideoModelAndMetadata(video_id, "downloading")
-
+    video = models.update_video_by_id(video_id, status="downloading")
     if video is not None:
         # create, store the thread and start it 
-        dld_thread = DldThread(video.url, video.mdata, video.video_id)
-        app.config["DLD_THREAD"][video.video_id] = dld_thread
+        dld_thread = DldThread(video["url"], video["mdata"], video["video_id"])
+        app.config["DLD_THREAD"][video["video_id"]] = dld_thread
         dld_thread.start() 
 
-        # Serialize and return the newly created video in the response
-        schema = VideoSchema()
-        data = schema.dump(video).data
+        return video
 
-        return data
-
-    # Otherwise, nope, person exists already
     return None
 
 
 def cancel(video_id):
-
     video_id = int(video_id)
     dld_thread = app.config["DLD_THREAD"].get(video_id, None)
     if dld_thread is None:
         return False
 
-    # \TODO manage error here, dld_thread can not be found
-
     dld_thread.cancel_download()
-
     return True
    
 
 def delete(video_id):
     # Get the video requested
-    video = VideoModel.query.filter(VideoModel.video_id == video_id).one_or_none()
+    video = models.delete_video_by_id(video_id)
+    return video
 
-    # Did we find a video?
-    if video is not None:
-        db.session.delete(video)
-        db.session.commit()
-        return True
-
-    return None
-    
 
 def get_status(video_id):
     video_id = int(video_id)
-    
     dld_thread = app.config["DLD_THREAD"].get(video_id, None)
     if dld_thread is None:
-        return False
+        return None
 
     # we read download progress
     dld_status = dld_thread.read_status()
@@ -252,17 +202,4 @@ def get_status(video_id):
     return {"video_id":video_id, "status":dld_status}
 
 
-def _updateVideoModelAndMetadata(video_id, status, metadata=None):
-    video = VideoModel.query.filter(VideoModel.video_id == video_id).one_or_none()
-    if video is not None:
-        video.status = status
-
-        if metadata is not None:
-            video.mdata = json.dumps(metadata)
-
-        db.session.merge(video)
-        db.session.commit()
-        return video
-    
-    return None
 

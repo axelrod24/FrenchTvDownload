@@ -34,6 +34,7 @@ app.template_folder = template_dir
 app.static_folder = static_dir
 app.static_url_path = "/static"
 
+
 @app.errorhandler(404)
 def not_found(error):
     return make_response(jsonify({'error': 'Not found'}), 404)
@@ -54,26 +55,26 @@ def get_post_video():
         # check for a video_id
         video_id = r.args.get("id", "")
         if len(video_id) == 0:
-            return jsonify(flaskr.video.read_all())
+            return response(flaskr.video.read_all())
         
         # read a specific video_id
         video = flaskr.video.read_one(video_id)
         if video is None:
-            return make_response(jsonify({'error': 'Video Id not found:%s'%(video_id)}))
+            return error('Video Id not found:%s'%(video_id))
 
-        return jsonify(video)
+        return response(video)
 
     # add a video url
     if r.method == 'POST':
         video_url = r.args.get("url", "")
         if len(video_url) == 0:
-            return make_response(jsonify({'error': 'wrong post url'}))
+            return error('wrong post url')
         
         video = flaskr.video.add_url(video_url)
         if video is None:
-            return make_response(jsonify({'error': 'duplicate'}))
+            return error('duplicate')
 
-        return jsonify(video)
+        return response(video)
 
 
 @app.route('/api/video/download', methods=['GET'])
@@ -82,13 +83,13 @@ def download_video():
     r = flask.request
     video_id = r.args.get("id", "")
     if len(video_id) == 0:
-        return make_response(jsonify({'error': 'Wrong request'}))
+        return error('Wrong request')
 
     video = flaskr.video.download(video_id)
     if video is None:
-        return make_response(jsonify({'error': 'Video Id not found:%s'%(video_id)}))
+        return error('Video Id not found:%s'%(video_id))
 
-    return jsonify(video)
+    return response(video)
 
     
 @app.route('/api/video/delete', methods=['GET'])
@@ -96,13 +97,13 @@ def remove_video():
     r = flask.request
     video_id = r.args.get("id", "")
     if len(video_id) == 0:
-        return make_response(jsonify({'error': 'Wrong request'}))
+        return error('Wrong request')
 
     resp = flaskr.video.delete(video_id)
     if resp is None:
-        return make_response(jsonify({'error': "Can't remove Video id:%s"%(video_id)}))
+        return error("Can't remove Video id:%s"%(video_id))
 
-    return make_response(jsonify({'status': 'success', 'message':"Video %s successfuly removed" % (video_id)}), 200)
+    return response({'status': 'success', 'message':"Video %s successfuly removed" % (video_id)})
 
 
 @app.route('/api/video/cancel', methods=['GET'])
@@ -110,14 +111,14 @@ def cancel_download_video():
     r = flask.request
     video_id = r.args.get("id", "")
     if len(video_id) == 0:
-        return make_response(jsonify({'error': 'Wrong request'}))
+        return error('Wrong request')
 
     print("cancel_download_video:", video_id)
     resp = flaskr.video.cancel(video_id)
     if resp is not True:
-        return make_response(jsonify({'error': "Can't cancel download Video id:%s"%(video_id)}))
+        return error("Error cancel download Video id:%s"%(video_id))
 
-    return make_response(jsonify({}))
+    return response(None)
 
 
 @app.route('/api/video/status', methods=['GET'])
@@ -125,45 +126,18 @@ def get_download_status():
     r = flask.request
     video_id = r.args.get("id", "")
     if len(video_id) == 0:
-        return make_response(jsonify({'error': 'Wrong request'}))
+        return error('Wrong request')
 
     print("get_download_status:", video_id)
-    return jsonify(flaskr.video.get_status(video_id))
+    status = flaskr.video.get_status(video_id)
+    if status is None:
+        return error("Can't read status for Video id:%s"%(video_id))
+
+    return response(status)
 
 
-    
+def response(resp):
+    return jsonify({"status":"success", "data": resp})
 
-
-# # Create a URL route in our application for "/"
-# @connex_app.route('/')
-# def home():
-#     """
-#     This function just responds to the browser ULR
-#     localhost:5000/
-#     :return:        the rendered template 'home.html'
-#     """
-#     # return render_template('home.html')
-#     return render_template('index.html')
-
-# If we're running in stand alone mode, run the application
-# if __name__ == '__main__':
-#     template_dir = os.path.join(os.path.abspath(os.path.dirname(__file__)), "frontend", "build" )
-#     static_dir = os.path.join(os.path.abspath(os.path.dirname(__file__)), "frontend", "build", "static")
-#     # connex_app.app.template_folder = template_dir
-#     # connex_app.app.static_folder = static_dir
-#     # connex_app.app.static_url_path = "/static"
-#     # if connex_app.app.config["ENV"] == 'production':
-#     #     connex_app.run(debug=True)
-#     # else:
-#     #     connex_app.run(host='0.0.0.0', port=5000, debug=True)
-
-#     connex_app.template_folder = template_dir
-#     connex_app.static_folder = static_dir
-#     connex_app.static_url_path = "/static"
-#     print("in the main")
-#     if connex_app.config["ENV"] == 'production':
-#         connex_app.run(debug=True)
-#     else:
-#         connex_app.run(host='0.0.0.0', port=5000, debug=True)
-
-
+def error(resp):
+    return jsonify({"status":"error", "data": resp})
