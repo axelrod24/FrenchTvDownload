@@ -8,8 +8,9 @@ const ErrorMsg = ({msg}) => <div className="error">{msg}</div>
 class UrlTable extends Component {
     constructor(props) {
         super(props) ;
+
+        this.store = this.props.store
         this.state = { 
-            data: this.props.data,
             error: false
         }
 
@@ -20,6 +21,7 @@ class UrlTable extends Component {
     }
 
     render() {
+        console.log("UrlTable: render")
         return (
             <div>        
                 <div className="people">
@@ -34,7 +36,9 @@ class UrlTable extends Component {
                             </tr>
                         </thead>
                         <tbody>
-                            {this.state.data.map((data, index) => <TableRow key={data.uid} data={data} index={index} onRemoveUrl={this.onRemoveUrl} onError={this.onError}/>)}
+                            {(this.store.getState()) ? 
+                                this.store.getState().data.map((data, index) => <TableRow key={data.uid} store={this.store} index={index} onRemoveUrl={this.onRemoveUrl} onError={this.onError}/>) : 
+                                <tr><td><div>Loading table ...</div></td></tr>}
                         </tbody>
                     </table>
                 </div>
@@ -54,9 +58,11 @@ class UrlTable extends Component {
 
     onRemoveUrl(index, video_id) {
         console.log("onRemoveUrl:"+video_id)
-        var fetcher = new WebApi(data => {
-            this.state.data.splice(index,1)
-            this.setState({data: this.props.data})
+        var fetcher = new WebApi(
+            data => {
+                this.store.dispatch({type:"REMOVE_URL", payload:video_id})
+                // force render ...
+                this.setState({error: false})
             },
             data => {this.onError("Can't delete video id:"+video_id)}
         )
@@ -68,13 +74,14 @@ class UrlTable extends Component {
 
     addUrl(video_url) {
         console.log("adddUrl:"+video_url)
-        var fetcher = new WebApi(data => {
-                this.props.data.push(MapVideoModelToAppModel(data))
-                this.setState({data: this.props.data})
+        var fetcher = new WebApi(
+            data => {
+                this.store.dispatch({type:"ADD_URL", payload:MapVideoModelToAppModel(data)})
+                // force render ...
+                this.setState({error: false})
             },
         
             data => {this.onError("Duplicated URL : "+video_url)}
-        
         )
 
         fetcher.addVideoUrl(video_url)

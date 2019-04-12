@@ -47,10 +47,12 @@ class TableRow extends Component {
     constructor(props) {
         super(props) ;
 
-        this.data = this.props.data
+        this.store = this.props.store
+        this.data = this.store.getState().data[this.props.index]
+
         this.interval = null
         this.state = {
-            status: this.props.data.status,
+            status: this.data.status,
             showMetadata: false,
             progress: -1
         }
@@ -62,7 +64,7 @@ class TableRow extends Component {
     }
 
     render() {
-
+        console.log("TableRow: render")
         var statusText, statusBgColor ;
 
         switch(this.state.status) {
@@ -122,7 +124,7 @@ class TableRow extends Component {
     componentDidUpdate(prevProps, prevState)
     {
         console.log("componentDidUpdate:",this.data.uid)
-        console.log("this.state",this.state)
+        console.log("TableRow: store:",this.store.getState().data)
         if (this.interval == null) {
 
             if (this.state.status === "downloading") 
@@ -143,7 +145,10 @@ class TableRow extends Component {
     onDownloadVideo() {
         console.log("onDownloadVideo:",this.props.index,":",this.data.uid)
         var fetcher = new WebApi(
-            data => { this.setState({status: data.status})},
+            data => {
+                this.store.dispatch({type:"UPDATE_STATUS", payload:{id:this.data.uid, status:data.status}})
+                this.setState({status: data.status})
+            },
 
             data => { this.props.onError(data)}
         )
@@ -161,19 +166,23 @@ class TableRow extends Component {
                     var fetcher = new WebApi(
                         data => {
                             this.data = MapVideoModelToAppModel(data)
+                            this.store.dispatch({type:"REPLACE_URL", payload: this.data})
+                            this.store.dispatch({type:"UPDATE_STATUS", payload: {id:this.data.uid, status:"done"}})
                             this.setState({status: "done"})
                         },
                         data => {this.props.onError(data)}
                     )
 
                     fetcher.getVideoById(this.data.uid)
+                    return
                 }
             
-                if (data.status !== "no_update")
-                this.setState({status:  data.status})
-                
                 if (data.status === "downloading")
-                this.setState({progress: data.progress})
+                    this.setState({progress: data.progress})
+                else {
+                    if (data.status !== "no_update")
+                        this.setState({status:  data.status})
+                }
             },
             data => { this.props.onError(data) }
           )
@@ -190,6 +199,7 @@ class TableRow extends Component {
                     clearInterval(this.interval)
                 }
                 this.setState({status: "pending", progress: -1})
+                this.store.dispatch({type:"UPDATE_STATUS", payload:{id:this.data.uid, status:"pending"}})
             },
             data => {this.props.onError(data)}
         )
