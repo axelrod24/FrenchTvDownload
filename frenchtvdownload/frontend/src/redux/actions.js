@@ -15,8 +15,10 @@ function UrlAction(state = { data: []}, action) {
     case "UPDATE_STATUS":
       return {...state, 
         data: state.data.map((v, index) => (v.uid === action.payload.id) ? (v => {v.status=action.payload.status ; return v})(v) : v) }
+    
     case "REMOVE_URL":
-    return {...state, data: state.data.filter(v => (v.uid != action.payload))}
+      return {...state, data: state.data.filter(v => (v.uid != action.payload))}
+
     defaut:
       return {...state}
   }

@@ -3,7 +3,13 @@ import TableRow from "./TableRow.js"
 import {MapVideoModelToAppModel} from "./model.js"
 import WebApi from './WebApi.js'
 
-const ErrorMsg = ({msg}) => <div className="error">{msg}</div>
+const InfoMsg = ({msg, isError=false}) => {
+    var cn = "info"
+    if (isError)
+        cn = "error"
+        
+    return (<div className={cn}>{msg}</div>)
+}
 
 class UrlTable extends Component {
     constructor(props) {
@@ -11,19 +17,22 @@ class UrlTable extends Component {
 
         this.store = this.props.store
         this.state = { 
+            info: false,
             error: false
         }
 
-        this.errorMsg = ""
+        this.infoMsg = ""
         this.onRemoveUrl = this.onRemoveUrl.bind(this)
         this.addUrl = this.addUrl.bind(this)
         this.onError = this.onError.bind(this)
+        this.clearInfoMsg = this.clearInfoMsg.bind(this)
     }
 
     render() {
         console.log("UrlTable: render")
         return (
-            <div>        
+            <div> 
+                {(this.state.info) ? <InfoMsg msg={this.infoMsg} isError={this.state.error}/> : <div />}       
                 <div className="people">
                     <table>
                         <thead>
@@ -42,7 +51,6 @@ class UrlTable extends Component {
                         </tbody>
                     </table>
                 </div>
-                {(this.state.error) ? <ErrorMsg msg={this.errorMsg}/> : <div />}
             </div> 
         )
     }
@@ -52,7 +60,7 @@ class UrlTable extends Component {
         console.log("componentDidUpdate")
         console.log("this.state",this.state)
         if (this.state.error) {
-            setTimeout(() => {this.setState({error: false})}, 3000)
+            setTimeout(() => {this.clearInfoMsg()}, 3000)
         }
     }
 
@@ -62,7 +70,7 @@ class UrlTable extends Component {
             data => {
                 this.store.dispatch({type:"REMOVE_URL", payload:video_id})
                 // force render ...
-                this.setState({error: false})
+                this.clearInfoMsg()
             },
             data => {this.onError("Can't delete video id:"+video_id)}
         )
@@ -78,18 +86,28 @@ class UrlTable extends Component {
             data => {
                 this.store.dispatch({type:"ADD_URL", payload:MapVideoModelToAppModel(data)})
                 // force render ...
-                this.setState({error: false})
+                this.clearInfoMsg()
             },
         
             data => {this.onError("Duplicated URL : "+video_url)}
         )
 
         fetcher.addVideoUrl(video_url)
+        this.onInfo("Adding URL "+video_url)
     }  
     
     onError(errorMsg) {
-        this.errorMsg = errorMsg
-        this.setState({error: true})
+        this.infoMsg = errorMsg
+        this.setState({info: true, error: true})
+    }
+
+    onInfo(infoMsg) {
+        this.infoMsg = infoMsg
+        this.setState({info: true})
+    }
+
+    clearInfoMsg() {
+        this.setState({info: false, error: false})
     }
 }
 
