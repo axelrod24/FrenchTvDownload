@@ -9,39 +9,51 @@ const Button = ({classname, value, style, onClick}) => <button className={classn
 const ButtonItem = ({classname, value, style, onClick}) => <Item className={classname} style={style} value={<button> onClick={onClick}>{value}</button>} />
 
 const MetaDataTable = ({data}) => {
-                    return (
-                          <table className="matadata-table">
-                            <tbody>
-                              <tr>
-                                <td style={{width: "80px"}}>Title:</td><td>{data.metadata.progTitle}</td>
-                              </tr>
-                              <tr>
-                                <td>Name:</td><td>{data.metadata.progName}</td>
-                              </tr>
-                              <tr>
-                                <td>Duration:</td><td>{(() => {
-                                    var h = Math.floor(data.metadata.duration/3600)
-                                    var rs = data.metadata.duration - (h*3600)
-                                    var m = Math.floor(rs/60)
-                                    rs = rs - (m*60)
-                                    return (""+h+":"+m+":"+rs) })()}</td>
-                              </tr>
-                              <tr>
-                                <td>Synopsis:</td><td>{data.metadata.synopsis}</td>
-                              </tr>
-                              <tr>
-                                <td>Filename:</td><td>{data.metadata.filename}</td>
-                              </tr>
-                              <tr>
-                                <td>Manifest:</td><td><a href={data.metadata.manifest}>{data.metadata.manifest}</a></td>
-                              </tr>
-                              <tr>
-                                <td>Video:</td><td>{data.metadata.videoFullpath}</td>
-                              </tr>
-                            </tbody>
-                          </table>
-                          ) 
-                  }
+        if (data.status==="error") {
+            return (
+                <table className="matadata-table, error">
+                    <tbody>
+                        <tr>
+                            <td style={{width: "80px"}}>{data.metadata.errorMsg}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            )
+        }
+
+        return (
+            <table className="matadata-table">
+            <tbody>
+                <tr>
+                <td style={{width: "80px"}}>Title:</td><td>{data.metadata.progTitle}</td>
+                </tr>
+                <tr>
+                <td>Name:</td><td>{data.metadata.progName}</td>
+                </tr>
+                <tr>
+                <td>Duration:</td><td>{(() => {
+                    var h = Math.floor(data.metadata.duration/3600)
+                    var rs = data.metadata.duration - (h*3600)
+                    var m = Math.floor(rs/60)
+                    rs = rs - (m*60)
+                    return (""+h+":"+m+":"+rs) })()}</td>
+                </tr>
+                <tr>
+                <td>Synopsis:</td><td>{data.metadata.synopsis}</td>
+                </tr>
+                <tr>
+                <td>Filename:</td><td>{data.metadata.filename}</td>
+                </tr>
+                <tr>
+                <td>Manifest:</td><td><a href={data.metadata.manifest}>{data.metadata.manifest}</a></td>
+                </tr>
+                <tr>
+                <td>Video:</td><td>{data.metadata.videoFullpath}</td>
+                </tr>
+            </tbody>
+            </table>
+            ) 
+    }
 
 class TableRow extends Component {
     constructor(props) {
@@ -86,6 +98,11 @@ class TableRow extends Component {
             case "not_available":
                 statusText = "Not Available"
                 statusBgColor = "greenyellow"
+            break ;
+
+            case "error":
+                statusText = "Error"
+                statusBgColor = "red"
             break ;
 
             default:

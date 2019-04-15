@@ -21,10 +21,10 @@ class FrTvDwnVideoNotFound(FrTvDownloadException):
 class FrTvDwnPageParsingError(FrTvDownloadException):
     pass
 
-class FrTvDwnManifestUrlNotFoundError(FrTvDownloadException):
+class FrTvDwnMetaDataParsingError(FrTvDownloadException):
     pass
 
-class FrTvDwnMetaDataParsingError(FrTvDownloadException):
+class FrTvDwnManifestUrlNotFoundError(FrTvDownloadException):
     pass
 
 class FrTvDwnUserInterruption(FrTvDownloadException):

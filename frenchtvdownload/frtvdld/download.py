@@ -9,7 +9,7 @@ import dicttoxml
 import threading
 
 from frtvdld.ColorFormatter import ColorFormatter
-from frtvdld.network.NetworkProgParser import networkParserFactory 
+from frtvdld.network.NetworkProgParser import networkParserFactory, VideoMetadataError
 from frtvdld.downloader.HLSDownloader import HlsManifestParser, HLSStreamDownloader
 from frtvdld.DownloadException import FrTvDownloadException, FrTvDwnUserInterruption
 
@@ -18,6 +18,10 @@ from frtvdld.Converter import CreateMP4
 from frtvdld.GlobalRef import LOGGER_NAME
 
 logger = logging.getLogger(LOGGER_NAME)
+
+def get_error_metadata(url, error_msg):
+    metadata = VideoMetadataError(url, error_msg)
+    return metadata
 
 def get_video_metadata(url):
     networkParser = networkParserFactory(url)

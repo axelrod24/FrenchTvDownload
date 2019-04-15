@@ -27,7 +27,7 @@ from frtvdld.FakeAgent import FakeAgent
 from frtvdld.DownloadException import *
 from frtvdld.GlobalRef import LOGGER_NAME
 
-from frtvdld.network.NetworkParser import NetworkParser
+from frtvdld.network.NetworkParser import NetworkParser, VideoMetadataError
 from frtvdld.network.FranceTvParser import FranceTvParser
 from frtvdld.network.ArteTvParser import ArteTvParser
 from frtvdld.network.Tf1Parser import Tf1Parser
@@ -158,6 +158,7 @@ class NetworkProgParser(object):
     def getListOfUrlCollection(self):
         listOfUrl = self._networkParser.getListOfUrlCollection(self._url)
         return listOfUrl
+
 
 def networkParserFactory(progUrl):
     logger.info(progUrl)

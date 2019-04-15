@@ -95,18 +95,17 @@ if (__name__ == "__main__"):
         
         progMetadata = networkParser.getProgMetaData()  
 
-    except FrTvDownloadException as excepErr:
-        if isinstance(excepErr, FrTvDwnVideoNotFound):
+    except Exception as err:
+        if isinstance(err, FrTvDwnVideoNotFound):
             error = "Can't find video: %s" % args.urlEmission
-        elif isinstance(excepErr, FrTvDwnPageParsingError):
+        elif isinstance(err, FrTvDwnPageParsingError):
             error = "Can't get or parse video ID page: %s" % args.urlEmission
-        elif isinstance(excepErr, FrTvDwnManifestUrlNotFoundError):
+        elif isinstance(err, FrTvDwnManifestUrlNotFoundError):
             error = "Can't get manifest URL (video link expired): %s" % args.urlEmission
-        elif isinstance(excepErr, FrTvDwnMetaDataParsingError):
+        elif isinstance(err, FrTvDwnMetaDataParsingError):
             error = "Can't parse video metadata: %s" % args.urlEmission
         else:
             error = "Unknown error getting metadata for %s" % args.urlEmission
-
         logger.error(error)
         exit()
  

@@ -85,69 +85,30 @@ class ArteTvParser(NetworkParser):
         # parse Metadata
         try:
           data = json.loads(pageInfos)
+          data["videoUrl"] = url
           data["videoId"] = jurl
           videoMetadata = ArteTvVideoMetadata(data)
           metadata = videoMetadata.getMetadata()
         except Exception as e:
           logger.error(e)
-          raise FrTvDwnPageParsingError()
+          raise FrTvDwnMetaDataParsingError()
 
-
-        # metadata = self._parseInfosJSON(pageInfos)
-
-        # metadata["videoId"] = jurl
-        # metadata["filename"] = "%s-Arte-%s" % (datetime.datetime.fromtimestamp(metadata['timeStamp']).strftime("%Y%m%d"), self.normalizeProgTitle(metadata['progTitle']))
         self.progMetaData = metadata
        
     def _getProgId(self, url):
-        l = url.split("/")
-        i = 0
-        while(i<len(l)):
-            if l[i] == "videos":
-                return l[i+1]
-            i+=1 
+        try:
+            l = url.split("/")
+            i = 0
+            while(i<len(l)):
+                if l[i] == "videos":
+                    return l[i+1]
+                i+=1 
 
-        return None
-
-    # def _parseInfosJSON(self, page):
-    #     try:
-    #         data = json.loads(page)
-    #         metaData = {}
-    #         metaData["mediaType"] = None
-    #         metaData['manifestUrl'] = None
-    #         metaData['drm'] = None
-
-    #         data = data["videoJsonPlayer"]
-    #         if 'VRA' not in data.keys():
-    #             return metaData
-    #         gregorian_date = data['VRA'].split(" ", 1)[0]
-    #         metaData['timeStamp'] = time.mktime(datetime.datetime.strptime(gregorian_date, "%d/%m/%Y").timetuple()) 
-    #         metaData['progName'] = data['caseProgram']
-    #         metaData['progTitle'] = data['VTI']
-    #         metaData['duration'] = data['videoDurationSeconds']
-    #         metaData['synopsis'] = data['VDE']
-
-    #         if 'VSR' not in data.keys():
-    #             return metaData
+            return None
             
-    #         VSR = data['VSR']
-    #         for k in VSR:
-    #             if not k.startswith("HLS"):
-    #                 continue
-    #             v = VSR[k]
-    #             if v["versionCode"] not in ["VF-STF", "VOF-STF", "VF", "VOF", "VO-STF"]:
-    #                 continue
-
-    #             metaData['manifestUrl'] = v['url']
-    #             metaData['drm'] = False
-    #             metaData["mediaType"] = "hls"
-    #             break
-
-    #         return metaData
-
-    #     except Exception as e:
-    #         logger.error(e)
-    #         raise FrTvDwnMetaDataParsingError()
+        except Exception as e:
+            logger.error(e)
+            raise FrTvDwnPageParsingError()
 
     def _getCollectionUrls(self, pageInfo, allUrl):
         pass

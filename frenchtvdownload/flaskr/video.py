@@ -6,7 +6,7 @@ from flaskr.config import db, app
 from flaskr import models
 
 from frtvdld.GlobalRef import LOGGER_NAME
-from frtvdld.download import get_video_metadata, download_video
+from frtvdld.download import get_video_metadata, download_video, get_error_metadata
 from frtvdld.DownloadException import *
 
 logger = logging.getLogger(LOGGER_NAME)
@@ -139,14 +139,33 @@ def add_url(url):
     # can we insert this video?
     if existing_url is None:
         # get video metadata
-        metadata = get_video_metadata(url)
-        if metadata.manifestUrl is None:
-            status = "not_available"
-        else:
-            status = "pending"
+        try:
+            metadata = get_video_metadata(url)
+            if metadata.manifestUrl is None:
+                status = "not_available"
+            else:
+                status = "pending"
 
-        video = models.add_new_video(url=url, status=status, mdata=json.dumps(metadata._asdict()))
-        return video
+        except Exception as err:
+            if isinstance(err, FrTvDwnVideoNotFound):
+                error = "Can't find video"
+            elif isinstance(err, FrTvDwnPageParsingError):
+                error = "Can't get or parse video ID page"
+            elif isinstance(err, FrTvDwnManifestUrlNotFoundError):
+                error = "Can't get manifest URL (video link expired)"
+            elif isinstance(err, FrTvDwnMetaDataParsingError):
+                error = "Can't parse video metadata"
+            else:
+                error = "Unknown error getting metadata"
+            
+            logger.error(error+" for %s" % url)
+            status = "error"
+            errMetadata = get_error_metadata(url, error)
+            metadata = errMetadata.getMetadata()
+
+        finally:
+            video = models.add_new_video(url=url, status=status, mdata=json.dumps(metadata._asdict()))
+            return video
 
     # video exists already
     return None

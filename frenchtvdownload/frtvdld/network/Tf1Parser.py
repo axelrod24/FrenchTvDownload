@@ -68,30 +68,20 @@ class Tf1Parser(NetworkParser):
         try:
           data = json.loads(pageInfos1)
           data.update(json.loads(pageInfos2))
+          data["videoUrl"] = url
           data["videoId"] = jurl1
           videoMetadata = Tf1VideoMetadata(data)
           metadata = videoMetadata.getMetadata()
         except Exception as e:
           logger.error(e)
-          raise FrTvDwnPageParsingError()
+          raise FrTvDwnMetaDataParsingError()
 
-        # for k in metadata1.keys():
-        #     metadata[k] = metadata1[k]
-        
-        # metadata["videoId"] = jurl
-
-        # check that URL exist
-        # if metadata['manifestUrl'] is None:
-        #     raise FrTvDownloadException("No manifest URL")
-
-        # metadata["filename"] = "%s-Tf1-%s" % (datetime.datetime.fromtimestamp(metadata['timeStamp']).strftime("%Y%m%d"), self.normalizeProgTitle(metadata['progTitle']))
         self.progMetaData = metadata
 
     def _getVideoId(self, page):
         """
         get Video ID from the video page
         """
-        # \todo LBR: process error exceptions in case page can't be loaded or videoId can't be found
         try:
             parsed = BeautifulSoup(page, "html.parser")
             videoId = parsed.find_all("section",
@@ -104,36 +94,7 @@ class Tf1Parser(NetworkParser):
 
         except Exception as e:
             logger.error(e)
-            raise FrTvDownloadException("Can't get or parse video ID page")
+            raise FrTvDwnPageParsingError()
  
-    def _parseUrlJSON(self, page):
-        try:
-            data = json.loads(page)
-            metaData = {}
-            if data["code"] != 200:
-                raise FrTvDownloadException("Can't parse json url for Tf1")    
-            metaData['manifestUrl'] = data['url']
-            metaData['drm'] = False
-            metaData["mediaType"] = data["format"]
-            return metaData
-
-        except Exception as e:
-            logger.error(e)
-            raise FrTvDownloadException("Can't parse json for Arte.tv")
- 
-    def _parseInfoJSON(self, page):
-        try:
-            data = json.loads(page)
-            metaData = {}
-            data = data["mediametrie"]["chapters"][0]
-            metaData['progTitle'] = data['title'].split("_PLAYLISTID_")[1]
-            gregorian_date = data['estatS4']
-            metaData['timeStamp'] = time.mktime(datetime.datetime.strptime(gregorian_date, "%Y-%m-%d").timetuple()) 
-            metaData['progName'] = ""
-            return metaData
-
-        except Exception as e:
-            logger.error(e)
-            raise FrTvDownloadException("Can't parse json for Arte.tv")
 
 

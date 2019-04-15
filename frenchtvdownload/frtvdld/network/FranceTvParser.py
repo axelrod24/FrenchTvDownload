@@ -94,12 +94,13 @@ class FranceTvParser(NetworkParser):
         # parse Metadata
         try:
           data = json.loads(pageInfos)
+          data["videoUrl"] = url
           data["videoId"] = jurl
           videoMetadata = FranceTvVideoMetadata(data)
           metadata = videoMetadata.getMetadata()
         except Exception as e:
           logger.error(e)
-          raise FrTvDwnPageParsingError()
+          raise FrTvDwnMetaDataParsingError()
 
         #if no link to url try the other link
         if metadata.manifestUrl is None:
@@ -108,13 +109,14 @@ class FranceTvParser(NetworkParser):
              # parse Metadata
             try:
               data = json.loads(pageInfos)
+              data["videoUrl"] = url
               data["videoId"] = jurl
               videoMetadata = FranceTvVideoMetadata(data)
               
               metadata = videoMetadata.getMetadata()
             except Exception as e:
                 logger.error(e)
-                raise FrTvDwnPageParsingError()
+                raise FrTvDwnMetaDataParsingError()
 
         self.progMetaData = metadata
 
@@ -122,7 +124,6 @@ class FranceTvParser(NetworkParser):
         """
         get Video ID from the video page
         """
-        # \todo LBR: process error exceptions in case page can't be loaded or videoId can't be found
         try:
             parsed = BeautifulSoup(page, "html.parser")
             div_tag = parsed.find_all("div", class_="c-player-content")

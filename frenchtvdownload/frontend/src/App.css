@@ -110,6 +110,10 @@
     background: linear-gradient(to bottom, rgb(74, 189, 172) 0%, rgb(126, 190, 181) 100%);
  }
 
+ .matadata-table.error {
+    background: linear-gradient(to bottom, rgb(189, 74, 101) 0%, rgb(190, 126, 146) 100%);
+ 
+}
  .matadata-table td {
     text-align: left ; 
     border: 0px
