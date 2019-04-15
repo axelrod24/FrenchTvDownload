@@ -91,7 +91,7 @@ class ArteTvParser(NetworkParser):
           metadata = videoMetadata.getMetadata()
         except Exception as e:
           logger.error(e)
-          raise FrTvDwnMetaDataParsingError()
+          raise FrTvDwnMetaDataParsingError(e)
 
         self.progMetaData = metadata
        
@@ -108,7 +108,7 @@ class ArteTvParser(NetworkParser):
             
         except Exception as e:
             logger.error(e)
-            raise FrTvDwnPageParsingError()
+            raise FrTvDwnPageParsingError(e)
 
     def _getCollectionUrls(self, pageInfo, allUrl):
         pass

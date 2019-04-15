@@ -6,6 +6,7 @@ import requests
 import logging
 
 from frtvdld.GlobalRef import LOGGER_NAME
+from frtvdld.DownloadException import FrTvDwnConnectionError
 
 logger = logging.getLogger(LOGGER_NAME)
 
@@ -21,8 +22,14 @@ class FakeAgent:
 
     def readBin(self, url):
         headers = {'User-Agent': self.userAgent}
+        try:
+            response = requests.get(url, headers=headers)
+            if response.status_code != 200:
+                raise FrTvDwnConnectionError("Status code:%d" % response.status_code) 
 
-        response = requests.get(url, headers=headers)
+        except ConnectionError as e:
+            raise FrTvDwnConnectionError(e.__repr__()) 
+
         return response.content
 
     def readPage(self, url):

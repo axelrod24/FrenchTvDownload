@@ -9,23 +9,27 @@ const Button = ({classname, value, style, onClick}) => <button className={classn
 const ButtonItem = ({classname, value, style, onClick}) => <Item className={classname} style={style} value={<button> onClick={onClick}>{value}</button>} />
 
 const MetaDataTable = ({data}) => {
-        if (data.status==="error") {
-            return (
-                <table className="matadata-table, error">
-                    <tbody>
-                        <tr>
-                            <td style={{width: "80px"}}>{data.metadata.errorMsg}</td>
-                        </tr>
-                    </tbody>
-                </table>
-            )
-        }
+        // if (data.status==="error") {
+        //     return (
+        //         <table className="matadata-table, error">
+        //             <tbody>
+        //                 <tr>
+        //                     <td style={{width: "80px"}}>{data.metadata.errorMsg}</td>
+        //                 </tr>
+        //             </tbody>
+        //         </table>
+        //     )
+        // }
 
         return (
             <table className="matadata-table">
             <tbody>
+                {(data.metadata.errorMsg) ? <tr>
+                    <td style={{background: "linear-gradient(to bottom, rgb(189, 74, 101) 0%, rgb(190, 126, 146) 100%)"}}>{data.metadata.errorMsg}</td>
+                    </tr> : <span/> }
                 <tr>
-                <td style={{width: "80px"}}>Title:</td><td>{data.metadata.progTitle}</td>
+                {/* <td style={{width: "80px"}}>Title:</td><td>{data.metadata.progTitle}</td> */}
+                <td>Title:</td><td>{data.metadata.progTitle}</td>
                 </tr>
                 <tr>
                 <td>Name:</td><td>{data.metadata.progName}</td>
@@ -179,26 +183,40 @@ class TableRow extends Component {
             data => {
                 data = JSON.parse(data.status)
                 
-                if (data.status === "done") {
-                    var fetcher = new WebApi(
-                        data => {
-                            this.data = MapVideoModelToAppModel(data)
-                            this.store.dispatch({type:"REPLACE_URL", payload: this.data})
-                            this.store.dispatch({type:"UPDATE_STATUS", payload: {id:this.data.uid, status:"done"}})
-                            this.setState({status: "done"})
-                        },
-                        data => {this.props.onError(data)}
-                    )
+                switch (data.status) 
+                {
+                    case "done": 
+                        var fetcher = new WebApi(
+                            data => {
+                                this.data = MapVideoModelToAppModel(data)
+                                this.store.dispatch({type:"REPLACE_URL", payload: this.data})
+                                this.store.dispatch({type:"UPDATE_STATUS", payload: {id:this.data.uid, status:"done"}})
+                                this.setState({status: "done"})
+                            },
+                            data => {this.props.onError(data)}
+                        )
 
-                    fetcher.getVideoById(this.data.uid)
-                    return
-                }
-            
-                if (data.status === "downloading")
-                    this.setState({progress: data.progress})
-                else {
-                    if (data.status !== "no_update")
-                        this.setState({status:  data.status})
+                        fetcher.getVideoById(this.data.uid)
+                        return
+
+                    // in case of downlaod error, clear update interval and mark url as error
+                    case "error":
+                        if (this.interval != null) {
+                            console.log("Clear interval:", this.interval)
+                            clearInterval(this.interval)
+                        }
+                        this.store.dispatch({type:"UPDATE_MDATA", payload:{id:this.data.uid, mdata:{errorMsg:data.message}}})
+                        this.store.dispatch({type:"UPDATE_STATUS", payload:{id:this.data.uid, status:"error"}})
+                        this.setState({status: "error"})
+                        return
+    
+                    case "downloading":
+                        this.setState({progress: data.progress})
+                        return
+
+                    case "no_update":
+                        // this.setState({status:  data.status})
+                        return
                 }
             },
             data => { this.props.onError(data) }

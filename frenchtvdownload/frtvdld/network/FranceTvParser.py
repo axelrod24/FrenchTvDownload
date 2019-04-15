@@ -84,7 +84,7 @@ class FranceTvParser(NetworkParser):
               i += 1
 
           if videoUrl is None:
-              raise FrTvDwnPageParsingError()
+              raise FrTvDwnPageParsingError("No valid video link")
 
         logger.info("Program ID: %s" % idEmission)
         # go for JSON straight, don't even try XML
@@ -100,7 +100,7 @@ class FranceTvParser(NetworkParser):
           metadata = videoMetadata.getMetadata()
         except Exception as e:
           logger.error(e)
-          raise FrTvDwnMetaDataParsingError()
+          raise FrTvDwnMetaDataParsingError(e)
 
         #if no link to url try the other link
         if metadata.manifestUrl is None:
@@ -116,7 +116,7 @@ class FranceTvParser(NetworkParser):
               metadata = videoMetadata.getMetadata()
             except Exception as e:
                 logger.error(e)
-                raise FrTvDwnMetaDataParsingError()
+                raise FrTvDwnMetaDataParsingError(e)
 
         self.progMetaData = metadata
 
@@ -146,7 +146,7 @@ class FranceTvParser(NetworkParser):
 
         except Exception as e:
             logger.error(e)
-            raise FrTvDwnPageParsingError()
+            raise FrTvDwnPageParsingError(e)
 
     def _getListOfAvailableVideo(self, url, index):
         page = self.fakeAgent.readPage(url)

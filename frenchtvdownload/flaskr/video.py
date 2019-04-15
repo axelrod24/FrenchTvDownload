@@ -12,8 +12,8 @@ from frtvdld.DownloadException import *
 logger = logging.getLogger(LOGGER_NAME)
 
 
-def JsonStatus(status, progress):
-    return json.dumps({"status":status, "progress":("%d" % progress)})
+def JsonStatus(status, progress=0, message=""):
+    return json.dumps({"status":status, "progress":("%d" % progress), "message":message})
 
 class DldThread():
     def __init__(self, url, progMetadata, video_id):
@@ -45,7 +45,6 @@ class DldThread():
             self.write_to_pipe(JsonStatus(status="downloading", progress = (x[1]-x[0]+1)))
 
         try:
-            info_msg = "done"
             metadata = download_video(self.progMetadata, base_folder=app.config["DLD_FOLDER"], progressFnct = callback_progress, stopDownloadEvent=self.stop_download_event)
 
             # download sucessfuly completed
@@ -55,38 +54,22 @@ class DldThread():
             models.update_video_by_id(self.video_id, status="done", mdata=metadata)
 
             # write "done" status.
-            self.write_to_pipe(JsonStatus(status="done", progress = 0))
+            self.write_to_pipe(JsonStatus(status="done"))
 
-        except FrTvDownloadException as excepErr:
-            if isinstance(excepErr, FrTvDwnUserInterruption):
-                info_msg = "interrupted"
-                error_msg = "Download Interrupted by user"
-            elif isinstance(excepErr, FrTvDwnVideoNotFound):
-                info_msg = "not_available"
-                error_msg = "Can't find video: %s" % self.url
-            elif isinstance(excepErr, FrTvDwnPageParsingError):
-                info_msg = "error"
-                error_msg = "Can't get or parse video ID page: %s" % self.url
-            elif isinstance(excepErr, FrTvDwnManifestUrlNotFoundError):
-                info_msg = "not_available"
-                error_msg = "Can't parse video metadata: %s" % self.url
-            elif isinstance(excepErr, FrTvDwnMetaDataParsingError):
-                info_msg = "error"
-                error_msg = "Can't get manifest URL: %s" % self.url
-            else:
-                info_msg = "error"
-                error_msg = "Unknown error getting metadata for %s" % self.url
-
-            # assuming file cleaning as been done by downloaded.  Mark video as pending and notify client of erro/interrupted status
-            if info_msg in ["interrupted"]:
+        except Exception as err:
+            # download interupted by user
+            if isinstance(err, FrTvDwnUserInterruption):
+                # assuming file cleaning as been done by downloaded.  Mark video as pending and notify client of erro/interrupted status
+                error_type = "interrupted"
                 status = "pending"
             else:
-                status = info_msg
+                error_type = "error"
+                status = "error"
 
             models.update_video_by_id(self.video_id, status=status)
 
-            logger.info(error_msg)
-            self.write_to_pipe(JsonStatus(status=info_msg, progress = 0))
+            logger.info(err)
+            self.write_to_pipe(JsonStatus(status=error_type, message="%s" % err))
 
 
     def start(self):
@@ -147,21 +130,22 @@ def add_url(url):
                 status = "pending"
 
         except Exception as err:
-            if isinstance(err, FrTvDwnVideoNotFound):
-                error = "Can't find video"
-            elif isinstance(err, FrTvDwnPageParsingError):
-                error = "Can't get or parse video ID page"
-            elif isinstance(err, FrTvDwnManifestUrlNotFoundError):
-                error = "Can't get manifest URL (video link expired)"
-            elif isinstance(err, FrTvDwnMetaDataParsingError):
-                error = "Can't parse video metadata"
-            else:
-                error = "Unknown error getting metadata"
+            # if isinstance(err, FrTvDwnVideoNotFound):
+            #     error = "Can't find video"
+            # elif isinstance(err, FrTvDwnPageParsingError):
+            #     error = "Can't get or parse video ID page"
+            # elif isinstance(err, FrTvDwnManifestError):
+            #     error = "Can't get manifest URL (video link expired)"
+            # elif isinstance(err, FrTvDwnMetaDataParsingError):
+            #     error = "Can't parse video metadata"
+            # else:
+            #     error = "Unknown error getting metadata"
             
-            logger.error(error+" for %s" % url)
-            status = "error"
+            error = err.__repr__()
+            logger.error(error)
             errMetadata = get_error_metadata(url, error)
             metadata = errMetadata.getMetadata()
+            status = "error"
 
         finally:
             video = models.add_new_video(url=url, status=status, mdata=json.dumps(metadata._asdict()))
@@ -213,7 +197,7 @@ def get_status(video_id):
     status = json.loads(dld_status)
     logger.debug("status is %s" % status)
 
-    if status["status"] == "done":
+    if status["status"] in ["done", "error"]:
         # clean up the thread and remove it from dict.
         dld_thread.cleanup() 
         del app.config["DLD_THREAD"][video_id]
