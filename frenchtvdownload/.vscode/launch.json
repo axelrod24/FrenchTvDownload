@@ -5,12 +5,27 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "Python: Flask app.py",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/app.py",
+            "env": {
+                "FLASK_ENV": "development"
+            },
+            "args": [
+            ],
+            "console": "integratedTerminal"
+        },
+        {
             "name": "Python: Current File (Integrated Terminal)",
             "type": "python",
             "request": "launch",
             "program": "${file}",
+            "env": {
+                "FLASK_ENV": "debug"
+            },
             "args": [
-                "-o", ".", "-b", "https://www.france.tv/france-5/c-dans-l-air/"
+                "-o", ".", "-b", "https://www.france.tv/france-5/c-dans-l-air/929133-elysee-senat-ca-chaufe.html"
             ],
             // "args": [
             //     "-o", ".", "-b", "https://www.france.tv/france-5/c-dans-l-air/906971-algerie-la-rue-contre-bouteflika.html"
@@ -71,12 +86,15 @@
             "request": "launch",
             "module": "flask",
             "env": {
-                "FLASK_APP": "app.py"
+                "FLASK_APP": "app.py",
+                "FLASK_ENV": "development"
             },
             "args": [
                 "run",
                 "--no-debugger",
-                "--no-reload"
+                "--no-reload",
+                "--host=0.0.0.0",
+                "--port=5000"
             ],
             "jinja": true
         },

@@ -1,0 +1,140 @@
+/*
+ * This is the CSS stylesheet for the demo people application
+ */
+
+ @import url(http://fonts.googleapis.com/css?family=Roboto:400,300,500,700);
+
+ body, .ui-btn {
+     font-family: Roboto;
+     background: #F6F6F8
+ }
+ 
+ .container {
+     padding: 10px;
+ }
+ 
+ .banner {
+     text-align: center;
+ }
+ 
+ .editor {
+     width: 80%;
+    
+     margin-left: auto;
+     margin-right: auto;
+
+     padding: 5px;
+     border: 1px solid lightgrey;
+     border-radius: 3px;
+     margin-bottom: 5px;
+ }
+ 
+ label {
+     display: inline-block;
+     margin-bottom: 5px;
+ }
+ 
+ button {
+     padding: 5px;
+     margin-right: 5px;
+     border-radius: 3px;
+     background-color: #eee;
+ }
+ 
+ .people {
+     width: 80%;
+    
+     margin-left: auto;
+     margin-right: auto;
+     
+     padding: 5px;
+     /* border: 1px solid lightgrey; */
+     border-radius: 3px;
+     margin-bottom: 5px;
+ }
+ 
+ /* table.no-zebra tbody tr:nth-child(even) td,
+ table.no-zebra tbody tr.even td {
+   background: transparent;
+ } */
+
+ table {
+     width: 100%;
+     border-collapse: collapse;
+ }
+ 
+ table, caption, th, td {
+     border-bottom: 1px solid #DFDCE3;
+ }
+ 
+ table caption {
+     height: 35px;
+     font-weight: bolder;
+     font-size: 80% ;
+     padding-top: 5px;
+     /* border-bottom: none; */
+ }
+ 
+ tr {
+     height: 35px;
+ }
+ 
+ /* tr:nth-child(even) {
+     background-color: #f0f0f0
+ } */
+ 
+ td {
+     text-align: left;
+ }
+ 
+ /* td.url {
+    text-align: left; 
+    width: 80%;
+    background-color: blue;
+ } */
+
+ .url {
+    /* background-color: CornflowerBlue; */
+    /* width: 50% */
+ }
+
+ .url div {
+    /* border: 2px solid lightpink;  */
+    margin-top: 8px;
+    margin-bottom: 8px;
+}
+
+ .matadata-table {
+    /* border: 2px solid lightpink; */
+    /* background-color:rgb(76, 204, 185) ; */
+    background: linear-gradient(to bottom, rgb(74, 189, 172) 0%, rgb(126, 190, 181) 100%);
+ }
+
+ .matadata-table.error {
+    background: linear-gradient(to bottom, rgb(189, 74, 101) 0%, rgb(190, 126, 146) 100%);
+ 
+}
+ .matadata-table td {
+    text-align: left ; 
+    border: 0px
+ }
+
+ .error {
+     width: 50%;
+     margin-left: auto;
+     margin-right: auto;
+     padding: 5px;
+     border: 1px solid lightgrey;
+     border-radius: 3px;
+     background-color: #fbb;
+ }
+
+ .info {
+    width: 50%;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 5px;
+    border: 1px solid lightgrey;
+    border-radius: 3px;
+    background-color: rgb(187, 255, 187);
+}

@@ -1,13 +1,14 @@
 bs4
 requests
-flask
 dicttoxml
-connexion
+
+marshmallow 
+marshmallow-sqlalchemy
+
+flask
 Flask-SQLAlchemy
 flask-marshmallow
-marshmallow-sqlalchemy
-marshmallow
-celery
-redis
+flask_cors
+
 
 

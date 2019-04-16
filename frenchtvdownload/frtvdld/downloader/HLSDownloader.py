@@ -10,7 +10,7 @@ from urllib.parse import urljoin
 
 from frtvdld.GlobalRef import LOGGER_NAME
 from frtvdld.FakeAgent import FakeAgent
-from frtvdld.DownloadException import FrTvDownloadException
+from frtvdld.DownloadException import *
 
 logger = logging.getLogger(LOGGER_NAME)
 
@@ -140,8 +140,9 @@ class HLSStreamDownloader(object):
         logger.info("Start downloading fragments")
         try:
             i = 0
-            # maxNbrFrag = 50
-            while i < maxNbrFrag and not self.stopDownloadEvent.isSet():
+            # maxNbrFrag = 5
+            while (i < maxNbrFrag) and (self.stopDownloadEvent.isSet() is not True):
+
                 progressFnct((i, maxNbrFrag))
                 frag = self.fakeAgent.readBin(self.listOfSegments[i])
                 fd_video_file.write(frag)
@@ -149,26 +150,29 @@ class HLSStreamDownloader(object):
                 # display progress
                 i += 1
 
+        except KeyboardInterrupt:
+            logger.info("Download interupted by Keyboard Interrupt")
+            raise FrTvDwnUserInterruption("Keyboard Interrupt")
+
+        except Exception as inst:
+            logger.critical("Critical error %s" % inst)
+            raise FrTvDownloadException("Critical error %s" % (inst))
+
+        finally:
             if i == maxNbrFrag:
                 progressFnct((i, maxNbrFrag))
                 logger.info("Download completed")
                 fd_video_file.close()
-
-        except KeyboardInterrupt:
-            logger.info("Keyboard Interrupt")
-            raise FrTvDownloadException("Keyboard Interrupt")
-
-        except Exception as inst:
-            logger.critical("Critical error %s" % inst)
-            # remove the file ... (cleanup)
-            fd_video_file.close()
-            if os.path.isfile(to_file):
-                os.remove(to_file)
-
-            raise FrTvDownloadException("Critical error %s" % (inst))
-
-        finally:
-            if i != maxNbrFrag:
+            else:
                 logger.critical("Couldn't complete video download.  Stop at fragment %d/%d" % (i, maxNbrFrag))
+                # remove the file ... (cleanup)
+                fd_video_file.close()
+                if os.path.isfile(to_file):
+                    os.remove(to_file)
+
+            # check if download received stop signal
+            if self.stopDownloadEvent.isSet() is True:
+                logger.info("Download interrupted by user")
+                raise FrTvDwnUserInterruption("User Interrupt")
 
             return to_file

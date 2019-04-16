@@ -1,0 +1,7 @@
+cp apache/FlaskApp.conf /etc/apache2/sites-available/
+cp apache/FrTvDld.wsgi ../
+cp apache/activate_this.py .venv/bin/
+/etc/init.d/apache2 restart
+
+
+
