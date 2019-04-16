@@ -26,14 +26,18 @@ class FakeAgent:
             response = requests.get(url, headers=headers)
             if response.status_code != 200:
                 raise FrTvDwnConnectionError("Status code:%d" % response.status_code) 
+            
+            # response.encoding = response.apparent_encoding
 
         except ConnectionError as e:
             raise FrTvDwnConnectionError(e.__repr__()) 
 
+        # print(response.content)
         return response.content
 
     def readPage(self, url):
         logger.info("read: %s" % url)
         page = self.readBin(url)
+        # return page
         return page.decode('utf-8')
 

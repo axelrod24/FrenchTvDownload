@@ -139,8 +139,10 @@ class FranceTvParser(NetworkParser):
             json_text = script_tag.text
             json_text = json_text[json_text.find("["):json_text.rfind("]")+1]
 
-            data = yaml.load(json_text)
+            # replace wrong escape character .... 
+            json_text = json_text.replace("\\/","/")
 
+            data = yaml.load(json_text)
             data = data[0]
             return data["videoId"]
 
