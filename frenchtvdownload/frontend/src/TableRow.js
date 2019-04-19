@@ -150,17 +150,24 @@ class TableRow extends Component {
 
             if (this.state.status === "downloading") 
                 this.interval = setInterval(this.onUpdateStatus, 2000)
-        } else {
-
-            if (this.state.status === "done")
+            return
+        }
+        
+        if (this.state.status === "done")
+        {
+            if (this.interval != null) {
                 clearInterval(this.interval)
+                this.interval = null
+            }        
         }
    }
 
    componentWillUnmount()
    {
-        if (this.interval != null)
+        if (this.interval != null) {
             clearInterval(this.interval)
+            this.interval = null
+        }
    } 
 
     onDownloadVideo() {
@@ -204,6 +211,7 @@ class TableRow extends Component {
                         if (this.interval != null) {
                             console.log("Clear interval:", this.interval)
                             clearInterval(this.interval)
+                            this.interval = null
                         }
                         this.store.dispatch({type:"UPDATE_MDATA", payload:{id:this.data.uid, mdata:{errorMsg:data.message}}})
                         this.store.dispatch({type:"UPDATE_STATUS", payload:{id:this.data.uid, status:"error"}})
@@ -217,6 +225,16 @@ class TableRow extends Component {
                     case "no_update":
                         // this.setState({status:  data.status})
                         return
+
+                    case "interrupted":
+                        if (this.interval != null) {
+                            console.log("Clear interval:", this.interval)
+                            clearInterval(this.interval)
+                            this.interval = null
+                        }
+                        this.setState({status: "pending", progress: -1})
+                        this.store.dispatch({type:"UPDATE_STATUS", payload:{id:this.data.uid, status:"pending"}})
+                        return
                 }
             },
             data => { this.props.onError(data) }
@@ -229,12 +247,12 @@ class TableRow extends Component {
         console.log("onCancelDownload:",this.props.index,":",this.data.uid)
         var fetcher = new WebApi(
             data => {
-                if (this.interval != null) {
-                    console.log("Clear interval:", this.interval)
-                    clearInterval(this.interval)
-                }
-                this.setState({status: "pending", progress: -1})
-                this.store.dispatch({type:"UPDATE_STATUS", payload:{id:this.data.uid, status:"pending"}})
+                // if (this.interval != null) {
+                //     console.log("Clear interval:", this.interval)
+                //     clearInterval(this.interval)
+                // }
+                // this.setState({status: "pending", progress: -1})
+                // this.store.dispatch({type:"UPDATE_STATUS", payload:{id:this.data.uid, status:"pending"}})
             },
             data => {this.props.onError(data)}
         )

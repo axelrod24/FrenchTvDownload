@@ -19,7 +19,8 @@ def CreateMP4(src, dst):
         if (os.system(commande) == 0):
             logger.info("-> %s" % dst)
         else:
-            logger.warning(
-                "Problem with FFmpeg ; Video %s is available" % (src))
-    except:
-        raise FrTvDownloadException("Can't create final MP4")
+            logger.warning("Problem with FFmpeg ; Video %s is available" % (src))
+            raise FrTvDownloadException("Error running FFmpeg, video might be available:"+src)
+
+    except Exception as err:
+        raise FrTvDownloadException("Can't create final MP4. "+err.__repr__())

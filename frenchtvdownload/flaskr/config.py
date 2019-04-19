@@ -19,13 +19,18 @@ app.config["DLD_THREAD"] = dict() # hashmap to store active download thread
 app.config["PIPE_NAME_HEADER"] = "fifo-%s-dld"
 
 if app.config["ENV"] == 'production':
-    app.config["DLD_FOLDER"] = os.path.join("/home", "lbr", "Dropbox", "FRTV_DLD_FOLDER")
+    app.config["DST_FOLDER"] = os.path.join("/home", "lbr", "Dropbox", "FRTV_DLD_FOLDER")
+    app.config["TMP_FOLDER"] = os.path.join("/home", "lbr", "TMP_FRTV_DLD_FOLDER")
 else:
-    app.config["DLD_FOLDER"] = os.path.join(basedir, "FRTV_DLD_FOLDER")
+    app.config["DST_FOLDER"] = os.path.join(basedir, "FRTV_DLD_FOLDER")
+    app.config["TMP_FOLDER"] = os.path.join(basedir, "FRTV_TMP_FOLDER")
 
+# create the working folder
+if not os.path.exists(app.config["DST_FOLDER"]):
+    os.mkdir(app.config["DST_FOLDER"])
 
-if not os.path.exists(app.config["DLD_FOLDER"]):
-    os.mkdir(app.config["DLD_FOLDER"])
+if not os.path.exists(app.config["TMP_FOLDER"]):
+    os.mkdir(app.config["TMP_FOLDER"])
 
 # Create the SQLAlchemy db instance
 db = SQLAlchemy(app)
