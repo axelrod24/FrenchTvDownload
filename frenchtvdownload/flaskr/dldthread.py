@@ -104,12 +104,12 @@ class DldThread():
             # download interupted by user, set video status to pending to allow re-download
             if isinstance(err, FrTvDwnUserInterruption):
                 error_type = "interrupted"
-                status = "pending"
+                models.update_video_by_id(self.video_id, status="pending")
             else:
                 error_type = "error"
-                status = "error"
-
-            models.update_video_by_id(self.video_id, status=status)
+                # update mdata with the error message
+                self.progMetadata["errorMsg"] = "%s" % err
+                models.update_video_by_id(self.video_id, status="error", mdata=self.progMetadata)
 
             logger.info(err)
             self.write_to_pipe(JsonStatus(status=error_type, message="%s" % err))
