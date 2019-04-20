@@ -52,7 +52,7 @@ const MetaDataTable = ({data}) => {
                 <td>Manifest:</td><td><a href={data.metadata.manifest}>{data.metadata.manifest}</a></td>
                 </tr>
                 <tr>
-                <td>Video:</td><td>{data.metadata.videoFullpath}</td>
+                <td>Video:</td><td>{data.pathToVideo}</td>
                 </tr>
             </tbody>
             </table>
