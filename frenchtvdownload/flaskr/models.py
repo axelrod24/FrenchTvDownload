@@ -1,5 +1,7 @@
 import json
 from datetime import datetime
+
+from sqlalchemy import desc
 from flaskr.config import db, ma
 
 
@@ -71,7 +73,7 @@ def delete_video_by_id(video_id):
 
 
 def get_all_video():
-    video = VideoModel.query.order_by(VideoModel.timestamp).all()
+    video = VideoModel.query.order_by(desc(VideoModel.timestamp)).all()
     # Serialize the data for the response
     schema = VideoSchema(many=True)
     data = schema.dump(video).data    
