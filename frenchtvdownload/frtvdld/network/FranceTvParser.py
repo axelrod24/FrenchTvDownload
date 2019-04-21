@@ -59,19 +59,23 @@ class FranceTvParser(NetworkParser):
     JSON3_DESC="https://player.webservices.francetelevisions.fr/v1/videos/_ID_EMISSION_?country_code=FR&w=1920&h=1080&version=5.5.2&domain=www.france.tv&device_type=desktop&browser=chrome&browser_version=71&os=macos&os_version=10_13_6"
 
     def getListOfUrlCollection(self, url):
-        # read the page and extract list of videoURL
+       # read the page and extract list of videoURL
         page = self.fakeAgent.readPage(url)
-        allUrl = self._getVideoId(page, getAllUrl=True)
+        parsed = BeautifulSoup(page, "html.parser")
+        videoUrlList = parsed.find_all("a", attrs={"class": "c-card-video__link"})
 
-        # sort out valid video URL based on baseUrl path
-        baseUrlPath = urlparse(url).path
-        urlList = []
-        for u in allUrl:
-            uPath = urlparse(u).path
-            if (uPath.startswith(baseUrlPath)):
-                urlList.append(u)
+        list_of_url = []
+        for u in videoUrlList:
+            list_of_url.append(urljoin(url, u["href"]))
 
-        return urlList
+        return list_of_url
+
+    def getVideoUrl(self, url):
+        # read the page and extract url of first video
+        page = self.fakeAgent.readPage(url)
+        parsed = BeautifulSoup(page, "html.parser")
+        videoUrlList = parsed.find_all("a", attrs={"class": "c-card-video__link"})
+        return urljoin(url, videoUrlList[0]["href"])
 
     def parsePage(self, url):
         # check if url point to the video page, if not get list of video URl one by one
