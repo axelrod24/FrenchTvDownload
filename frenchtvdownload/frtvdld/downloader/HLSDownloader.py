@@ -140,7 +140,7 @@ class HLSStreamDownloader(object):
         logger.info("Start downloading fragments")
         try:
             i = 0
-            maxNbrFrag = 5
+#            maxNbrFrag = 5         # for debug only
             while (i < maxNbrFrag) and (self.stopDownloadEvent.isSet() is not True):
 
                 progressFnct((i, maxNbrFrag))

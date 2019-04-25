@@ -11,8 +11,8 @@ class VideoModel(db.Model):
     url = db.Column(db.String(255), index=True)
     status = db.Column(db.String(32))
     timestamp = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
-    # mdata = db.Column(db.JSON)
-    mdata = db.Column(db.String(4096))
+    mdata = db.Column(db.JSON)
+    # mdata = db.Column(db.String(4096))
     folder_name = db.Column(db.String(64))
     video_file_name = db.Column(db.String(255))
 

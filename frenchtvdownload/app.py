@@ -45,6 +45,16 @@ def not_found(error):
 def duplicate(error):
     return make_response(jsonify({'error': 'duplicate'}), 409)
 
+# Create a URL route in our application for "/"
+@app.route('/')
+def home():
+    """
+    This function just responds to the browser ULR
+    localhost:5000/
+    :return:        the rendered template 'home.html'
+    """
+    return render_template('index.html')
+
 
 @app.route('/api/video', methods=['GET', 'POST'])
 def get_post_video():
