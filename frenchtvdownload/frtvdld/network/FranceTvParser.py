@@ -19,7 +19,7 @@ class FranceTvVideoMetadata(VideoMetadata):
     super().__init__(d)
 
   def parseMetadata(self):
-    self._airDate = self.get('diffusion')['timestamp']  #\TODO LBR: add default date value
+    self._airDate = self._parseAirDate(self.get('diffusion')['date_debut'])  #\TODO LBR: add default date value
     self._progName = self.get('code_programme', 'default_prog_name')
     self._progTitle = self.get('sous_titre', 'default_prog_title')
     self._synopsis = self.get('synopsis', "no synopsis")
@@ -36,7 +36,11 @@ class FranceTvVideoMetadata(VideoMetadata):
             self._mediaType = "hls"
 
     self._filename = "%s-%s" % (datetime.fromtimestamp(self._airDate).strftime("%Y%m%d"), self.normalizeProgTitle(self._progName))
-
+  
+  def _parseAirDate(self, str_date):
+    split_date = str_date.split(" ")[0].split('/')
+    d = datetime.fromisoformat("%d-%02d-%02d" % (int(split_date[2]), int(split_date[1]), int(split_date[0])))
+    return d.timestamp()
 
 class FranceTvParser(NetworkParser):
     """
@@ -55,19 +59,23 @@ class FranceTvParser(NetworkParser):
     JSON3_DESC="https://player.webservices.francetelevisions.fr/v1/videos/_ID_EMISSION_?country_code=FR&w=1920&h=1080&version=5.5.2&domain=www.france.tv&device_type=desktop&browser=chrome&browser_version=71&os=macos&os_version=10_13_6"
 
     def getListOfUrlCollection(self, url):
-        # read the page and extract list of videoURL
+       # read the page and extract list of videoURL
         page = self.fakeAgent.readPage(url)
-        allUrl = self._getVideoId(page, getAllUrl=True)
+        parsed = BeautifulSoup(page, "html.parser")
+        videoUrlList = parsed.find_all("a", attrs={"class": "c-card-video__link"})
 
-        # sort out valid video URL based on baseUrl path
-        baseUrlPath = urlparse(url).path
-        urlList = []
-        for u in allUrl:
-            uPath = urlparse(u).path
-            if (uPath.startswith(baseUrlPath)):
-                urlList.append(u)
+        list_of_url = []
+        for u in videoUrlList:
+            list_of_url.append(urljoin(url, u["href"]))
 
-        return urlList
+        return list_of_url
+
+    def getVideoUrl(self, url):
+        # read the page and extract url of first video
+        page = self.fakeAgent.readPage(url)
+        parsed = BeautifulSoup(page, "html.parser")
+        videoUrlList = parsed.find_all("a", attrs={"class": "c-card-video__link"})
+        return urljoin(url, videoUrlList[0]["href"])
 
     def parsePage(self, url):
         # check if url point to the video page, if not get list of video URl one by one

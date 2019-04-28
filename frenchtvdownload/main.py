@@ -19,6 +19,8 @@ import sys
 import tempfile
 import shutil
 import dicttoxml
+import requests
+import json
 
 from xml.dom import minidom
 
@@ -35,6 +37,30 @@ from frtvdld.GlobalRef import LOGGER_NAME
 #
 
 REG_EXP = 'www.france.tv/(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+'
+URL_BASE = "http://localhost:5000/"
+URL_PATH = "api/video"
+REFERER = 'http://localhost:3000/'
+ORIGIN = 'http://localhost:3000'
+
+def post_url(url):
+    service_url = os.path.join(URL_BASE, URL_PATH)
+    r = requests.post(service_url, params={"url": url}, headers={"Referer": REFERER, "Origin":ORIGIN})
+    if r.status_code != 200:
+        logger.error("Can't access posting url service. :"+str(r.status_code))
+        return
+
+    r_status = json.loads(r.text)
+    if r_status["status"] != "success":
+        logger.warning("Can't post url. Error:"+r.text)
+        return
+
+    v_id = r_status["data"]["video_id"]
+    service_url = os.path.join(service_url, "download")
+    r = requests.get(service_url, params={"id": str(v_id)}, headers={"Referer": REFERER, "Origin":ORIGIN})
+    if r.status_code != 200:
+        logger.error("Can't access posting url service. :"+str(r.status_code))
+        return
+    logger.info(r.text)
 
 
 if (__name__ == "__main__"):
@@ -87,12 +113,10 @@ if (__name__ == "__main__"):
 
         # return the list of URL and exit
         if (args.parseCollection):
-            listOfUrl = networkParser.getListOfUrlCollection()
-            for u in listOfUrl:
-                print(u)
-            
-            exit(1)
-        
+            url = networkParser.getVideoUrl()
+            post_url(url)
+            exit()
+
         progMetadata = networkParser.getProgMetaData()  
 
     except Exception as err:

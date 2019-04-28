@@ -2,7 +2,13 @@
 function UrlAction(state = { data: []}, action) {
   switch (action.type) {
     case "ADD_URL":
-      return {...state, data: [...state.data, action.payload]}
+      state.data.push(action.payload)
+      state.data.sort((a, b) => {
+        if (a.timestamp > b.timestamp) return -1
+        if (a.timestamp < b.timestamp) return 1
+        return 0
+      })
+      return {...state, data: [...state.data]}
 
     case "REPLACE_URL":
       return {...state, 

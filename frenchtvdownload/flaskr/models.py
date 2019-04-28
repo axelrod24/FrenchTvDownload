@@ -1,5 +1,7 @@
 import json
 from datetime import datetime
+
+from sqlalchemy import desc
 from flaskr.config import db, ma
 
 
@@ -9,8 +11,10 @@ class VideoModel(db.Model):
     url = db.Column(db.String(255), index=True)
     status = db.Column(db.String(32))
     timestamp = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
-    # mdata = db.Column(db.JSON)
-    mdata = db.Column(db.String(4096))
+    mdata = db.Column(db.Text)
+    # mdata = db.Column(db.String(4096))
+    folder_name = db.Column(db.String(64))
+    video_file_name = db.Column(db.String(255))
 
 class VideoSchema(ma.ModelSchema):
     class Meta:
@@ -69,7 +73,7 @@ def delete_video_by_id(video_id):
 
 
 def get_all_video():
-    video = VideoModel.query.order_by(VideoModel.timestamp).all()
+    video = VideoModel.query.order_by(desc(VideoModel.timestamp)).all()
     # Serialize the data for the response
     schema = VideoSchema(many=True)
     data = schema.dump(video).data    
@@ -91,7 +95,7 @@ def add_new_video(url, status, mdata):
     return data
 
 
-def update_video_by_id(video_id, status, url=None, mdata=None):
+def update_video_by_id(video_id, status, url=None, mdata=None, folder_name=None, video_file_name=None):
     video = VideoModel.query.filter(VideoModel.video_id == video_id).one_or_none()
     if video is not None:
         video.status = status
@@ -104,6 +108,12 @@ def update_video_by_id(video_id, status, url=None, mdata=None):
 
         if url is not None:
             video.url = url
+
+        if folder_name is not None:
+            video.folder_name = folder_name
+
+        if video_file_name is not None:
+            video.video_file_name = video_file_name
 
         db.session.merge(video)
         db.session.commit()

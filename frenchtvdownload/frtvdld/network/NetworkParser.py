@@ -24,7 +24,7 @@ class VideoMetadata(dict):
     return s
 
   def parseMetadata(self):
-    raise NotImplementedError
+    raise NotImplementedError()
 
   def getMetadata(self):
     self._videoUrl = self.get("videoUrl","")
@@ -59,3 +59,6 @@ class NetworkParser(object):
         s = re.sub("/", "_", s)
         s = re.sub('\s+', '_', s)
         return s
+
+    def getVideoUrl(self, url):
+      raise NotImplementedError()

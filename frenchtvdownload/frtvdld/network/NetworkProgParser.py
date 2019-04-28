@@ -155,8 +155,8 @@ class NetworkProgParser(object):
         self._networkParser.parsePage(self._url)
         return self._networkParser.progMetaData
 
-    def getListOfUrlCollection(self):
-        listOfUrl = self._networkParser.getListOfUrlCollection(self._url)
+    def getVideoUrl(self):
+        listOfUrl = self._networkParser.getVideoUrl(self._url)
         return listOfUrl
 
 
