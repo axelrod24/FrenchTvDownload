@@ -20,7 +20,7 @@ app.config["PIPE_NAME_HEADER"] = "fifo-%s-dld"
 
 if app.config["ENV"] == 'production':
     app.config["DST_FOLDER"] = os.path.join("/home", "lbr", "Dropbox", "FRTV_DLD_FOLDER")
-    app.config["TMP_FOLDER"] = os.path.join("/home", "lbr", "TMP_FRTV_DLD_FOLDER")
+    app.config["TMP_FOLDER"] = os.path.join("/var", "www", "FlaskApp", "FrTvDld",  "TMP_FRTV_DLD_FOLDER")
 else:
     app.config["DST_FOLDER"] = os.path.join(basedir, "FRTV_DLD_FOLDER")
     app.config["TMP_FOLDER"] = os.path.join(basedir, "FRTV_TMP_FOLDER")

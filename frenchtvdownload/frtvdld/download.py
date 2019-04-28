@@ -5,7 +5,6 @@ import os
 import sys
 import tempfile
 import shutil
-import dicttoxml
 import threading
 
 from frtvdld.ColorFormatter import ColorFormatter
