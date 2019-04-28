@@ -1,6 +1,3 @@
-#!/usr/bin/env python
-# -*- coding:Utf-8 -*-
-
 import logging
 import os
 import re

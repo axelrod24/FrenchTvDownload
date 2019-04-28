@@ -1,6 +1,3 @@
-#!/usr/bin/env python2
-# -*- coding:Utf-8 -*-
-
 # Adapted from :
 #    Brandon Thomson
 #    http://stackoverflow.com/questions/384076/how-can-i-make-the-python-logging-output-to-be-colored

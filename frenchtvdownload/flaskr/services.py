@@ -1,4 +1,3 @@
-
 from . import db
 import time, threading
 from main import getVideoMetadata

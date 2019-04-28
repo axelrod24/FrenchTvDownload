@@ -1,6 +1,3 @@
-#!/usr/bin/env python
-# -*- coding:Utf-8 -*-
-
 # Notes :
 #	 -> Filtre Wireshark :
 #		   http.host contains "ftvodhdsecz" or http.host contains "francetv" or http.host contains "pluzz"
