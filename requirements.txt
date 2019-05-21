@@ -10,5 +10,6 @@ Flask-SQLAlchemy
 flask-marshmallow
 flask_cors
 
+backports-datetime-fromisoformat
 
 
