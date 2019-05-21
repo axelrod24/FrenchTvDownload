@@ -2,6 +2,8 @@ import logging
 import json, yaml
 
 from datetime import datetime
+from backports.datetime_fromisoformat import MonkeyPatch
+MonkeyPatch.patch_fromisoformat()
 
 from bs4 import BeautifulSoup
 from urllib.parse import urlparse, urljoin
