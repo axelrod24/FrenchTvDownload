@@ -6,7 +6,7 @@ tstamp=$(date +"%Y-%m-%d_%T")
 echo $tstamp "Start downloading from:" $2 >> $dstFolder/download-log.txt
 
 cd $localFolder
-python3.7 frenchtvdownload/main.py --keepMetaData -o $dstFolder -b $2
+./frenchtvdownload/main.py --keepMetaData -o $dstFolder -b $2
 
 tstamp=$(date +"%Y-%m-%d_%T")
 echo $tstamp "Download completed:" $2 >> $dstFolder/download-log.txt
