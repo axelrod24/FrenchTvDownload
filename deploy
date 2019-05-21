@@ -1,7 +1,20 @@
-cp apache/FlaskApp.conf /etc/apache2/sites-available/
-cp apache/FrTvDld.wsgi ../
-cp apache/activate_this.py .venv/bin/
-/etc/init.d/apache2 restart
+#cp apache/FlaskApp.conf /etc/apache2/sites-available/
+#cp apache/FrTvDld.wsgi ../
+#cp apache/activate_this.py .venv/bin/
+#/etc/init.d/apache2 restart
+
+baseFolder=/var/www/FlaskApp/
+webAppName=FrTvDld
+dstFolder=$baseFolder/$webAppName
+
+mkdir $dstFolder
+cp apache/FrTvDld.wsgi $baseFolder/
+cp apache/activate_this.py $dstFolder/.venv/bin/
+
+rsync -rv --exclude '*.pyc' --exclude '__pycache__' --exclude 'frontend' --exclude '.venv' --exclude '.git' . $dstFolder/
+
+mkdir $dstFolder/frenchtvdownload/frontend
+rsync -rv frenchtvdownload/frontend/build $dstFolder/frenchtvdownload/frontend/
 
 
 
