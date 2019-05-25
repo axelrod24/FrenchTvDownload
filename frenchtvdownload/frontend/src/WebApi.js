@@ -4,7 +4,7 @@ var backend_api_url
 if(process.env.NODE_ENV === "development") {
   backend_api_url = "http://localhost:5000/"
 } else {
-  backend_api_url = "http://localhost:80/"
+  backend_api_url = "http://ec2-35-181-54-229.eu-west-3.compute.amazonaws.com/:80"
 }
 
 // const URL_BASE = "http://localhost:5000/"
