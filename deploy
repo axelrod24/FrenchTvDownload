@@ -7,14 +7,15 @@ baseFolder=/var/www/FlaskApp/
 webAppName=FrTvDld
 dstFolder=$baseFolder/$webAppName
 
-mkdir $dstFolder
+
 cp apache/FrTvDld.wsgi $baseFolder/
 cp apache/activate_this.py $dstFolder/.venv/bin/
 
-rsync -rv --exclude '*.pyc' --exclude '__pycache__' --exclude 'frontend' --exclude '.venv' --exclude '.git' . $dstFolder/
+mkdir $dstFolder/backend/
+rsync -rv --exclude '*.pyc' --exclude '__pycache__' --exclude 'frontend' --exclude '.venv' --exclude '.git' . $dstFolder/backend
 
-mkdir $dstFolder/frenchtvdownload/frontend
-rsync -rv frenchtvdownload/frontend/build $dstFolder/frenchtvdownload/frontend/
+mkdir $dstFolder/frontend
+rsync -rv frenchtvdownload/frontend/build $dstFolder/frontend/
 
 
 
