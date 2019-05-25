@@ -41,8 +41,6 @@ if not os.path.exists(app.config["TMP_FOLDER"]):
 
 # Create the SQLAlchemy db instance
 db = SQLAlchemy(app)
-if not os.path.exists(app.config['SQLALCHEMY_DATABASE_URI']):
-    db.create_all()
 
 # Initialize Marshmallow
 ma = Marshmallow(app)

@@ -1,5 +1,14 @@
 
-const URL_BASE = "http://localhost:5000/"
+
+var backend_api_url 
+if(process.env.NODE_ENV === "development") {
+  backend_api_url = "http://localhost:5000/"
+} else {
+  backend_api_url = "http://localhost:80/"
+}
+
+// const URL_BASE = "http://localhost:5000/"
+const URL_BASE = backend_api_url  
 const URL_PATH = "api/video"
 
 class WebApi {

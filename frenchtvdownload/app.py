@@ -34,6 +34,9 @@ app.template_folder = template_dir
 app.static_folder = static_dir
 app.static_url_path = "/static"
 
+# create the DB with table if doesn't exist
+if not os.path.exists(app.config['SQLALCHEMY_DATABASE_URI']):
+    config.db.create_all()
 # clean up downloading status, replace by pending
 models.clean_model_at_startup()
 

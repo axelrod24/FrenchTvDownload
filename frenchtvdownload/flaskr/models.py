@@ -35,7 +35,9 @@ def get_video_by_id(video_id):
 
 
 def get_video_by_status(status):
+    #video = VideoModel.query.filter(VideoModel.status == status).one_or_none()
     video = VideoModel.query.filter(VideoModel.status == status).all()
+
     # did we find a video?
     if video is not None:
         # serialize the data for the response

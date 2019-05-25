@@ -2,9 +2,13 @@ import logging
 import json, yaml
 
 from datetime import datetime
-from backports.datetime_fromisoformat import MonkeyPatch
-MonkeyPatch.patch_fromisoformat()
-
+try:
+    from backports.datetime_fromisoformat import MonkeyPatch
+    MonkeyPatch.patch_fromisoformat()
+except ModuleNotFoundError:
+    pass
+    # ignore error if this package can't be found
+    
 from bs4 import BeautifulSoup
 from urllib.parse import urlparse, urljoin
 
