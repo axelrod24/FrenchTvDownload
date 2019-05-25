@@ -1,7 +1,7 @@
 bs4
 requests
 dicttoxml
-pyaml
+pyyaml
 
 marshmallow 
 marshmallow-sqlalchemy
