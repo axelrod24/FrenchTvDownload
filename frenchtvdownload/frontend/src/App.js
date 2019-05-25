@@ -7,6 +7,8 @@ import { MapVideoModelToAppModel } from "./model.js"
 import WebApi from './WebApi.js'
 import store from "./redux/store";
 
+console.log("config:"+process.env.NODE_ENV)
+
 class App extends Component {
   constructor(props) {
     super(props)

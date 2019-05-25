@@ -11,11 +11,16 @@ dstFolder=$baseFolder/$webAppName
 cp apache/FrTvDld.wsgi $baseFolder/
 cp apache/activate_this.py $dstFolder/.venv/bin/
 
-mkdir $dstFolder/backend/
-rsync -rv --exclude '*.pyc' --exclude '__pycache__' --exclude 'frontend' --exclude '.venv' --exclude '.git' . $dstFolder/backend
+#mkdir $dstFolder/
+rsync -rv --exclude '*.pyc' --exclude '__pycache__' --exclude 'frontend' --exclude '.venv' --exclude '.git' . $dstFolder/
 
+cd frenchtvdownload/frontend
+npm install
+npm run build
 mkdir $dstFolder/frontend
+cd ../..
 rsync -rv frenchtvdownload/frontend/build $dstFolder/frontend/
 
-
+sudo chown -R lbr:www-data $dstFolder
+sudo /etc/init.d/apache2 restart
 
