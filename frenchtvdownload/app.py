@@ -24,12 +24,18 @@ console.setLevel(logging.DEBUG)
 console.setFormatter(ColorFormatter(False))  # no color
 logger.addHandler(console)
 
-template_dir = os.path.join(os.path.abspath(os.path.dirname(__file__)), "frontend", "build" )
-static_dir = os.path.join(os.path.abspath(os.path.dirname(__file__)), "frontend", "build", "static")
-
 
 # Create the application instance
 app = config.app
+
+if app.config["ENV"] == 'production':
+    template_dir = os.path.join(config.PROD_DEPLOY_BASE_PATH, "frontend", "build")
+    static_dir = os.path.join(config.PROD_DEPLOY_BASE_PATH, "frontend", "build", "static")
+
+else:
+    template_dir = os.path.join(config.DEV_DEPLOY_BASE_PATH, "frontend", "build" )
+    static_dir = os.path.join(config.DEV_DEPLOY_BASE_PATH, "frontend", "build", "static")
+
 app.template_folder = template_dir
 app.static_folder = static_dir
 app.static_url_path = "/static"
