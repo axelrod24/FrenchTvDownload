@@ -91,14 +91,15 @@ class DldThread():
             dst_file_full_path = os.path.join(app.config["DST_FOLDER"], dst_folder_name, dst_filename)
             CreateMP4(ts_file_full_path, dst_file_full_path)
 
-             # conversion & copy sucessfuly completed
-            logger.info("Video id:%d - conversion sucessfully" % self.video_id)
 
             # find the video entry and mark it as "done"
             models.update_video_by_id(self.video_id, status="done", folder_name=dst_folder_name, video_file_name=dst_filename)
 
             # write "done" status.
             self.write_to_pipe(JsonStatus(status="done"))
+
+            # conversion & copy sucessfuly completed
+            logger.info("Video id:%d - conversion sucessfully" % self.video_id)
 
         except Exception as err:
             # download interupted by user, set video status to pending to allow re-download

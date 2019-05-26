@@ -81,6 +81,7 @@ def get_status(video_id):
     video_id = int(video_id)
     dld_thread = app.config["DLD_THREAD"].get(video_id, None)
     if dld_thread is None:
+        logger.warning("No download thread for id:%d" % video_id)
         return None
 
     # we read download progress as a json string and convert it to a dict.
