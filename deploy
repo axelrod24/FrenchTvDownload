@@ -7,6 +7,7 @@ baseFolder=/var/www/FlaskApp/
 webAppName=FrTvDld
 dstFolder=$baseFolder/$webAppName
 
+sudo /etc/init.d/apache2 stop
 
 cp apache/FrTvDld.wsgi $baseFolder/
 cp apache/activate_this.py $dstFolder/.venv/bin/
@@ -22,5 +23,9 @@ cd ../..
 rsync -rv frenchtvdownload/frontend/build $dstFolder/frontend/
 
 sudo chown -R lbr:www-data $dstFolder
-sudo /etc/init.d/apache2 restart
+sudo chmod 664 $dstFolder/videos.db
+
+sudo /etc/init.d/apache2 start
+ls -al $dstFolder
+
 
