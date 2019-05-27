@@ -5,6 +5,7 @@ from flask import render_template, jsonify, make_response, abort
 
 # local modules
 from flaskr import config, models
+from flaskr.models import video
 from frtvdld.GlobalRef import LOGGER_NAME
 from frtvdld.ColorFormatter import ColorFormatter
 
@@ -47,7 +48,7 @@ app.static_url_path = "/static"
 if not os.path.exists(app.config['SQLALCHEMY_DATABASE_URI']):
     config.db.create_all()
 # clean up downloading status, replace by pending
-models.clean_model_at_startup()
+models.video.clean_model_at_startup()
 
 logger.info("--------------------------------------")
 logger.info("-- Web App Initialization completed --")

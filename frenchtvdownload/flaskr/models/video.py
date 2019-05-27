@@ -92,7 +92,7 @@ def add_new_video(url, status, mdata):
     db.session.add(new_video)
     db.session.commit()
 
-    # Serialize and return the newly created person in the response
+    # Serialize and return the newly created video
     data = schema.dump(new_video).data
     return data
 

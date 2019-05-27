@@ -1,6 +1,8 @@
-import os, threading, logging, json, shutil
+import os, threading, logging, json, shutil, time
 
 from flaskr import models
+from flaskr.models import video
+
 from flaskr.config import app
 
 from frtvdld.GlobalRef import LOGGER_NAME
@@ -16,12 +18,15 @@ def JsonStatus(status, progress=0, message=""):
 
 
 
-class DldThread():
-    def __init__(self, url, progMetadata, video_id):
-        self.thread = threading.Thread(target=self.run)
+class DldThread(threading.Thread):
+    def __init__(self, thread_name, url, progMetadata, video_id):
+        super().__init__(name=thread_name, target=self.run)
+        # self.thread = threading.Thread(target=self.run)
+        # self.thread_name =  self.thread.getName()
         self.url = url
         self.progMetadata = json.loads(progMetadata)
         self.video_id = video_id
+        self.cleaned_up = False
 
         # create a temp unique folder
         tmp_folder_name = utils.get_random_string()
@@ -30,21 +35,21 @@ class DldThread():
             tmp_folder_name = utils.get_random_string()
             self.tmp_path = os.path.join(app.config["TMP_FOLDER"], tmp_folder_name)
         os.mkdir(self.tmp_path)
-
     
         # create a named pipe, deal with file already exist
-        self.pipe_name = os.path.join(self.tmp_path, app.config["PIPE_NAME_HEADER"] % self.thread.name)
+        self.pipe_name = os.path.join(self.tmp_path, app.config["PIPE_NAME_HEADER"] % self.getName())
+        # self.pipe_name = os.path.join(self.tmp_path, app.config["PIPE_NAME_HEADER"] % self.thread.name)
         i=1
         while os.path.exists(self.pipe_name) is True:
-            self.pipe_name = os.path.join(self.tmp_path, (app.config["PIPE_NAME_HEADER"]+"_"+str(i)) % self.thread.name)
+            # self.pipe_name = os.path.join(self.tmp_path, (app.config["PIPE_NAME_HEADER"]+"_"+str(i)) % self.thread.name)
+            self.pipe_name = os.path.join(self.tmp_path, (app.config["PIPE_NAME_HEADER"]+"_"+str(i)) % self.getName())
             i+=1
         os.mkfifo(self.pipe_name)
 
-        logger.info("video id:{video_id}, pipe name:{pipe_name}".format(video_id=self.video_id, pipe_name=self.pipe_name))
+        logger.info("Thread:%s, video id:%d, pipe name:%s" % (self.getName(), self.video_id, self.pipe_name))
 
         # create the stop event
         self.stop_download_event=threading.Event()
-
 
     def run(self):
 
@@ -93,7 +98,7 @@ class DldThread():
 
 
             # find the video entry and mark it as "done"
-            models.update_video_by_id(self.video_id, status="done", folder_name=dst_folder_name, video_file_name=dst_filename)
+            models.video.update_video_by_id(self.video_id, status="done", folder_name=dst_folder_name, video_file_name=dst_filename)
 
             # write "done" status.
             self.write_to_pipe(JsonStatus(status="done"))
@@ -105,29 +110,34 @@ class DldThread():
             # download interupted by user, set video status to pending to allow re-download
             if isinstance(err, FrTvDwnUserInterruption):
                 error_type = "interrupted"
-                models.update_video_by_id(self.video_id, status="pending")
+                models.video.update_video_by_id(self.video_id, status="pending")
             else:
                 error_type = "error"
                 # update mdata with the error message
                 self.progMetadata["errorMsg"] = "%s" % err
-                models.update_video_by_id(self.video_id, status="error", mdata=self.progMetadata)
+                models.video.update_video_by_id(self.video_id, status="error", mdata=self.progMetadata)
 
             logger.info(err)
             self.write_to_pipe(JsonStatus(status=error_type, message="%s" % err))
 
         # thread terminate on success or error 
+        while(not self.cleaned_up):
+            time.sleep(5)
+        
 
     def start(self):
         # start the thread and read from the pipe
-        self.thread.start()
+        # self.thread.start()
+        super().start()
         self.pipein = open(self.pipe_name, 'r')
 
-    def is_alive(self):
-        return self.thread.is_alive() 
+    # def is_alive(self):
+    #     return self.thread.is_alive() 
 
     def cleanup(self):
         os.remove(self.pipe_name) 
         shutil.rmtree(self.tmp_path)
+        self.cleaned_up = True
 
     def write_to_pipe(self, msg):
         # add msg to pipe with line termination
