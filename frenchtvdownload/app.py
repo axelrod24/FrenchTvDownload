@@ -24,6 +24,9 @@ console.setLevel(logging.DEBUG)
 console.setFormatter(ColorFormatter(False))  # no color
 logger.addHandler(console)
 
+logger.info("------------------------------------")
+logger.info("--  Start Web App Initialization  --")
+logger.info("------------------------------------")
 
 # Create the application instance
 app = config.app
@@ -46,6 +49,10 @@ if not os.path.exists(app.config['SQLALCHEMY_DATABASE_URI']):
 # clean up downloading status, replace by pending
 models.clean_model_at_startup()
 
+logger.info("--------------------------------------")
+logger.info("-- Web App Initialization completed --")
+logger.info("--------------------------------------")
+
 @app.errorhandler(404)
 def not_found(error):
     return make_response(jsonify({'error': 'Not found'}), 404)
@@ -67,7 +74,6 @@ def home():
 
 @app.route('/api/video', methods=['GET', 'POST'])
 def get_post_video():
-    print("get_post_video")
     r = flask.request
 
     # read list of all video 
