@@ -122,7 +122,7 @@ class DldThread(threading.Thread):
 
         # thread terminate on success or error 
         while(not self.cleaned_up):
-            time.sleep(5)
+            time.sleep(1)
         
 
     def start(self):
