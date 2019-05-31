@@ -11,18 +11,17 @@ from frtvdld.Converter import CreateMP4
 from frtvdld.DownloadException import *
 from frtvdld import utils
 
+ffmpeg_lock = threading.Lock()
+
 logger = logging.getLogger(LOGGER_NAME)
 
 def JsonStatus(status, progress=0, message=""):
     return json.dumps({"status":status, "progress":("%d" % progress), "message":message})
 
 
-
 class DldThread(threading.Thread):
     def __init__(self, thread_name, url, progMetadata, video_id):
         super().__init__(name=thread_name, target=self.run)
-        # self.thread = threading.Thread(target=self.run)
-        # self.thread_name =  self.thread.getName()
         self.url = url
         self.progMetadata = json.loads(progMetadata)
         self.video_id = video_id
@@ -38,10 +37,8 @@ class DldThread(threading.Thread):
     
         # create a named pipe, deal with file already exist
         self.pipe_name = os.path.join(self.tmp_path, app.config["PIPE_NAME_HEADER"] % self.getName())
-        # self.pipe_name = os.path.join(self.tmp_path, app.config["PIPE_NAME_HEADER"] % self.thread.name)
         i=1
         while os.path.exists(self.pipe_name) is True:
-            # self.pipe_name = os.path.join(self.tmp_path, (app.config["PIPE_NAME_HEADER"]+"_"+str(i)) % self.thread.name)
             self.pipe_name = os.path.join(self.tmp_path, (app.config["PIPE_NAME_HEADER"]+"_"+str(i)) % self.getName())
             i+=1
         os.mkfifo(self.pipe_name)
@@ -59,7 +56,6 @@ class DldThread(threading.Thread):
             logger.info("Video id:%d - progress:%3d - %d/%d" % (self.video_id, min(int((x[0] * 100) / x[1]), 100), x[0], x[1]))
             # write to pipe for client update
             self.write_to_pipe(JsonStatus(status="downloading", progress = (x[1]-x[0]+1)))
-
 
         try:
             src_filename = self.progMetadata["filename"] + ".ts"
@@ -93,9 +89,12 @@ class DldThread(threading.Thread):
                 i+=1
 
             # convert the file
+            self.write_to_pipe(JsonStatus(status="waiting"))
+            ffmpeg_lock.acquire()
             dst_file_full_path = os.path.join(app.config["DST_FOLDER"], dst_folder_name, dst_filename)
+            self.write_to_pipe(JsonStatus(status="converting"))
             CreateMP4(ts_file_full_path, dst_file_full_path)
-
+            ffmpeg_lock.release()
 
             # find the video entry and mark it as "done"
             models.video.update_video_by_id(self.video_id, status="done", folder_name=dst_folder_name, video_file_name=dst_filename)
@@ -120,19 +119,14 @@ class DldThread(threading.Thread):
             logger.info(err)
             self.write_to_pipe(JsonStatus(status=error_type, message="%s" % err))
 
-        # thread terminate on success or error 
+        # thread terminate on success or error, wait for clean-up() to be called.
         while(not self.cleaned_up):
             time.sleep(1)
         
-
     def start(self):
         # start the thread and read from the pipe
-        # self.thread.start()
-        super().start()
         self.pipein = open(self.pipe_name, 'r')
-
-    # def is_alive(self):
-    #     return self.thread.is_alive() 
+        super().start()
 
     def cleanup(self):
         os.remove(self.pipe_name) 

@@ -98,6 +98,16 @@ class TableRow extends Component {
                 statusText = "" + ((this.state.progress===-1) ? "..." : ""+this.state.progress)
                 statusBgColor = "Plum"
             break ;
+
+            case "waiting":
+                statusText = "Waiting"
+                statusBgColor = "Plum"
+            break ;
+
+            case "converting":
+                statusText = "Converting"
+                statusBgColor = "Plum"
+            break ;
             
             case "not_available":
                 statusText = "Not Available"
@@ -221,6 +231,14 @@ class TableRow extends Component {
                     case "downloading":
                         this.setState({progress: data.progress})
                         return
+
+                    case "waiting":
+                    this.setState({status: "waiting"})
+                    return
+
+                    case "converting":
+                    this.setState({status: "converting"})
+                    return
 
                     case "no_update":
                         // this.setState({status:  data.status})

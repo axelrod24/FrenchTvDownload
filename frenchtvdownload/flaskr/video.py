@@ -63,16 +63,6 @@ def download(video_id):
         thread_name = THREAD_NAME_PREFIX % video_id
         dld_thread = dldthread.DldThread(thread_name, video["url"], video["mdata"], video["video_id"])
         dld_thread.start()
-        # app.config["DLD_THREAD"][video["video_id"]] = dld_thread
-        # tname = dld_thread.getName()
-        # for t in threading.enumerate():
-        #     if tname == t.getName():
-        #         print("find thread: %s" % t)
-        #         print("video id: %d" % t.video_id)
-
-        # write thread info to db 
-        # pipe_name = dld_thread.pipe_name
-        # models.dldagent.add_new_agent(video["video_id"], dld_thread.getName(), "downloading")
         return video
 
     return None
@@ -80,10 +70,9 @@ def download(video_id):
 
 def cancel(video_id):
     video_id = int(video_id)
-    # dld_thread = app.config["DLD_THREAD"].get(video_id, None)
     dld_thread = get_thread_agent_by_video_id(video_id)
-
     if dld_thread is None:
+        logger.warning("Cancel: No download thread for id:%d" % video_id)
         return False
 
     dld_thread.cancel_download()
@@ -92,22 +81,19 @@ def cancel(video_id):
 
 def get_status(video_id):
     video_id = int(video_id)
-    # dld_thread = app.config["DLD_THREAD"].get(video_id, None)
     dld_thread = get_thread_agent_by_video_id(video_id)
     if dld_thread is None:
-        logger.warning("No download thread for id:%d" % video_id)
+        logger.warning("get_status: No download thread for id:%d" % video_id)
         return None
 
     # we read download progress as a json string and convert it to a dict.
     dld_status = dld_thread.read_status()
-    logger.debug("json status is %s" % dld_status)
     status = json.loads(dld_status)
     logger.debug("status is %s" % status)
 
     # if donwload complete or error, clean up the thread and remove it from dict.
     if status["status"] in ["done", "error", "interrupted"]:
         dld_thread.cleanup() 
-        # del app.config["DLD_THREAD"][video_id]
 
     # return latest status
     return {"video_id":video_id, "status":dld_status}

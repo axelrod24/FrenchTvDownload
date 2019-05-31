@@ -6,13 +6,13 @@ from frtvdld.DownloadException import FrTvDownloadException
 logger = logging.getLogger("frtvdld")
 
 
+
 def CreateMP4(src, dst):
     """
     convert to MP4
     """
     logger.info("Creation of MP$")
     logger.info("Convert: %s -> %s" % (src, dst))
-#    commande = "ffmpeg -hide_banner -i %s -c:a aac -strict -2 -vcodec copy %s" % (src, dst)
     commande = "ffmpeg -hide_banner -i %s -acodec copy -vcodec copy %s" % (src, dst)
 
     try:
@@ -23,4 +23,5 @@ def CreateMP4(src, dst):
             raise FrTvDownloadException("Error running FFmpeg, video might be available:"+src)
 
     except Exception as err:
+
         raise FrTvDownloadException("Can't create final MP4. "+err.__repr__())
