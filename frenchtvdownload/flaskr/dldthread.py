@@ -26,6 +26,7 @@ class DldThread(threading.Thread):
         self.progMetadata = json.loads(progMetadata)
         self.video_id = video_id
         self.cleaned_up = False
+        self.pipein = None
 
         # create a temp unique folder
         tmp_folder_name = utils.get_random_string()
@@ -123,10 +124,10 @@ class DldThread(threading.Thread):
         while(not self.cleaned_up):
             time.sleep(1)
         
-    def start(self):
-        # start the thread and read from the pipe
-        self.pipein = open(self.pipe_name, 'r')
-        super().start()
+    # def start(self):
+    #     # start the thread and read from the pipe
+    #     self.pipein = open(self.pipe_name, 'r')
+    #     super().start()
 
     def cleanup(self):
         os.remove(self.pipe_name) 
@@ -141,6 +142,8 @@ class DldThread(threading.Thread):
 
     def read_status(self):
         # read the pipe and return last line
+        if self.pipein is None:
+            self.pipein = open(self.pipe_name, 'r')
         lines = self.pipein.readlines()
         logger.debug("line is:%s" % lines)
         
