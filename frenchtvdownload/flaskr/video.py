@@ -13,6 +13,7 @@ from frtvdld.DownloadException import *
 from frtvdld import utils
 
 logger = logging.getLogger(LOGGER_NAME)
+thread_lock = threading.Lock()
 
 THREAD_NAME_PREFIX="Thread_video_id_%d"
 
@@ -61,8 +62,10 @@ def download(video_id):
     if video is not None:
         # create the thread, store it and start it 
         thread_name = THREAD_NAME_PREFIX % video_id
+        thread_lock.acquire()
         dld_thread = dldthread.DldThread(thread_name, video["url"], video["mdata"], video["video_id"])
         dld_thread.start()
+        thread_lock.release()
         return video
 
     return None
@@ -107,7 +110,10 @@ def delete(video_id):
 
 def get_thread_agent_by_video_id(video_id):
     thread_name = THREAD_NAME_PREFIX % video_id
-    for t in threading.enumerate():
+    thread_lock.acquire()
+    thread_list = threading.enumerate()
+    thread_lock.release()
+    for t in thread_list:
         if t.getName() == thread_name:
             return t
     return None
