@@ -11,9 +11,11 @@ from frtvdld.Converter import CreateMP4
 from frtvdld.DownloadException import *
 from frtvdld import utils
 
+logger = logging.getLogger(LOGGER_NAME)
+
+logger.info("Create ffmpeg thread lock")
 ffmpeg_lock = threading.Lock()
 
-logger = logging.getLogger(LOGGER_NAME)
 
 def JsonStatus(status, progress=0, message=""):
     return json.dumps({"status":status, "progress":("%d" % progress), "message":message})
@@ -90,12 +92,16 @@ class DldThread(threading.Thread):
                 i+=1
 
             # convert the file
-            self.write_to_pipe(JsonStatus(status="waiting"))
-            ffmpeg_lock.acquire()
-            dst_file_full_path = os.path.join(app.config["DST_FOLDER"], dst_folder_name, dst_filename)
-            self.write_to_pipe(JsonStatus(status="converting"))
-            CreateMP4(ts_file_full_path, dst_file_full_path)
-            ffmpeg_lock.release()
+            try:
+                self.write_to_pipe(JsonStatus(status="waiting"))
+                ffmpeg_lock.acquire()
+                dst_file_full_path = os.path.join(app.config["DST_FOLDER"], dst_folder_name, dst_filename)
+                self.write_to_pipe(JsonStatus(status="converting"))
+                CreateMP4(ts_file_full_path, dst_file_full_path)
+                ffmpeg_lock.release()
+            except Exception as err:
+                ffmpeg_lock.release()
+                raise err
 
             # find the video entry and mark it as "done"
             models.video.update_video_by_id(self.video_id, status="done", folder_name=dst_folder_name, video_file_name=dst_filename)

@@ -13,6 +13,8 @@ from frtvdld.DownloadException import *
 from frtvdld import utils
 
 logger = logging.getLogger(LOGGER_NAME)
+
+logger.info("Create download thread lock")
 thread_lock = threading.Lock()
 
 THREAD_NAME_PREFIX="Thread_video_id_%d"
