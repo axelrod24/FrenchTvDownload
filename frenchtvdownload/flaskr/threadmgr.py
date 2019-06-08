@@ -24,6 +24,7 @@ def create_and_start_download_thread(video_id, video):
 def get_thread_agent_by_video_id(video_id):
     thread_name = THREAD_NAME_PREFIX % video_id
     thread_lock.acquire()
+    logger.info("video_id:%d, dld thread:%s" % (video_id, app.config["DLD_THREAD"].keys()))
     dld_thread = app.config["DLD_THREAD"].get(thread_name, None)
     thread_lock.release()
     return dld_thread
