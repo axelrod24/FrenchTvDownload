@@ -5,7 +5,7 @@ from flask import make_response, abort, jsonify
 from flaskr.config import db, app
 from flaskr import models
 from flaskr.models import video, dldagent
-from flaskr import dldthread
+from flaskr import threadmgr
 
 from frtvdld.GlobalRef import LOGGER_NAME
 from frtvdld.download import get_video_metadata, download_video, get_error_metadata
@@ -14,10 +14,7 @@ from frtvdld import utils
 
 logger = logging.getLogger(LOGGER_NAME)
 
-logger.info("Create download thread lock")
-thread_lock = threading.Lock()
 
-THREAD_NAME_PREFIX="Thread_video_id_%d"
 
 def read_all():
     data = models.video.get_all_video()
@@ -63,11 +60,7 @@ def download(video_id):
     video = models.video.update_video_by_id(video_id, status="downloading")
     if video is not None:
         # create the thread, store it and start it 
-        thread_name = THREAD_NAME_PREFIX % video_id
-        thread_lock.acquire()
-        dld_thread = dldthread.DldThread(thread_name, video["url"], video["mdata"], video["video_id"])
-        dld_thread.start()
-        thread_lock.release()
+        threadmgr.create_and_start_download_thread(video_id, video)
         return video
 
     return None
@@ -75,18 +68,19 @@ def download(video_id):
 
 def cancel(video_id):
     video_id = int(video_id)
-    dld_thread = get_thread_agent_by_video_id(video_id)
+    dld_thread = threadmgr.get_thread_agent_by_video_id(video_id)
     if dld_thread is None:
         logger.warning("Cancel: No download thread for id:%d" % video_id)
         return False
 
     dld_thread.cancel_download()
+    threadmgr.remove_thread_by_video_id(video_id)
     return True
 
 
 def get_status(video_id):
     video_id = int(video_id)
-    dld_thread = get_thread_agent_by_video_id(video_id)
+    dld_thread = threadmgr.get_thread_agent_by_video_id(video_id)
     if dld_thread is None:
         logger.warning("get_status: No download thread for id:%d" % video_id)
         return None
@@ -98,7 +92,8 @@ def get_status(video_id):
 
     # if donwload complete or error, clean up the thread and remove it from dict.
     if status["status"] in ["done", "error", "interrupted"]:
-        dld_thread.cleanup() 
+        dld_thread.cleanup()
+        threadmgr.remove_thread_by_video_id(video_id)
 
     # return latest status
     return {"video_id":video_id, "status":dld_status}
@@ -109,15 +104,5 @@ def delete(video_id):
     video = models.video.delete_video_by_id(video_id)
     return video
 
-
-def get_thread_agent_by_video_id(video_id):
-    thread_name = THREAD_NAME_PREFIX % video_id
-    thread_lock.acquire()
-    thread_list = threading.enumerate()
-    thread_lock.release()
-    for t in thread_list:
-        if t.getName() == thread_name:
-            return t
-    return None
 
 
