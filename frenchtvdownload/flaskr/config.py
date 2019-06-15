@@ -1,4 +1,5 @@
 import os
+import queue
 
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
@@ -24,6 +25,7 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 app.config["DLD_THREAD"] = dict() # hashmap to store active download thread
 app.config["PIPE_NAME_HEADER"] = "fifo-%s-dld"
+app.config["QUEUE"] = queue.Queue()
 
 if app.config["ENV"] == 'production':
     app.config["DST_FOLDER"] = os.path.join("/home", "lbr", "Dropbox", "FRTV_DLD_FOLDER")

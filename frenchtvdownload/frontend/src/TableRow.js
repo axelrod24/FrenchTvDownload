@@ -99,6 +99,11 @@ class TableRow extends Component {
                 statusBgColor = "Plum"
             break ;
 
+            case "queued":
+                statusText = "Queued"
+                statusBgColor = "Plum"
+            break ;
+
             case "waiting":
                 statusText = "Waiting"
                 statusBgColor = "Plum"
@@ -146,7 +151,7 @@ class TableRow extends Component {
     }
 
     componentDidMount() {
-        if (this.state.status === "downloading" && this.interval == null) {
+        if ((this.state.status === "downloading" || this.state.status === "queued") && this.interval == null) {
             this.interval = setInterval(this.onUpdateStatus, 2000)
             return 
        }
@@ -158,7 +163,7 @@ class TableRow extends Component {
         console.log("TableRow: store:",this.store.getState().data)
         if (this.interval == null) {
 
-            if (this.state.status === "downloading") 
+            if (this.state.status === "downloading" || this.state.status === "queued") 
                 this.interval = setInterval(this.onUpdateStatus, 2000)
             return
         }
@@ -232,12 +237,16 @@ class TableRow extends Component {
                         this.setState({progress: data.progress})
                         return
 
+                    case "queued":
+                        this.setState({status: "queued"})
+                    return
+
                     case "waiting":
-                    this.setState({status: "waiting"})
+                        this.setState({status: "waiting"})
                     return
 
                     case "converting":
-                    this.setState({status: "converting"})
+                        this.setState({status: "converting"})
                     return
 
                     case "no_update":

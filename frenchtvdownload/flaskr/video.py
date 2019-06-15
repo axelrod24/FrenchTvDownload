@@ -1,9 +1,10 @@
 
 import os, threading, logging, json
+
 from flask import make_response, abort, jsonify
 
-from flaskr.config import db, app
 from flaskr import models
+from flaskr.config import app
 from flaskr.models import video, dldagent
 from flaskr import threadmgr
 
@@ -12,8 +13,13 @@ from frtvdld.download import get_video_metadata, download_video, get_error_metad
 from frtvdld.DownloadException import *
 from frtvdld import utils
 
+MAX_CONCURENT_DOWNLOAD = 5
+ASYNC_DOWNLOAD_INTERVAL = 30
+
 logger = logging.getLogger(LOGGER_NAME)
 
+# start async download loop
+_async_download_loop()
 
 
 def read_all():
@@ -55,8 +61,15 @@ def add_url(url):
     return None
 
         
-def download(video_id):
+def async_download(video_id):
     video_id = int(video_id)
+    # if too many concurent downlaod, add to the queue of async dowwnload
+    nbr_concurent_download = _get_number_of_concurent_download()
+    if nbr_concurent_download >= MAX_CONCURENT_DOWNLOAD:
+        video = models.video.update_video_by_id(video_id, status="queued")
+        app.config["DLD_QUEUE"].put(video_id)
+        return video
+
     video = models.video.update_video_by_id(video_id, status="downloading")
     if video is not None:
         # create the thread, store it and start it 
@@ -105,4 +118,39 @@ def delete(video_id):
     return video
 
 
+def _download(video_id):
+    video_id = int(video_id)
+    video = models.video.update_video_by_id(video_id, status="downloading")
+    if video is not None:
+        # create the thread, store it and start it 
+        threadmgr.create_and_start_download_thread(video_id, video)
+        return video
 
+    return None
+
+
+def _get_number_of_concurent_download():
+    # check number of concurent download
+    dowload_list = models.video.get_video_by_status("downloading")
+    if dowload_list is not None:
+        return len(dowload_list)
+    
+    return 0
+
+
+def _async_download_loop():
+    dld_queue = app.config["DLD_QUEUE"]
+    if dld_queue.empty():
+        threading.Timer(ASYNC_DOWNLOAD_INTERVAL, _async_download_loop)
+        return 
+
+    # check number of concurent download
+    nbr_concurent_download = _get_number_of_concurent_download()
+    if nbr_concurent_download >= MAX_CONCURENT_DOWNLOAD:
+        threading.Timer(ASYNC_DOWNLOAD_INTERVAL, _async_download_loop)
+        return 
+
+    while (nbr_concurent_download < MAX_CONCURENT_DOWNLOAD and not dld_queue.empty()):
+        next_id = dld_queue.get()
+        _download(next_id)
+        nbr_concurent_download+=1

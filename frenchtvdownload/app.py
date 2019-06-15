@@ -113,7 +113,7 @@ def download_video():
     if len(video_id) == 0:
         return error('Wrong request')
 
-    video = flaskr.video.download(video_id)
+    video = flaskr.video.async_download(video_id)
     if video is None:
         return error('Video Id not found:%s'%(video_id))
 
