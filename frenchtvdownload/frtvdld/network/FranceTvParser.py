@@ -140,16 +140,15 @@ class FranceTvParser(NetworkParser):
         """
         try:
             parsed = BeautifulSoup(page, "html.parser")
-            div_tag = parsed.find_all("div", class_="c-player-content")
+            div_tag = parsed.find_all("div", class_="c-player")
             if len(div_tag) == 0:
                 return None
 
-            script_tag = div_tag[0].find_all("script")
-            if len(script_tag) == 0:
+            script_tag = div_tag[0].next
+            if script_tag.name !=  "script":
                 return None
 
-            # assume script is the first element of the array
-            script_tag = script_tag[0]
+            # extract Video Id from script text
             json_text = script_tag.text
             json_text = json_text[json_text.find("["):json_text.rfind("]")+1]
 
