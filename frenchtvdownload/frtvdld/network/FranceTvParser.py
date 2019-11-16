@@ -64,7 +64,6 @@ class FranceTvVideoMetadata(VideoMetadata):
     self._progName = pMeta.get('title', 'default_prog_name')
     self._progTitle = pMeta.get('additional_title', 'default_prog_title')
     self._airDate = self._parseAirDate(pMeta.get('broadcasted_at'))  #\TODO LBR: add default date value
-    # self._synopsis = self.get('synopsis', "no synopsis")
 
     self._filename = "%s-%s" % (datetime.fromtimestamp(self._airDate).strftime("%Y%m%d"), self.normalizeProgTitle(self._progName))
   
@@ -145,7 +144,7 @@ class FranceTvParser(NetworkParser):
           data = json.loads(pageInfos)
           data["synopsis"] = self.getSynopsis(page)
           data["videoUrl"] = videoUrl
-          data["ChannelUrl"] = url
+          data["channelUrl"] = url
           data["videoId"] = jurl
           videoMetadata = FranceTvVideoMetadata(data)
           metadata = videoMetadata.getMetadata()

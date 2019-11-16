@@ -14,6 +14,7 @@ class VideoMetadata(dict):
     self._duration = None
     self._videoId = None
     self._videoUrl = None
+    self._channelUrl = None
     self._errorMsg = None
 
   def normalizeProgTitle(self, filename):
@@ -27,15 +28,19 @@ class VideoMetadata(dict):
     raise NotImplementedError()
 
   def getMetadata(self):
-    self._videoUrl = self.get("videoUrl","")
+    
     self.parseMetadata()
+    self._synopsis = self.get('synopsis', "no synopsis")
+    self._videoUrl = self.get("videoUrl","")
+    self._channelUrl = self.get("channelUrl","")
+
     Metadata = collections.namedtuple('Metadata', ['mediaType', 'manifestUrl', 'airDate', 'progName',
                                                     'progTitle', 'synopsis', 'filename', 'duration', 'videoId',
-                                                     'videoUrl', "errorMsg"])
+                                                     'videoUrl', "channelUrl", "errorMsg"])
     m = Metadata(mediaType=self._mediaType, manifestUrl=self._manifestUrl, airDate=self._airDate, 
                   progName=self._progName, progTitle=self._progTitle, synopsis=self._synopsis,
                   filename=self._filename, duration=self._duration, videoId=self._videoId, 
-                  videoUrl=self._videoUrl, errorMsg=self._errorMsg)
+                  videoUrl=self._videoUrl, channelUrl=self._channelUrl, errorMsg=self._errorMsg)
     return m
 
 
