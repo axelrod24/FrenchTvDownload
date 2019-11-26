@@ -54,8 +54,11 @@ class FranceTvVideoMetadata(VideoMetadata):
     super().__init__(d)
 
   def parseMetadata(self):
+
+    self._manifestUrl = self.get('manifest')
+
     vMeta =  self.get('video')
-    self._manifestUrl = vMeta.get('url')
+    #self._manifestUrl = vMeta.get('url')
     self._mediaType = vMeta.get('format') 
     self._duration = vMeta.get('duration') 
     
@@ -146,6 +149,18 @@ class FranceTvParser(NetworkParser):
           data["videoUrl"] = videoUrl
           data["channelUrl"] = url
           data["videoId"] = jurl
+
+          # fetch token url
+          tokenUrl = data.get("video", {"token": None}).get("token")
+          if (tokenUrl):
+            url = self._fetchTokenUrl(tokenUrl)
+            if not url:
+              raise FrTvDwnPageParsingError("Error fetching tokenUrl")
+
+            data['manifest'] = url
+          else:
+            data['manifest'] = data.get("video", {"url": None}).get('url')
+
           videoMetadata = FranceTvVideoMetadata(data)
           metadata = videoMetadata.getMetadata()
         except Exception as e:
@@ -208,4 +223,8 @@ class FranceTvParser(NetworkParser):
             return None
 
         return urljoin(url, videoUrlList[index]["href"])
-  
+
+    def _fetchTokenUrl(self, url):
+      page = self.fakeAgent.readPage(url)
+      data = json.loads(page)
+      return data.get('url')

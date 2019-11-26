@@ -76,7 +76,6 @@ def post_url(url):
 
 if (__name__ == "__main__"):
 
-
     # Arguments de la ligne de commande
     usage = "main.py [options] urlToVideo"
     parser = argparse.ArgumentParser(usage=usage, description="Download video from FranceTv.fr")
