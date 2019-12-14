@@ -1,16 +1,18 @@
 #!/usr/bin/python3
 # # -*- coding:Utf-8 -*-
 
-# import os
-# p = os.path.abspath(os.path.dirname(__file__))
-# print("Path for main:", p)
+import sys
+print (sys.version)
+print (sys.path)
 
-activate_this = '../.venv/bin/activate_this.py'
+#activate_this = '../.venv/bin/activate_this.py'
+activate_this = '/home/lbr/Wks/FrenchTvDownload/.venv/bin/activate_this.py'
 with open(activate_this) as file_:
     exec(file_.read(), dict(__file__=activate_this))
 
 import sys
-print(sys.path)
+print (sys.version)
+print (sys.path)
 
 #
 # Infos
@@ -21,7 +23,7 @@ __license__ = "GPL 2"
 __version__ = "0.1"
 __url__ = "https://github.com/axelrod24/FrenchTvDownload"
 
-
+import yaml
 import argparse
 import logging
 import platform
@@ -203,8 +205,10 @@ if (__name__ == "__main__"):
         dstFullPath = os.path.join(args.outDir, progMetadata.filename + "_" + str(fileIndex))
         fileIndex += 1
 
-    ffmpegHLSDownloader = FfmpegHLSDownloader(url=progMetadata.manifestUrl)  
-    ffmpegHLSDownloader.downlaodAndConvertFile(dst=dstFullPath+ ".mp4")  
+    # downloading with ffmpeg
+    logger.info("Downloading: %s" % (dstFullPath + ".mp4"))
+    ffmpegHLSDownloader = FfmpegHLSDownloader(url=progMetadata.manifestUrl)
+    ffmpegHLSDownloader.downlaodAndConvertFile(dst=dstFullPath+ ".mp4")
 
     # save metadata
     if (args.keepMetaData):
@@ -212,3 +216,4 @@ if (__name__ == "__main__"):
         dom = minidom.parseString(xmlMeta)
         with open(dstFullPath+".meta", "w") as text_file:
             print(dom.toprettyxml(), file=text_file)
+
