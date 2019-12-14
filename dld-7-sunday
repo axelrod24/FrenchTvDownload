@@ -7,6 +7,6 @@ cd $localFolder
 ./dld-francetv $dstFolder https://www.france.tv/france-2/sagesses-bouddhistes/
 ./dld-francetv $dstFolder https://www.france.tv/france-2/13h15-le-dimanche/
 ./dld-f5-cpolitique
-./dld-francetv $dstFolder https://www.france.tv/france-2/19h-le-dimanche/
 ./dld-francetv $dstFolder https://www.france.tv/france-3/dimanche-en-politique/
 ./dld-francetv $dstFolder https://www.france.tv/france-2/20h30-le-dimanche/
+./dld-f5-passagedesarts
