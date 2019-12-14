@@ -204,6 +204,11 @@ if (__name__ == "__main__"):
         fileIndex += 1
 
     ffmpegHLSDownloader = FfmpegHLSDownloader(url=progMetadata.manifestUrl)  
-    ffmpegHLSDownloader.downlaodAndConvertFile(dst=dstFullPath)  
+    ffmpegHLSDownloader.downlaodAndConvertFile(dst=dstFullPath+ ".mp4")  
 
-    
+    # save metadata
+    if (args.keepMetaData):
+        xmlMeta = dicttoxml.dicttoxml(progMetadata._asdict(), attr_type=False)
+        dom = minidom.parseString(xmlMeta)
+        with open(dstFullPath+".meta", "w") as text_file:
+            print(dom.toprettyxml(), file=text_file)
