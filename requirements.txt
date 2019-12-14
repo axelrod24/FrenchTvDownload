@@ -11,6 +11,8 @@ Flask-SQLAlchemy
 flask-marshmallow
 flask_cors
 
+mongoengine
+
 backports-datetime-fromisoformat
 
 

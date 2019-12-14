@@ -5,8 +5,8 @@ import sys
 print (sys.version)
 print (sys.path)
 
-#activate_this = '../.venv/bin/activate_this.py'
-activate_this = '/home/lbr/Wks/FrenchTvDownload/.venv/bin/activate_this.py'
+activate_this = '../.venv/bin/activate_this.py'
+#activate_this = '/home/lbr/Wks/FrenchTvDownload/.venv/bin/activate_this.py'
 with open(activate_this) as file_:
     exec(file_.read(), dict(__file__=activate_this))
 
@@ -45,6 +45,8 @@ from frtvdld.downloader.HLSDownloader import HlsManifestParser, HLSStreamDownloa
 from frtvdld.FakeAgent import FakeAgent
 from frtvdld.Converter import CreateMP4, FfmpegHLSDownloader
 from frtvdld.GlobalRef import LOGGER_NAME
+
+from db.mongoapi import getStreamById, updateStreamById
 #
 # Main
 #
@@ -89,8 +91,10 @@ if (__name__ == "__main__"):
     parser.add_argument("-o", "--outDir", action="store", default=".", help='output folder (default .)')
     # parser.add_argument("-x", "--extractedUrl", action="store_true", default=False, help='extract Selection URL (france.tv)')
 
+    parser.add_argument("--noDuplicate", action='store_true', default=False, help="download video only if video id not in Mongo db")
     parser.add_argument("--keepManifest", action='store_true', default=False, help="save the master HLS manifest (.m3u8)")
     parser.add_argument("--keepMetaData", action='store_true', default=False, help="save the video metadata (.meta)")
+    parser.add_argument("--saveMetadata", action='store', choices=['file', 'mongo'], nargs="+", help="save the video metadata in file (.meta) and/or mongo")
     parser.add_argument("--listProfiles", action='store_true', default=False, help="return list of available resolution (don't download the video)")
     parser.add_argument("--parseCollection", action='store_true', default=False, help="return a list of video URL which are part of a collection")
 
@@ -195,6 +199,13 @@ if (__name__ == "__main__"):
 #         # shutil.move(videoFullPath, os.path.join("~", "Dropbox", "Encoding/"))
 #         shutil.rmtree(dstFolder)
 
+
+    # check if stream already downloaded
+    if (args.noDuplicate):
+        stream = getStreamById(progMetadata.videoId)
+        if (stream and stream.status=="done"):
+            exit(1)
+
     # create the filename accoding to file meta-data
     # generic video filename (without ext)
     dstFullPath = os.path.join(args.outDir, progMetadata.filename)
@@ -211,9 +222,12 @@ if (__name__ == "__main__"):
     ffmpegHLSDownloader.downlaodAndConvertFile(dst=dstFullPath+ ".mp4")
 
     # save metadata
-    if (args.keepMetaData):
+    if (args.keepMetaData or (args.saveMetadata and "file" in args.saveMetadata)):
         xmlMeta = dicttoxml.dicttoxml(progMetadata._asdict(), attr_type=False)
         dom = minidom.parseString(xmlMeta)
         with open(dstFullPath+".meta", "w") as text_file:
             print(dom.toprettyxml(), file=text_file)
 
+    # save metadata to mongo
+    if (args.saveMetadata and "mongo" in args.saveMetadata):
+        updateStreamById(progMetadata.videoId, progMetadata)
