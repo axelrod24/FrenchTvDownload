@@ -1,16 +1,18 @@
 #!/usr/bin/python3
 # # -*- coding:Utf-8 -*-
 
-# import os
-# p = os.path.abspath(os.path.dirname(__file__))
-# print("Path for main:", p)
+import sys
+print (sys.version)
+print (sys.path)
 
-activate_this = '../.venv/bin/activate_this.py'
+#activate_this = '../.venv/bin/activate_this.py'
+activate_this = '/home/lbr/Wks/FrenchTvDownload/.venv/bin/activate_this.py'
 with open(activate_this) as file_:
     exec(file_.read(), dict(__file__=activate_this))
 
 import sys
-print(sys.path)
+print (sys.version)
+print (sys.path)
 
 #
 # Infos
@@ -21,7 +23,7 @@ __license__ = "GPL 2"
 __version__ = "0.1"
 __url__ = "https://github.com/axelrod24/FrenchTvDownload"
 
-
+import yaml
 import argparse
 import logging
 import platform
@@ -41,7 +43,7 @@ from frtvdld.network.NetworkProgParser import networkParserFactory
 from frtvdld.downloader.HLSDownloader import HlsManifestParser, HLSStreamDownloader
 
 from frtvdld.FakeAgent import FakeAgent
-from frtvdld.Converter import CreateMP4
+from frtvdld.Converter import CreateMP4, FfmpegHLSDownloader
 from frtvdld.GlobalRef import LOGGER_NAME
 #
 # Main
@@ -139,56 +141,79 @@ if (__name__ == "__main__"):
         print("Protocol not supported:%s" % progMetadata.streamType)
         exit()
 
-    # parse the manifest, get the highest definition and extract list of segments 
-    manifestParser = HlsManifestParser(fakeAgent=FakeAgent(), url=progMetadata.manifestUrl)    
-    manifestParser.parseMasterManifest()
+   
+#     # parse the manifest, get the highest definition and extract list of segments 
+#     manifestParser = HlsManifestParser(fakeAgent=FakeAgent(), url=progMetadata.manifestUrl)    
+#     manifestParser.parseMasterManifest()
 
-    if (args.listProfiles):
-        d = manifestParser.listOfResolutions()
-        for k in d.keys():
-            print("%d:%s" % (k, d[k]))
+#     if (args.listProfiles):
+#         d = manifestParser.listOfResolutions()
+#         for k in d.keys():
+#             print("%d:%s" % (k, d[k]))
         
-        exit(1)
+#         exit(1)
+
+#     # create the filename accoding to file meta-data
+#     dstFolder = tempfile.mkdtemp()
+#     videoFullPath = os.path.join(dstFolder, progMetadata.filename+".ts")
+
+#     # downlaod the video
+#     streamData = manifestParser.getHighestResolutionStream()
+#     listOfSegment = manifestParser.getListOfSegment(url=streamData["URL"])
+#     streamDownloader = HLSStreamDownloader(fakeAgent=FakeAgent(), seglist=listOfSegment)
+#     streamDownloader.download(to_file=videoFullPath, progressFnct=progressFnct)
+   
+#    # write the final video files
+#     if videoFullPath is not None:
+
+#         # generic video filename (without ext)
+#         dstFullPath = os.path.join(args.outDir, progMetadata.filename)
+
+#         # rename file if it already exist.
+#         fileIndex = 2
+#         while os.path.isfile(dstFullPath + ".mp4") is True:
+#             dstFullPath = os.path.join(args.outDir, progMetadata.filename + "_" + str(fileIndex))
+#             fileIndex += 1
+
+#         # convert to mp4
+#         CreateMP4(videoFullPath, dstFullPath + ".mp4")
+
+#         # save the metadata
+#         if (args.keepMetaData):
+#             xmlMeta = dicttoxml.dicttoxml(progMetadata._asdict(), attr_type=False)
+#             dom = minidom.parseString(xmlMeta)
+#             with open(dstFullPath+".meta", "w") as text_file:
+#                 print(dom.toprettyxml(), file=text_file)
+
+#         # save the manifest
+#         if (args.keepManifest):
+#             masterManifest = manifestParser.getMasterManifest()
+#             with open(dstFullPath+".m3u8", "w") as text_file:
+#                 print(masterManifest, file=text_file)
+
+#         # # delete the
+#         # shutil.move(videoFullPath, os.path.join("~", "Dropbox", "Encoding/"))
+#         shutil.rmtree(dstFolder)
 
     # create the filename accoding to file meta-data
-    dstFolder = tempfile.mkdtemp()
-    videoFullPath = os.path.join(dstFolder, progMetadata.filename+".ts")
+    # generic video filename (without ext)
+    dstFullPath = os.path.join(args.outDir, progMetadata.filename)
 
-    # downlaod the video
-    streamData = manifestParser.getHighestResolutionStream()
-    listOfSegment = manifestParser.getListOfSegment(url=streamData["URL"])
-    streamDownloader = HLSStreamDownloader(fakeAgent=FakeAgent(), seglist=listOfSegment)
-    streamDownloader.download(to_file=videoFullPath, progressFnct=progressFnct)
-   
-   # write the final video files
-    if videoFullPath is not None:
+    # rename file if it already exist.
+    fileIndex = 2
+    while os.path.isfile(dstFullPath + ".mp4") is True:
+        dstFullPath = os.path.join(args.outDir, progMetadata.filename + "_" + str(fileIndex))
+        fileIndex += 1
 
-        # generic video filename (without ext)
-        dstFullPath = os.path.join(args.outDir, progMetadata.filename)
+    # downloading with ffmpeg
+    logger.info("Downloading: %s" % (dstFullPath + ".mp4"))
+    ffmpegHLSDownloader = FfmpegHLSDownloader(url=progMetadata.manifestUrl)
+    ffmpegHLSDownloader.downlaodAndConvertFile(dst=dstFullPath+ ".mp4")
 
-        # rename file if it already exist.
-        fileIndex = 2
-        while os.path.isfile(dstFullPath + ".mp4") is True:
-            dstFullPath = os.path.join(args.outDir, progMetadata.filename + "_" + str(fileIndex))
-            fileIndex += 1
-
-        # convert to mp4
-        CreateMP4(videoFullPath, dstFullPath + ".mp4")
-
-        # save the metadata
-        if (args.keepMetaData):
-            xmlMeta = dicttoxml.dicttoxml(progMetadata._asdict(), attr_type=False)
-            dom = minidom.parseString(xmlMeta)
-            with open(dstFullPath+".meta", "w") as text_file:
-                print(dom.toprettyxml(), file=text_file)
-
-        # save the manifest
-        if (args.keepManifest):
-            masterManifest = manifestParser.getMasterManifest()
-            with open(dstFullPath+".m3u8", "w") as text_file:
-                print(masterManifest, file=text_file)
-
-        # # delete the
-        # shutil.move(videoFullPath, os.path.join("~", "Dropbox", "Encoding/"))
-        shutil.rmtree(dstFolder)
+    # save metadata
+    if (args.keepMetaData):
+        xmlMeta = dicttoxml.dicttoxml(progMetadata._asdict(), attr_type=False)
+        dom = minidom.parseString(xmlMeta)
+        with open(dstFullPath+".meta", "w") as text_file:
+            print(dom.toprettyxml(), file=text_file)
 

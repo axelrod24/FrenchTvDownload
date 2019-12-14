@@ -4,3 +4,6 @@ cd $(dirname $0)
 ./dld-f5-cdanslair
 ./dld-f5-cavous
 ./dld-f2-jt20h
+./dld-f5-passagedesarts
+./dld-f5-cadire
+
