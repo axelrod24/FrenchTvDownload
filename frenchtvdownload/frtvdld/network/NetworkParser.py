@@ -5,6 +5,7 @@ import unicodedata
 class VideoMetadata(dict):
   def __init__(self, d):
     super().__init__(d)
+    self._progMetadata = d
     self._mediaType = None
     self._manifestUrl = None
     self._airDate = None
@@ -23,7 +24,7 @@ class VideoMetadata(dict):
   def normalizeProgTitle(self, title, default="none"):
     if not title:
       return default
-      
+
     s = re.sub(" - ", "-", title)
     s = re.sub("[()':,\"]", "", s)
     s = re.sub("/", "_", s)
@@ -43,12 +44,13 @@ class VideoMetadata(dict):
 
     Metadata = collections.namedtuple('Metadata', ['mediaType', 'manifestUrl', 'airDate', 
                                 'networkName', 'progCode', 'progName', 'progTitle', 'synopsis', 
-                                'filename', 'duration', 'videoId', 'videoUrl', "channelUrl", "errorMsg"])
+                                'filename', 'duration', 'videoId', 'videoUrl', "channelUrl", "errorMsg", "progMetadata"])
     m = Metadata(mediaType=self._mediaType, manifestUrl=self._manifestUrl, airDate=self._airDate, 
                   networkName=self._networkName, progCode=self._progCode, progName=self._progName, 
                   progTitle=self._progTitle, synopsis=self._synopsis,
                   filename=self._filename, duration=self._duration, videoId=self._videoId, 
-                  videoUrl=self._videoUrl, channelUrl=self._channelUrl, errorMsg=self._errorMsg)
+                  videoUrl=self._videoUrl, channelUrl=self._channelUrl, errorMsg=self._errorMsg,
+                  progMetadata=self._progMetadata)
     return m
 
 

@@ -5,10 +5,10 @@ from db.mongomodels import Errors, Channels, Streams, Videos
 def updateStreamById(video_id, metadata):
   # update stream with metadata
   theStream = Streams(url = metadata.videoUrl, videoId = metadata.videoId)
-  # theStream.progCode = metadata.progName
+  theStream.networkName = metadata.networkName
   theStream.progCode = metadata.progCode
   theStream.networkName = metadata.networkName
-  theStream.progMetadata = json.dumps(metadata)
+  theStream.metadata = metadata.progMetadata
   theStream.dateLastChecked = datetime.datetime.utcnow
   theStream.status = "done"
   theStream.save()
@@ -30,7 +30,7 @@ def addVideo(dstFullPath, folder, progMetadata, theStream):
   theVideo.networkName = progMetadata.networkName
   theVideo.filename = progMetadata.filename
   theVideo.folder = folder
-  theVideo.title = progMetadata.title
+  theVideo.title = progMetadata.progName
   theVideo.duration = progMetadata.duration
   theVideo.sypnosis = progMetadata.sypnosis
   theVideo.firstAirDate = progMetadata.firstAirDate
