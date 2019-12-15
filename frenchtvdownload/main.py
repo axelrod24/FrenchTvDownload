@@ -226,15 +226,18 @@ if (__name__ == "__main__"):
         fileIndex += 1
 
     # downloading with ffmpeg
-    logger.info("++\nDownloading: %s" % (args.urlEmission))
+    logger.info("++")
+    logger.info("Downloading: %s" % (args.urlEmission))
+    logger.info("------------")
     ffmpegHLSDownloader = FfmpegHLSDownloader(url=progMetadata.manifestUrl)
     ffmpegHLSDownloader.downlaodAndConvertFile(dst=dstFullPath + ".mp4")
-    logger.info("++\nDownload completed: %s" % (args.urlEmission))
+    logger.info("++")
+    logger.info("Download completed: %s" % (args.urlEmission))
     logger.info("Video : %s" % (dstFullPath))
     logger.info("-------")
 
     # save metadata
-    if (args.keepMetaData or (args.saveMetadata and "file" in args.saveMetadata)):
+    if (args.saveMetadata and "file" in args.saveMetadata)):
         logger.info("Saving metadata")
         xmlMeta = dicttoxml.dicttoxml(progMetadata._asdict(), attr_type=False)
         dom = minidom.parseString(xmlMeta)
