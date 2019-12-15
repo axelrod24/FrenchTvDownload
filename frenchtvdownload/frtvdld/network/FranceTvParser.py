@@ -68,10 +68,10 @@ class FranceTvVideoMetadata(VideoMetadata):
     self._videoId = pMeta.get('id')
 
     pName = pMeta.get('title', 'default_prog_name')
-    self._progName = self.normalizeProgTitle(pName)
+    self._progName = self.normalizeProgTitle(pName, 'default_prog_name')
 
     pTitle = pMeta.get('additional_title', 'default_prog_title')
-    self._progTitle = self.normalizeProgTitle(pTitle)
+    self._progTitle = self.normalizeProgTitle(pTitle, 'default_prog_title')
 
     self._airDate = self._parseAirDate(pMeta.get('broadcasted_at'))  #\TODO LBR: add default date value
 

@@ -20,7 +20,10 @@ class VideoMetadata(dict):
     self._channelUrl = None
     self._errorMsg = None
 
-  def normalizeProgTitle(self, title):
+  def normalizeProgTitle(self, title, default="none"):
+    if not title:
+      return default
+      
     s = re.sub(" - ", "-", title)
     s = re.sub("[()':,\"]", "", s)
     s = re.sub("/", "_", s)

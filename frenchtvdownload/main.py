@@ -219,10 +219,9 @@ if (__name__ == "__main__"):
         fileIndex += 1
 
     # downloading with ffmpeg
-    dstFullPath += ".mp4"
     logger.info("Downloading: %s" % (dstFullPath))
-    ffmpegHLSDownloader = FfmpegHLSDownloader(url=progMetadata.manifestUrl)
-    ffmpegHLSDownloader.downlaodAndConvertFile(dst=dstFullPath)
+    # ffmpegHLSDownloader = FfmpegHLSDownloader(url=progMetadata.manifestUrl)
+    # ffmpegHLSDownloader.downlaodAndConvertFile(dst=dstFullPath + ".mp4")
 
     # save metadata
     if (args.keepMetaData or (args.saveMetadata and "file" in args.saveMetadata)):
@@ -231,6 +230,7 @@ if (__name__ == "__main__"):
         with open(dstFullPath+".meta", "w") as text_file:
             print(dom.toprettyxml(), file=text_file)
 
+    dstFullPath += ".mp4"
     # save metadata to mongo
     if (args.saveMetadata and "mongo" in args.saveMetadata):
         theStream = updateStreamById(progMetadata.videoId, progMetadata)
