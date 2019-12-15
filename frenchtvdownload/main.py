@@ -237,7 +237,7 @@ if (__name__ == "__main__"):
     logger.info("-------")
 
     # save metadata
-    if (args.saveMetadata and "file" in args.saveMetadata)):
+    if (args.saveMetadata and "file" in args.saveMetadata):
         logger.info("Saving metadata")
         xmlMeta = dicttoxml.dicttoxml(progMetadata._asdict(), attr_type=False)
         dom = minidom.parseString(xmlMeta)
