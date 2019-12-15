@@ -53,7 +53,7 @@ class Videos(Document):
   title = StringField()
   duration = IntField()
   firstAirDate = DateTimeField()
-  sypnosis = StringField()
+  synopsis = StringField()
   stream = ReferenceField(Streams)
   
 
