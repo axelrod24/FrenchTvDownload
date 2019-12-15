@@ -8,7 +8,7 @@ def updateStreamById(video_id, metadata):
   theStream.networkName = metadata.networkName
   theStream.progCode = metadata.progCode
   theStream.networkName = metadata.networkName
-  theStream.metadata = metadata.progMetadata
+  theStream.progMetadata = json.dumps(metadata.progMetadata)
   theStream.dateLastChecked = datetime.datetime.utcnow
   theStream.status = "done"
   theStream.save()
