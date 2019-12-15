@@ -1,23 +1,22 @@
 #!/usr/bin/python3
 # # -*- coding:Utf-8 -*-
 
-import sys
-print (sys.version)
-print (sys.path)
+# import sys
+# print (sys.version)
+# print (sys.path)
 
 #activate_this = '../.venv/bin/activate_this.py'
 activate_this = '/home/lbr/Wks/FrenchTvDownload/.venv/bin/activate_this.py'
 with open(activate_this) as file_:
     exec(file_.read(), dict(__file__=activate_this))
 
-import sys
-print (sys.version)
-print (sys.path)
+# import sys
+# print (sys.version)
+# print (sys.path)
 
 #
 # Infos
 #
-
 __author__ = "Alexrod24"
 __license__ = "GPL 2"
 __version__ = "0.1"
@@ -93,10 +92,7 @@ if (__name__ == "__main__"):
     # parser.add_argument("-x", "--extractedUrl", action="store_true", default=False, help='extract Selection URL (france.tv)')
 
     parser.add_argument("--noDuplicate", action='store_true', default=False, help="download video only if video id not in Mongo db")
-    parser.add_argument("--keepManifest", action='store_true', default=False, help="save the master HLS manifest (.m3u8)")
-    parser.add_argument("--keepMetaData", action='store_true', default=False, help="save the video metadata (.meta)")
     parser.add_argument("--saveMetadata", action='store', choices=['file', 'mongo'], nargs="+", help="save the video metadata in file (.meta) and/or mongo")
-    parser.add_argument("--listProfiles", action='store_true', default=False, help="return list of available resolution (don't download the video)")
     parser.add_argument("--parseCollection", action='store_true', default=False, help="return a list of video URL which are part of a collection")
 
     parser.add_argument("--nocolor", action='store_true', default=False, help='turn of color in terminal')
@@ -143,7 +139,7 @@ if (__name__ == "__main__"):
  
     # working with the manifest
     if (progMetadata.mediaType != "hls"):
-        print("Protocol not supported:%s" % progMetadata.streamType)
+        logger.error("Protocol not supported:%s" % progMetadata.streamType)
         exit()
 
    
@@ -205,13 +201,24 @@ if (__name__ == "__main__"):
     if (args.noDuplicate):
         stream = getStreamById(progMetadata.videoId)
         if (stream and stream.status=="done"):
+            logger.info("Duplicate. Exiting")
+            logger.info("Url: %s" % (args.urlEmission))
+            logger.info("VideoId: %s" % (progMetadata.videoId))
+            logger.info("======")    
             exit(1)
 
     # create the filename accoding to file meta-data
     # generic video filename (without ext)
     folder = datetime.fromtimestamp(progMetadata.airDate).strftime("%Y-%m-%d_%a")
-    dstFullPath = os.path.join(args.outDir, folder, progMetadata.filename)
-
+    dstFullPath = os.path.join(args.outDir, folder)
+    
+    # create dest folder if doesn't exist
+    if os.path.isfile(dstFullPath) is False:
+        os.mkdir(dstFullPath)
+    
+    # add filename
+    dstFullPath = os.path.join(dstFullPath, progMetadata.filename)
+    
     # rename file if it already exist.
     fileIndex = 2
     while os.path.isfile(dstFullPath + ".mp4") is True:
@@ -219,12 +226,16 @@ if (__name__ == "__main__"):
         fileIndex += 1
 
     # downloading with ffmpeg
-    logger.info("Downloading: %s" % (dstFullPath))
+    logger.info("++\nDownloading: %s" % (args.urlEmission))
     ffmpegHLSDownloader = FfmpegHLSDownloader(url=progMetadata.manifestUrl)
     ffmpegHLSDownloader.downlaodAndConvertFile(dst=dstFullPath + ".mp4")
+    logger.info("++\nDownload completed: %s" % (args.urlEmission))
+    logger.info("Video : %s" % (dstFullPath))
+    logger.info("-------")
 
     # save metadata
     if (args.keepMetaData or (args.saveMetadata and "file" in args.saveMetadata)):
+        logger.info("Saving metadata")
         xmlMeta = dicttoxml.dicttoxml(progMetadata._asdict(), attr_type=False)
         dom = minidom.parseString(xmlMeta)
         with open(dstFullPath+".meta", "w") as text_file:
@@ -233,9 +244,10 @@ if (__name__ == "__main__"):
     dstFullPath += ".mp4"
     # save metadata to mongo
     if (args.saveMetadata and "mongo" in args.saveMetadata):
+        logger.info("Saving video info")
         theStream = updateStreamById(progMetadata.videoId, progMetadata)
         addVideo(dstFullPath, folder, progMetadata, theStream)
 
-    print("Completed:"+args.urlEmission)
-    print("video:"+dstFullPath)
-    print("--------------------------------------------------------------------------")
+    logger.info("=========================================================")
+  
+    
