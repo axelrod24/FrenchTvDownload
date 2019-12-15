@@ -47,7 +47,7 @@ from frtvdld.FakeAgent import FakeAgent
 from frtvdld.Converter import CreateMP4, FfmpegHLSDownloader
 from frtvdld.GlobalRef import LOGGER_NAME
 
-from db.mongoapi import getStreamById, updateStreamById, updateVideoById
+from db.mongoapi import getStreamById, updateStreamById, addVideo
 #
 # Main
 #
@@ -220,8 +220,8 @@ if (__name__ == "__main__"):
 
     # downloading with ffmpeg
     logger.info("Downloading: %s" % (dstFullPath))
-    # ffmpegHLSDownloader = FfmpegHLSDownloader(url=progMetadata.manifestUrl)
-    # ffmpegHLSDownloader.downlaodAndConvertFile(dst=dstFullPath + ".mp4")
+    ffmpegHLSDownloader = FfmpegHLSDownloader(url=progMetadata.manifestUrl)
+    ffmpegHLSDownloader.downlaodAndConvertFile(dst=dstFullPath + ".mp4")
 
     # save metadata
     if (args.keepMetaData or (args.saveMetadata and "file" in args.saveMetadata)):
@@ -234,4 +234,4 @@ if (__name__ == "__main__"):
     # save metadata to mongo
     if (args.saveMetadata and "mongo" in args.saveMetadata):
         theStream = updateStreamById(progMetadata.videoId, progMetadata)
-        updateVideoById(progMetadata.videoId, dstFullPath, folder, progMetadata, theStream)
+        addVideo(dstFullPath, folder, progMetadata, theStream)

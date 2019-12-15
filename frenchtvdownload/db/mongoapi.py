@@ -24,8 +24,8 @@ def getStreamById(video_id):
   return theStream
 
 
-def updateVideoById(videoId, dstFullPath, folder, progMetadata, theStream):
-  theVideo = Videos(videoId = videoId, path=dstFullPath)
+def addVideo(dstFullPath, folder, progMetadata, theStream):
+  theVideo = Videos(path=dstFullPath)
   theVideo.progCode = progMetadata.progCode
   theVideo.networkName = progMetadata.networkName
   theVideo.filename = progMetadata.filename
