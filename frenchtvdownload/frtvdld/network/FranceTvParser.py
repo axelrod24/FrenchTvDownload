@@ -202,7 +202,7 @@ class FranceTvParser(NetworkParser):
             if len(div_tag) == 0:
                 return None
 
-            script_tag = div_tag[0].next
+            script_tag = div_tag[0].nextSibling
             if script_tag.name !=  "script":
                 return None
 

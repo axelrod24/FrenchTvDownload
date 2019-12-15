@@ -235,3 +235,7 @@ if (__name__ == "__main__"):
     if (args.saveMetadata and "mongo" in args.saveMetadata):
         theStream = updateStreamById(progMetadata.videoId, progMetadata)
         addVideo(dstFullPath, folder, progMetadata, theStream)
+
+    print("Completed:"+args.urlEmission)
+    print("video:"+dstFullPath)
+    print("--------------------------------------------------------------------------")
