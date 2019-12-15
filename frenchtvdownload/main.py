@@ -213,7 +213,7 @@ if (__name__ == "__main__"):
     dstFullPath = os.path.join(args.outDir, folder)
     
     # create dest folder if doesn't exist
-    if os.path.isfile(dstFullPath) is False:
+    if os.path.exists(dstFullPath) is False:
         os.mkdir(dstFullPath)
     
     # add filename
