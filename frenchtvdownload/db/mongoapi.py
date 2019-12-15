@@ -33,7 +33,7 @@ def addVideo(dstFullPath, folder, progMetadata, theStream):
   theVideo.title = progMetadata.progName
   theVideo.duration = progMetadata.duration
   theVideo.synopsis = progMetadata.synopsis
-  theVideo.firstAirDate = progMetadata.airDate
+  theVideo.firstAirDate = datetime.datetime.fromtimestamp(progMetadata.airDate)
   theVideo.stream = theStream
   theVideo.save()
   return theVideo
