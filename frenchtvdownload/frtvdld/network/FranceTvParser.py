@@ -55,8 +55,10 @@ class FranceTvVideoMetadata(VideoMetadata):
 
   def parseMetadata(self):
 
+    self._networkName="france.tv"
     self._manifestUrl = self.get('manifest')
-
+    self._synopsis = self.get('synopsis', "no synopsis")
+    
     vMeta =  self.get('video')
     #self._manifestUrl = vMeta.get('url')
     self._mediaType = vMeta.get('format') 
@@ -64,8 +66,13 @@ class FranceTvVideoMetadata(VideoMetadata):
     
     pMeta = self.get('meta')
     self._videoId = pMeta.get('id')
-    self._progName = pMeta.get('title', 'default_prog_name')
-    self._progTitle = pMeta.get('additional_title', 'default_prog_title')
+
+    pName = pMeta.get('title', 'default_prog_name')
+    self._progName = self.normalizeProgTitle(pName)
+
+    pTitle = pMeta.get('additional_title', 'default_prog_title')
+    self._progTitle = self.normalizeProgTitle(pTitle)
+
     self._airDate = self._parseAirDate(pMeta.get('broadcasted_at'))  #\TODO LBR: add default date value
 
     self._filename = "%s-%s" % (datetime.fromtimestamp(self._airDate).strftime("%Y%m%d"), self.normalizeProgTitle(self._progName))

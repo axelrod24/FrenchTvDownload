@@ -5,8 +5,8 @@ import sys
 print (sys.version)
 print (sys.path)
 
-activate_this = '../.venv/bin/activate_this.py'
-#activate_this = '/home/lbr/Wks/FrenchTvDownload/.venv/bin/activate_this.py'
+#activate_this = '../.venv/bin/activate_this.py'
+activate_this = '/home/lbr/Wks/FrenchTvDownload/.venv/bin/activate_this.py'
 with open(activate_this) as file_:
     exec(file_.read(), dict(__file__=activate_this))
 
@@ -35,6 +35,7 @@ import dicttoxml
 import requests
 import json
 
+from datetime import datetime
 from xml.dom import minidom
 
 from frtvdld.DownloadException import *
@@ -46,7 +47,7 @@ from frtvdld.FakeAgent import FakeAgent
 from frtvdld.Converter import CreateMP4, FfmpegHLSDownloader
 from frtvdld.GlobalRef import LOGGER_NAME
 
-from db.mongoapi import getStreamById, updateStreamById
+from db.mongoapi import getStreamById, updateStreamById, updateVideoById
 #
 # Main
 #
@@ -208,7 +209,8 @@ if (__name__ == "__main__"):
 
     # create the filename accoding to file meta-data
     # generic video filename (without ext)
-    dstFullPath = os.path.join(args.outDir, progMetadata.filename)
+    folder = datetime.fromtimestamp(progMetadata.airDate).strftime("%Y-%m-%d_%a")
+    dstFullPath = os.path.join(args.outDir, folder, progMetadata.filename)
 
     # rename file if it already exist.
     fileIndex = 2
@@ -217,9 +219,10 @@ if (__name__ == "__main__"):
         fileIndex += 1
 
     # downloading with ffmpeg
-    logger.info("Downloading: %s" % (dstFullPath + ".mp4"))
+    dstFullPath += ".mp4"
+    logger.info("Downloading: %s" % (dstFullPath))
     ffmpegHLSDownloader = FfmpegHLSDownloader(url=progMetadata.manifestUrl)
-    ffmpegHLSDownloader.downlaodAndConvertFile(dst=dstFullPath+ ".mp4")
+    ffmpegHLSDownloader.downlaodAndConvertFile(dst=dstFullPath)
 
     # save metadata
     if (args.keepMetaData or (args.saveMetadata and "file" in args.saveMetadata)):
@@ -230,4 +233,5 @@ if (__name__ == "__main__"):
 
     # save metadata to mongo
     if (args.saveMetadata and "mongo" in args.saveMetadata):
-        updateStreamById(progMetadata.videoId, progMetadata)
+        theStream = updateStreamById(progMetadata.videoId, progMetadata)
+        updateVideoById(progMetadata.videoId, dstFullPath, folder, progMetadata, theStream)

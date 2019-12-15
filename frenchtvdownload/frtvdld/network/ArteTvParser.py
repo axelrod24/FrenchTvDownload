@@ -20,6 +20,8 @@ class ArteTvVideoMetadata(VideoMetadata):
     super().__init__(d)
 
   def parseMetadata(self):
+
+    self._networkName="arte.tv"
     data = self.get("videoJsonPlayer", {})
     if 'VRA' not in data.keys():
         data = {}

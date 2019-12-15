@@ -6,12 +6,13 @@ def updateStreamById(video_id, metadata):
   # update stream with metadata
   theStream = Streams(url = metadata.videoUrl, videoId = metadata.videoId)
   # theStream.progCode = metadata.progName
-  theStream.manifestUrl = metadata.manifestUrl
+  theStream.progCode = metadata.progCode
+  theStream.networkName = metadata.networkName
   theStream.progMetadata = json.dumps(metadata)
   theStream.dateLastChecked = datetime.datetime.utcnow
   theStream.status = "done"
   theStream.save()
-  return
+  return theStream
 
 
 def getStreamById(video_id):
@@ -21,3 +22,18 @@ def getStreamById(video_id):
     
   theStream = streams[0]
   return theStream
+
+
+def updateVideoById(videoId, dstFullPath, folder, progMetadata, theStream):
+  theVideo = Videos(videoId = videoId, path=dstFullPath)
+  theVideo.progCode = progMetadata.progCode
+  theVideo.networkName = progMetadata.networkName
+  theVideo.filename = progMetadata.filename
+  theVideo.folder = folder
+  theVideo.title = progMetadata.title
+  theVideo.duration = progMetadata.duration
+  theVideo.sypnosis = progMetadata.sypnosis
+  theVideo.firstAirDate = progMetadata.firstAirDate
+  theVideo.stream = theStream
+  theVideo.save()
+  return theVideo

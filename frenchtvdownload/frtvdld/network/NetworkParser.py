@@ -1,5 +1,6 @@
 import re
 import collections
+import unicodedata
 
 class VideoMetadata(dict):
   def __init__(self, d):
@@ -7,6 +8,8 @@ class VideoMetadata(dict):
     self._mediaType = None
     self._manifestUrl = None
     self._airDate = None
+    self._progCode = None
+    self._networkName = None
     self._progName = None
     self._progTitle = None
     self._synopsis = None
@@ -17,12 +20,14 @@ class VideoMetadata(dict):
     self._channelUrl = None
     self._errorMsg = None
 
-  def normalizeProgTitle(self, filename):
-    s = re.sub(" - ", "-", filename)
+  def normalizeProgTitle(self, title):
+    s = re.sub(" - ", "-", title)
     s = re.sub("[()':,\"]", "", s)
     s = re.sub("/", "_", s)
     s = re.sub('\s+', '_', s)
-    return s
+    # remove accented char
+    s = unicodedata.normalize('NFD', s).encode('ascii', 'ignore').decode("utf-8")
+    return s.lower()
 
   def parseMetadata(self):
     raise NotImplementedError()
@@ -30,15 +35,15 @@ class VideoMetadata(dict):
   def getMetadata(self):
     
     self.parseMetadata()
-    self._synopsis = self.get('synopsis', "no synopsis")
     self._videoUrl = self.get("videoUrl","")
     self._channelUrl = self.get("channelUrl","")
 
-    Metadata = collections.namedtuple('Metadata', ['mediaType', 'manifestUrl', 'airDate', 'progName',
-                                                    'progTitle', 'synopsis', 'filename', 'duration', 'videoId',
-                                                     'videoUrl', "channelUrl", "errorMsg"])
+    Metadata = collections.namedtuple('Metadata', ['mediaType', 'manifestUrl', 'airDate', 
+                                'networkName', 'progCode', 'progName', 'progTitle', 'synopsis', 
+                                'filename', 'duration', 'videoId', 'videoUrl', "channelUrl", "errorMsg"])
     m = Metadata(mediaType=self._mediaType, manifestUrl=self._manifestUrl, airDate=self._airDate, 
-                  progName=self._progName, progTitle=self._progTitle, synopsis=self._synopsis,
+                  networkName=self._networkName, progCode=self._progCode, progName=self._progName, 
+                  progTitle=self._progTitle, synopsis=self._synopsis,
                   filename=self._filename, duration=self._duration, videoId=self._videoId, 
                   videoUrl=self._videoUrl, channelUrl=self._channelUrl, errorMsg=self._errorMsg)
     return m

@@ -38,13 +38,9 @@ class Streams(Document):
   # status = StringField(validation=_is_in(['pending', 'downloading', 'converting', 'done', 'error']))
   status = StringField()
   videoId = StringField()
-  manifestUrl = StringField()
-  segmentList = ListField(StringField())
-  codecs = StringField()
   progMetadata = StringField()
   dateLastChecked = DateTimeField()
   lastErrors = EmbeddedDocumentListField(Errors)
-  
   
 class Videos(Document):
   path = StringField(required=True, unique=True)
@@ -52,11 +48,13 @@ class Videos(Document):
   progCode = StringField()
   networkName = StringField()
   filename = StringField()
+  folder = StringField()
   codecs = StringField()
   title = StringField()
   duration = IntField()
   firstAirDate = DateTimeField()
   sypnosis = StringField()
+  stream = ReferenceField(Streams)
   
 
 
