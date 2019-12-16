@@ -1,9 +1,25 @@
 dst=$(date +"%Y-%m-%d_%a")
 dstFolder=${dst%.*}
 cd $(dirname $0)
+
 ./dld-f5-cdanslair
 ./dld-f5-cavous
 ./dld-f2-jt20h
 ./dld-f5-passagedesarts
 ./dld-f5-cadire
+./dld-f2-cash
+./dld-f5-mondeenface
+./dld-f5-grandelibrairie
+./dld-f2-envoye
+./dld-f2-complement
+./dld-f5-clhebdo
+./dld-f5-cpolitique
+./dld-f3-dimancheenpolitique
+./dld-f2-2030ledimanche
+./dld-f2-onpc
+./dld-f2-vousavezlaparole
+./dld-f2-ledocdudimanche
+./dld-f3-secretdhistoire
+./dld-f5-sciencegrandformat
+./dld-f5-enquetedesante
 
