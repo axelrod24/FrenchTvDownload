@@ -29,13 +29,24 @@ function processEachEntry(video) {
   const srcPathMeta = path.join(localcfg.SRC_BASE_PATH,folder,metafilename)
   const dstPath = path.join(localcfg.DST_BASE_PATH,folder)
 
+  // create dst folder if doesn't exists
   if (!fs.existsSync(dstPath)) {
     console.log("Creating:"+dstPath)
     fs.mkdirSync(dstPath)
   }
 
-  fs.renameSync(srcPath, path.join(dstPath, filename))
-  fs.renameSync(srcPathMeta, path.join(dstPath, metafilename))
+  // move mp4 file
+  if (fs.existsSync(srcPath)) {
+    console.log("moving:"+srcPath)
+    fs.renameSync(srcPath, path.join(dstPath, filename))
+  }
+  
+  // move meta file
+  if (fs.existsSync(srcPathMeta)) {
+    console.log("moving:"+srcPathMeta)
+    fs.renameSync(srcPathMeta, path.join(dstPath, metafilename))
+  }
+  
   console.log("moved:"+srcPath+" to "+dstPath)
 }
 
