@@ -24,6 +24,7 @@ const videoSchema = new mongoose.Schema({
   dateAdded: Date,
   progCode: String,
   networkName: String,
+  repo: String,
   filename: String,
   folder: String,
   codecs: String,
@@ -37,7 +38,7 @@ const videoSchema = new mongoose.Schema({
 const Video = new mongoose.model('Video', videoSchema) ;
 
 async function getAllVideo() {
-  const allVideos = await Video.find() ; 
+  const allVideos = await Video.find({repo:"VM1"}).sort({dateAdded: 1}); 
   return allVideos
 }
 
