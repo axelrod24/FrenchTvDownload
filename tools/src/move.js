@@ -52,6 +52,9 @@ function processEachEntry(video, index) {
     video.save()
     console.log("moved:"+srcPath+" to "+dstPath)
   }
+  else {
+    console.log('file not found ... yet ...')
+  }
     
 }
 
