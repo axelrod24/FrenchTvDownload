@@ -47,6 +47,7 @@ class Videos(Document):
   dateAdded = DateTimeField(default=datetime.datetime.utcnow)
   progCode = StringField()
   networkName = StringField()
+  repo = StringField()
   filename = StringField()
   folder = StringField()
   codecs = StringField()

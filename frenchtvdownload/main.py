@@ -94,6 +94,7 @@ if (__name__ == "__main__"):
     parser.add_argument("--noDuplicate", action='store_true', default=False, help="download video only if video id not in Mongo db")
     parser.add_argument("--saveMetadata", action='store', choices=['file', 'mongo'], nargs="+", help="save the video metadata in file (.meta) and/or mongo")
     parser.add_argument("--parseCollection", action='store_true', default=False, help="return a list of video URL which are part of a collection")
+    parser.add_argument("--repo", action='store', default='TV', help="define the default folder")
 
     parser.add_argument("--nocolor", action='store_true', default=False, help='turn of color in terminal')
     parser.add_argument("--version", action='version', version="FrenchTvDownloader %s" % (__version__))
@@ -249,7 +250,7 @@ if (__name__ == "__main__"):
     if (args.saveMetadata and "mongo" in args.saveMetadata):
         logger.info("Saving video info")
         theStream = updateStreamById(progMetadata.videoId, progMetadata)
-        addVideo(dstFullPath, folder, progMetadata, theStream)
+        addVideo(dstFullPath, folder, args.repo, progMetadata, theStream)
 
     logger.info("=========================================================")
   

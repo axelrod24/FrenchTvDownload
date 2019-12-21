@@ -24,12 +24,13 @@ def getStreamById(video_id):
   return theStream
 
 
-def addVideo(dstFullPath, folder, progMetadata, theStream):
+def addVideo(dstFullPath, folder, repo, progMetadata, theStream):
   theVideo = Videos(path=dstFullPath)
   theVideo.progCode = progMetadata.progCode
   theVideo.networkName = progMetadata.networkName
   theVideo.filename = progMetadata.filename
   theVideo.folder = folder
+  theVideo.repo = repo
   theVideo.title = progMetadata.progName
   theVideo.duration = progMetadata.duration
   theVideo.synopsis = progMetadata.synopsis
