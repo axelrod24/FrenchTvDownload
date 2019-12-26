@@ -78,7 +78,7 @@ class FranceTvParser(NetworkParser):
       # read the page
       listVideoUrl=[]
       while(nbrPage==-1 or index < nbrPage):
-        url = "%s/replay-videos/ajax?page=%d" % (baseUrl, index)
+        url = self.REPLAY_VIDEO_URL % (baseUrl, index) 
         page = self.fakeAgent.readPage(url)
         if len(page)==0: # nothing on the page, that's the last one.
           break
@@ -87,7 +87,8 @@ class FranceTvParser(NetworkParser):
         for card in cardVideos:
           s = card.find_all("span", attrs={"class": "c-label"})
           if len(s) > 0:  # ignore "extrait"
-            continue
+            if s[0].text == "extrait":
+              continue
           href = card.find_all("a", attrs={"class": "c-card-video__link"})
           if len(href) == 0:  # no link, weird but continue
             continue
