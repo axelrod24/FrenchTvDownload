@@ -36,6 +36,7 @@ import json
 
 from datetime import datetime
 from xml.dom import minidom
+from urllib.parse import urlparse
 
 from frtvdld.DownloadException import *
 from frtvdld.ColorFormatter import ColorFormatter
@@ -61,6 +62,7 @@ if (__name__ == "__main__"):
 
     parser.add_argument("-i", "--input", action="store", choices=['url', 'mongo'], default="url", help='input source url or mongo')
     parser.add_argument("--nbrVideo", action="store", default="1", help='number of video link to fech (default 1), -1 means all')
+    parser.add_argument("--programCode", action="store", default="", help='set the program code for that video or collection')
 
 
     # parser.add_argument("--noDuplicate", action='store_true', default=False, help="download video only if video id not in Mongo db")
@@ -98,20 +100,26 @@ if (__name__ == "__main__"):
         networkParser = networkParserFactory(url)
         listOfUrls = networkParser.parseCollection(url, int(args.nbrVideo))
        
+        # use code program passed as argument or extract the last part of URL as code program
+        programCode = args.programCode
+        if len(programCode)==0:
+            programCode = urlparse(url).path.split('/').pop()
+
         for url in listOfUrls:
             pmdata = networkParser.getProgMetaData(url)
             stream = getStreamById(pmdata.videoId)
             if (stream and stream.status=="done"):
+                logger.info("-" * 6)
                 logger.info("Duplicate. Continue ...")
                 logger.info("Url: %s" % (url))
                 logger.info("VideoId: %s" % (pmdata.videoId))
-                logger.info("======")
+                logger.info("=" * 6)
                 continue  
             
             # add the Stream as pending.
             logger.info("Adding pending stream: %s" % (url))
-            updateStreamById(pmdata.videoId, pmdata, status="pending")
-            logger.info("======")
+            updateStreamById(pmdata.videoId, pmdata, status="pending", progCode=programCode)
+            logger.info("=" * 6)
 
     except Exception as err:
         logger.error(err.__repr__())

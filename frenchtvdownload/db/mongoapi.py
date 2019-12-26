@@ -2,11 +2,15 @@ import datetime, json, os, logging
 from db.mongomodels import Errors, Channels, Streams, Videos
 
 
-def updateStreamById(video_id, metadata, status="done"):
+def updateStreamById(video_id, metadata, status="done", progCode=None):
   # update stream with metadata
   theStream = Streams(url = metadata.videoUrl, videoId = metadata.videoId)
   theStream.networkName = metadata.networkName
-  theStream.progCode = metadata.progCode
+  if progCode:
+    theStream.progCode = progCode
+  else:
+    theStream.progCode = metadata.progCode
+
   theStream.networkName = metadata.networkName
   theStream.progMetadata = json.dumps(metadata.progMetadata)
   theStream.dateLastChecked = datetime.datetime.utcnow

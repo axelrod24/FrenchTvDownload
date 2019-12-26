@@ -104,6 +104,7 @@ if (__name__ == "__main__"):
     if (args.noDuplicate):
         stream = getStreamById(progMetadata.videoId)
         if (stream and stream.status=="done"):
+            logger.info("------")  
             logger.info("Duplicate. Exiting")
             logger.info("Url: %s" % (args.urlEmission))
             logger.info("VideoId: %s" % (progMetadata.videoId))
