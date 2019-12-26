@@ -20,34 +20,6 @@ from frtvdld.network.NetworkParser import NetworkParser, VideoMetadata
 
 logger = logging.getLogger(LOGGER_NAME)
 
-# class FranceTvVideoMetadata(VideoMetadata):
-#   def __init__(self, d):
-#     super().__init__(d)
-
-#   def parseMetadata(self):
-#     self._airDate = self._parseAirDate(self.get('diffusion')['date_debut'])  #\TODO LBR: add default date value
-#     self._progName = self.get('code_programme', 'default_prog_name')
-#     self._progTitle = self.get('sous_titre', 'default_prog_title')
-#     self._synopsis = self.get('synopsis', "no synopsis")
-#     self._videoId = self.get('videoId')
-
-#     # duration (default value to 0 if not present)
-#     timestr = self.get('duree', '0:0:0')
-#     self._duration = sum([a*b for a,b in zip([3600,60,1], [int(i) for i in timestr.split(":")])])
-
-#     for v in self.get('videos'):
-#         if v.get('format') == ' hls_v5_os':
-#             self._manifestUrl = v.get('url_secure')
-#             # metaData['drm'] = v['drm']
-#             self._mediaType = "hls"
-
-#     self._filename = "%s-%s" % (datetime.fromtimestamp(self._airDate).strftime("%Y%m%d"), self.normalizeProgTitle(self._progName))
-  
-#   def _parseAirDate(self, str_date):
-#     split_date = str_date.split(" ")[0].split('/')
-#     d = datetime.fromisoformat("%d-%02d-%02d" % (int(split_date[2]), int(split_date[1]), int(split_date[0])))
-#     return d.timestamp()
-
 
 class FranceTvVideoMetadata(VideoMetadata):
   def __init__(self, d):
@@ -99,6 +71,40 @@ class FranceTvParser(NetworkParser):
     JSON2_DESC="https://sivideo.webservices.francetelevisions.fr/tools/getInfosOeuvre/v2/?idDiffusion=_ID_EMISSION_"
     JSON3_DESC="https://player.webservices.francetelevisions.fr/v1/videos/_ID_EMISSION_?country_code=FR&w=1920&h=1080&device_type=desktop&browser=safari"
 
+    REPLAY_VIDEO_URL = "%s/replay-videos/ajax?page=%d"
+
+    def parseCollection(self, baseUrl, nbrPage=1, nbrVideoLink=1):
+      index = 0
+      # read the page
+      listVideoUrl=[]
+      while(nbrPage==-1 or index < nbrPage):
+        url = "%s/replay-videos/ajax?page=%d" % (baseUrl, index)
+        page = self.fakeAgent.readPage(url)
+        if len(page)==0: # nothing on the page, that's the last one.
+          break
+        parsed = BeautifulSoup(page, "html.parser")
+        cardVideos = parsed.find_all("div", attrs={"class": "c-card-video"})
+        for card in cardVideos:
+          s = card.find_all("span", attrs={"class": "c-label"})
+          if len(s) > 0:  # ignore "extrait"
+            continue
+          href = card.find_all("a", attrs={"class": "c-card-video__link"})
+          if len(href) == 0:  # no link, weird but continue
+            continue
+
+          videoUrl = urljoin(baseUrl, href[0]["href"])
+          listVideoUrl.append(videoUrl)
+          if len(listVideoUrl) == nbrVideoLink:
+            return listVideoUrl
+
+        index+=1
+
+      return listVideoUrl
+
+
+
+
+    
     def getListOfUrlCollection(self, url):
        # read the page and extract list of videoURL
         page = self.fakeAgent.readPage(url)
@@ -117,13 +123,6 @@ class FranceTvParser(NetworkParser):
       parsed = BeautifulSoup(page, "html.parser")
       videoUrlList = parsed.find_all("a", attrs={"class": "c-card-video__link"})
       return urljoin(url, videoUrlList[0]["href"])
-
-    def getSynopsis(self, page):
-      parsed = BeautifulSoup(page, "html.parser")
-      desc = parsed.find_all("meta", attrs={"property": "og:description"})
-      if len(desc) > 0:
-        return desc[0].attrs["content"]
-      return "no synopsis"
 
     def parsePage(self, url):
         # check if url point to the video page, if not get list of video URl one by one
@@ -152,7 +151,7 @@ class FranceTvParser(NetworkParser):
         # parse Metadata
         try:
           data = json.loads(pageInfos)
-          data["synopsis"] = self.getSynopsis(page)
+          data["synopsis"] = self._getSynopsis(page)
           data["videoUrl"] = videoUrl
           data["channelUrl"] = url
           data["videoId"] = jurl
@@ -235,3 +234,10 @@ class FranceTvParser(NetworkParser):
       page = self.fakeAgent.readPage(url)
       data = json.loads(page)
       return data.get('url')
+    
+    def _getSynopsis(self, page):
+      parsed = BeautifulSoup(page, "html.parser")
+      desc = parsed.find_all("meta", attrs={"property": "og:description"})
+      if len(desc) > 0:
+        return desc[0].attrs["content"]
+      return "no synopsis"

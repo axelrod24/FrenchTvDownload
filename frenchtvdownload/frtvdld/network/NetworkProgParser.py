@@ -134,9 +134,8 @@ class NetworkProgParser(object):
     TF1 = 3 
     LCP = 4
 
-    def __init__(self, tvname, url):
+    def __init__(self, tvname):
         self._fakeAgent = FakeAgent()
-        self._url = url
 
         if tvname == self.FRANCETV:
             self._networkParser = FranceTvParser(self._fakeAgent)
@@ -148,13 +147,18 @@ class NetworkProgParser(object):
         # elif tvname == self.LCP:
         #     self._networkParser = LcpParser(self._fakeAgent)
 
-    def getProgMetaData(self):
-        self._networkParser.parsePage(self._url)
+    def getProgMetaData(self, url):
+        self._networkParser.parsePage(url)
         return self._networkParser.progMetaData
 
-    def getVideoUrl(self):
-        listOfUrl = self._networkParser.getVideoUrl(self._url)
+    def getVideoUrl(self, url):
+        listOfUrl = self._networkParser.getVideoUrl(url)
         return listOfUrl
+
+    def parseCollection(self, url, nbrVideo):
+        listOfUrl = self._networkParser.parseCollection(url, nbrPage=-1, nbrVideoLink=nbrVideo)
+        return listOfUrl
+
 
 
 def networkParserFactory(progUrl):
@@ -162,13 +166,13 @@ def networkParserFactory(progUrl):
     parsed_uri = urlparse(progUrl)
 
     if parsed_uri.netloc == "www.france.tv" or parsed_uri.netloc == "france.tv":
-        networkParser = NetworkProgParser(NetworkProgParser.FRANCETV, progUrl)
+        networkParser = NetworkProgParser(NetworkProgParser.FRANCETV)
     elif parsed_uri.netloc == "www.arte.tv" or parsed_uri.netloc == "arte.tv":
-        networkParser = NetworkProgParser(NetworkProgParser.ARTETV, progUrl)
+        networkParser = NetworkProgParser(NetworkProgParser.ARTETV)
     elif parsed_uri.netloc == "www.tf1.fr" or parsed_uri.netloc == "tf1.fr":
-        networkParser = NetworkProgParser(NetworkProgParser.TF1, progUrl)
+        networkParser = NetworkProgParser(NetworkProgParser.TF1)
     elif parsed_uri.netloc == "www.lcp.fr" or parsed_uri.netloc == "lcp.fr":
-        networkParser = NetworkProgParser(NetworkProgParser.LCP, progUrl)
+        networkParser = NetworkProgParser(NetworkProgParser.LCP)
     else:
         print("Network not supported")
         return None

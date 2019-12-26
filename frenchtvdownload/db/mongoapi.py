@@ -2,7 +2,7 @@ import datetime, json, os, logging
 from db.mongomodels import Errors, Channels, Streams, Videos
 
 
-def updateStreamById(video_id, metadata):
+def updateStreamById(video_id, metadata, status="done"):
   # update stream with metadata
   theStream = Streams(url = metadata.videoUrl, videoId = metadata.videoId)
   theStream.networkName = metadata.networkName
@@ -10,7 +10,7 @@ def updateStreamById(video_id, metadata):
   theStream.networkName = metadata.networkName
   theStream.progMetadata = json.dumps(metadata.progMetadata)
   theStream.dateLastChecked = datetime.datetime.utcnow
-  theStream.status = "done"
+  theStream.status = status
   theStream.save()
   return theStream
 

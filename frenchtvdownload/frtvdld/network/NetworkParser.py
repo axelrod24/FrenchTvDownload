@@ -77,3 +77,7 @@ class NetworkParser(object):
 
     def getVideoUrl(self, url):
       raise NotImplementedError()
+
+    def parseCollection(self, url, nbrVideo):
+      raise NotImplementedError()
+    
