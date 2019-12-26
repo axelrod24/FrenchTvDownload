@@ -1,18 +1,11 @@
 #!/usr/bin/python3
 # # -*- coding:Utf-8 -*-
 
-# import sys
-# print (sys.version)
-# print (sys.path)
-
-activate_this = '../.venv/bin/activate_this.py'
-#activate_this = '/home/lbr/Wks/FrenchTvDownload/.venv/bin/activate_this.py'
+import os
+v_env_base_path = os.environ.get('VIRTUAL_ENV', '../.venv')
+activate_this = os.path.join(v_env_base_path,'bin/activate_this.py')
 with open(activate_this) as file_:
     exec(file_.read(), dict(__file__=activate_this))
-
-# import sys
-# print (sys.version)
-# print (sys.path)
 
 #
 # Infos
