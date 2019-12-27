@@ -8,6 +8,6 @@ echo $tstamp "Start downloading from:" $2 >> $dstFolder/download-log.txt
 
 cd $localFolder
 export VIRTUAL_ENV=$PWD/.venv
-.venv/bin/python3 ./frenchtvdownload/downloadStream.py -o $dstFolder --saveMetadata --repo $repo
+.venv/bin/python3 ./frenchtvdownload/downloadStream.py -o $dstFolder -i mongo --saveMetadata --repo $repo
 
 
