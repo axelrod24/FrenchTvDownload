@@ -3,5 +3,6 @@ dstFolder=${dst%.*}
 localFolder=$(dirname $0)
 cd $localFolder
 
-./dld-francetv https://www.france.tv/france-2/stupefiant/ 2
+./dld-francetv https://www.france.tv/france-2/le-grand-echiquier/ 1
+
 

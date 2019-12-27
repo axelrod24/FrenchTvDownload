@@ -23,4 +23,5 @@ cd $(dirname $0)
 ./dld-f5-sciencegrandformat
 ./dld-f5-enquetedesante
 ./dld-f2-grandechiquier
+./dld-f5-guerredestrones
 

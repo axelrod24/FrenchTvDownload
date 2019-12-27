@@ -1,0 +1,8 @@
+dst=$(date +"%Y-%m-%d_%a")
+dstFolder=${dst%.*}
+localFolder=$(dirname $0)
+cd $localFolder
+
+./dld-francetv https://www.france.tv/france-5/la-guerre-des-trones-la-veritable-histoire-de-l-europe/ 2
+
+

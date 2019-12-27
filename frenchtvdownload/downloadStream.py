@@ -130,7 +130,7 @@ if (__name__ == "__main__"):
         # rename file if it already exist.
         fileIndex = 2
         while os.path.isfile(dstFullPath + ".mp4") is True:
-            dstFullPath = os.path.join(args.outDir, progMetadata.filename + "_" + str(fileIndex))
+            dstFullPath = os.path.join(args.outDir, folder, progMetadata.filename + "_" + str(fileIndex))
             fileIndex += 1
 
         # downloading with ffmpeg
