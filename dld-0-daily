@@ -22,4 +22,6 @@ cd $(dirname $0)
 ./dld-f3-secretdhistoire
 ./dld-f5-sciencegrandformat
 ./dld-f5-enquetedesante
+./dld-f5-guerredestrones
+
 

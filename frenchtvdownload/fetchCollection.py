@@ -56,15 +56,6 @@ if (__name__ == "__main__"):
     parser.add_argument("-i", "--input", action="store", choices=['url', 'mongo'], default="url", help='input source url or mongo')
     parser.add_argument("--nbrVideo", action="store", default="1", help='number of video link to fech (default 1), -1 means all')
     parser.add_argument("--programCode", action="store", default="", help='set the program code for that video or collection')
-
-
-    # parser.add_argument("--noDuplicate", action='store_true', default=False, help="download video only if video id not in Mongo db")
-    # parser.add_argument("--saveMetadata", action='store', choices=['file', 'mongo'], nargs="+", help="save the video metadata in file (.meta) and/or mongo")
-    # parser.add_argument("--parseCollection", action='store_true', default=False, help="return a list of video URL which are part of a collection")
-    # parser.add_argument("--repo", action='store', default='TV', help="define the default folder")
-
-    # parser.add_argument("--nocolor", action='store_true', default=False, help='turn of color in terminal')
-    # parser.add_argument("--version", action='version', version="FrenchTvDownloader %s" % (__version__))
     parser.add_argument("urlEmission", action="store", help="URL of video to download")
     args = parser.parse_args()
 
