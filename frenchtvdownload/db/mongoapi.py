@@ -20,6 +20,38 @@ def _createMetadata(metadata):
   mdata.errorMsg = metadata.errorMsg
   return mdata
 
+
+def addStream(url, status="pending"):
+  theStream = Streams(url = url)
+  theStream.status = status
+  theStream.save()
+  return theStream
+
+
+def updateStreamStatus(stream, status):
+  stream.dateLastChecked =  datetime.datetime.utcnow
+  stream.status = status
+  stream.save()
+
+
+def updateStreamWithError(stream, errorstring):
+  error = Errors()
+  error.progCode = stream.progCode
+  error.networkName = stream.networkName
+  error.error = errorstring
+
+  stream.lastErrors.append(error)
+  updateStreamStatus(stream, "error")
+
+
+def updateStreamWithMetadata(stream, metadata, status="done"):
+  # update stream with metadata
+  stream.video_id = metadata.videoId
+  stream.metadata = _createMetadata(metadata)
+  stream.progMetadata = json.dumps(metadata.progMetadata)
+  updateStreamStatus(stream, status)
+
+
 def updateStreamById(video_id, metadata, status="done", progCode=None):
   # update stream with metadata
   theStream = Streams(url = metadata.videoUrl, videoId = metadata.videoId)
@@ -37,6 +69,14 @@ def updateStreamById(video_id, metadata, status="done", progCode=None):
   theStream.save()
   return theStream
 
+def getStreamByUrl(url):
+  streams = Streams.objects(url = url)
+  if len(streams) == 0:
+    return None
+    
+  theStream = streams[0]
+  return theStream
+
 
 def getStreamById(video_id):
   streams = Streams.objects(videoId = video_id)
@@ -50,10 +90,12 @@ def getStreamsByStatus(status):
   streams = Streams.objects(status = status)
   return streams  
 
+
 def addVideo(dstFullPath, folder, repo, progMetadata, theStream):
   theVideo = Videos(path=dstFullPath)
-  theVideo.progCode = progMetadata.progCode
-  theVideo.networkName = progMetadata.networkName
+  theVideo.progCode = theStream.progCode
+  theVideo.networkName = theStream.networkName
+
   theVideo.filename = progMetadata.filename
   theVideo.folder = folder
   theVideo.repo = repo

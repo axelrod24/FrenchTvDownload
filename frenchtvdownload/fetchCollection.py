@@ -40,7 +40,7 @@ from frtvdld.FakeAgent import FakeAgent
 from frtvdld.Converter import CreateMP4, FfmpegHLSDownloader
 from frtvdld.GlobalRef import LOGGER_NAME
 
-from db.mongoapi import getStreamById, updateStreamById, addVideo
+from db.mongoapi import addStream, getStreamByUrl
 #
 # Main
 #
@@ -94,24 +94,28 @@ if (__name__ == "__main__"):
         listOfUrls = networkParser.parseCollection(url, int(args.nbrVideo))
        
         # use code program passed as argument or extract the last part of URL as code program
+        parsedUrl = urlparse(url)
         programCode = args.programCode
         if len(programCode)==0:
-            programCode = urlparse(url).path.split('/').pop()
+            programCode = parsedUrl.path.strip('/').split('/').pop()
+
+        networkName = parsedUrl.hostname
 
         for url in listOfUrls:
-            pmdata = networkParser.getProgMetaData(url)
-            stream = getStreamById(pmdata.videoId)
-            if (stream and stream.status=="done"):
-                logger.info("-" * 6)
+            logger.info("-" * 6)
+            stream = getStreamByUrl(url)
+            if (stream):  #and stream.status=="done"):
                 logger.info("Duplicate. Continue ...")
                 logger.info("Url: %s" % (url))
-                logger.info("VideoId: %s" % (pmdata.videoId))
                 logger.info("=" * 6)
                 continue  
-            
+
             # add the Stream as pending.
             logger.info("Adding pending stream: %s" % (url))
-            updateStreamById(pmdata.videoId, pmdata, status="pending", progCode=programCode)
+            stream = addStream(url, "pending")
+            stream.progCode = programCode
+            stream.networkName = networkName
+            stream.save()
             logger.info("=" * 6)
 
     except Exception as err:
