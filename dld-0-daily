@@ -18,8 +18,9 @@ cd $(dirname $0)
 ./dld-f2-2030ledimanche
 ./dld-f2-onpc
 ./dld-f2-vousavezlaparole
-./dld-f2-ledocdudimanche
+./dld-f5-ledocdudimanche
 ./dld-f3-secretdhistoire
 ./dld-f5-sciencegrandformat
 ./dld-f5-enquetedesante
+./dld-f2-grandechiquier
 
