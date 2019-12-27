@@ -1,6 +1,24 @@
 import datetime, json, os, logging
-from db.mongomodels import Errors, Channels, Streams, Videos
+from db.mongomodels import Errors, Channels, Streams, Videos, Metadata
 
+
+def _createMetadata(metadata):
+  mdata = Metadata()
+  mdata.mediaType = metadata.mediaType
+  mdata.manifestUrl = metadata.manifestUrl
+  mdata.airDate = metadata.airDate
+  mdata.progCode = metadata.progCode
+  mdata.networkName = metadata.networkName
+  mdata.progName = metadata.progName
+  mdata.progTitle = metadata.progTitle
+  mdata.synopsis = metadata.synopsis
+  mdata.filename = metadata.filename
+  mdata.duration = metadata.duration
+  mdata.videoId = metadata.videoId
+  mdata.videoUrl = metadata.videoUrl
+  mdata.channelUrl = metadata.channelUrl
+  mdata.errorMsg = metadata.errorMsg
+  return mdata
 
 def updateStreamById(video_id, metadata, status="done", progCode=None):
   # update stream with metadata
@@ -15,6 +33,7 @@ def updateStreamById(video_id, metadata, status="done", progCode=None):
   theStream.progMetadata = json.dumps(metadata.progMetadata)
   theStream.dateLastChecked = datetime.datetime.utcnow
   theStream.status = status
+  theStream.metadata = _createMetadata(metadata)
   theStream.save()
   return theStream
 
@@ -27,6 +46,9 @@ def getStreamById(video_id):
   theStream = streams[0]
   return theStream
 
+def getStreamsByStatus(status):
+  streams = Streams.objects(status = status)
+  return streams  
 
 def addVideo(dstFullPath, folder, repo, progMetadata, theStream):
   theVideo = Videos(path=dstFullPath)

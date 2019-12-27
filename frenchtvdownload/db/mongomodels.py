@@ -11,6 +11,22 @@ connect(MONGO_DB_NAME, host=MONGO_HOST)
 #     raise ValidationError('value should one of these field:', val)
 
 
+class Metadata(EmbeddedDocument):
+  mediaType = StringField()
+  manifestUrl = StringField()
+  airDate = DateTimeField()
+  progCode = StringField()
+  networkName = StringField()
+  progName = StringField()
+  progTitle = StringField()
+  synopsis = StringField()
+  filename = StringField()
+  duration = StringField()
+  videoId = StringField()
+  videoUrl = StringField()
+  channelUrl = StringField()
+  errorMsg = StringField()
+
 class Errors(EmbeddedDocument):
   dateAdded = DateTimeField(default=datetime.datetime.utcnow)
   error = StringField()
@@ -39,6 +55,7 @@ class Streams(Document):
   status = StringField()
   videoId = StringField()
   progMetadata = StringField()
+  metadata = EmbeddedDocumentField(Metadata)
   dateLastChecked = DateTimeField()
   lastErrors = EmbeddedDocumentListField(Errors)
   
