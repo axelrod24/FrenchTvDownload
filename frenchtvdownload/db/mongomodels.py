@@ -21,7 +21,7 @@ class Metadata(EmbeddedDocument):
   progTitle = StringField()
   synopsis = StringField()
   filename = StringField()
-  duration = StringField()
+  duration = IntField()
   videoId = StringField()
   videoUrl = StringField()
   channelUrl = StringField()

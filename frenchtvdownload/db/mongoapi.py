@@ -6,7 +6,7 @@ def _createMetadata(metadata):
   mdata = Metadata()
   mdata.mediaType = metadata.mediaType
   mdata.manifestUrl = metadata.manifestUrl
-  mdata.airDate = metadata.airDate
+  mdata.airDate = datetime.datetime.fromtimestamp(metadata.airDate)
   mdata.progCode = metadata.progCode
   mdata.networkName = metadata.networkName
   mdata.progName = metadata.progName
