@@ -103,28 +103,6 @@ class FranceTvParser(NetworkParser):
       return listVideoUrl
 
 
-
-
-    
-    def getListOfUrlCollection(self, url):
-       # read the page and extract list of videoURL
-        page = self.fakeAgent.readPage(url)
-        parsed = BeautifulSoup(page, "html.parser")
-        videoUrlList = parsed.find_all("a", attrs={"class": "c-card-video__link"})
-
-        list_of_url = []
-        for u in videoUrlList:
-            list_of_url.append(urljoin(url, u["href"]))
-
-        return list_of_url
-
-    def getVideoUrl(self, url):
-      # read the page and extract url of first video
-      page = self.fakeAgent.readPage(url)
-      parsed = BeautifulSoup(page, "html.parser")
-      videoUrlList = parsed.find_all("a", attrs={"class": "c-card-video__link"})
-      return urljoin(url, videoUrlList[0]["href"])
-
     def parsePage(self, url):
         # check if url point to the video page, if not get list of video URl one by one
         idEmission = None
