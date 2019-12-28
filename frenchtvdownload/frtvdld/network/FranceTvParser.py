@@ -78,7 +78,7 @@ class FranceTvParser(NetworkParser):
       # read the page
       listVideoUrl=[]
       while(nbrPage==-1 or index < nbrPage):
-        url = self.REPLAY_VIDEO_URL % (baseUrl, index) 
+        url = self.REPLAY_VIDEO_URL % (baseUrl.rstrip('/'), index) 
         page = self.fakeAgent.readPage(url)
         if len(page)==0: # nothing on the page, that's the last one.
           break

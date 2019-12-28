@@ -47,9 +47,35 @@ class Tf1Parser(NetworkParser):
     """
 
     REGEX_M3U8 = "/([0-9]{4}/S[0-9]{2}/J[0-9]{1}/[0-9]*-[0-9]{6,8})-"
-    JSON_API = "https://delivery.tf1.fr/mytf1-wrd/_ID_EMISSION_"
-    JSON_DESCRIPTION = "https://www.wat.tv/interface/contentv4/_ID_EMISSION_?context=MYTF1"
     JSON_API = "https://player.tf1.fr/mediainfocombo/_ID_EMISSION_?context=MYTF1&pver=4001000"
+
+    REPLAY_VIDEO_URL = "%s/videos/replay/%d"
+
+    def parseCollection(self, baseUrl, nbrPage=1, nbrVideoLink=1):
+      index = 0
+      # read the page
+      listVideoUrl=[]
+      while(nbrPage==-1 or index < nbrPage):
+        url = self.REPLAY_VIDEO_URL % (baseUrl.rstrip('/'), index) 
+        page = self.fakeAgent.readPage(url)
+        if len(page)==0: # nothing on the page, that's the last one.
+          break
+        parsed = BeautifulSoup(page, "html.parser")
+        cardVideos = parsed.find_all("div", attrs={"class": "VideoCardThumbnail_thumbnail_1vX6n"})
+        for card in cardVideos:
+          href = card.find_all("a")
+          if len(href) == 0:  # no link, weird but continue
+            continue
+
+          videoUrl = urljoin(baseUrl, href[0]["href"])
+          listVideoUrl.append(videoUrl)
+          if len(listVideoUrl) == nbrVideoLink:
+            return listVideoUrl
+
+        index+=1
+
+      return listVideoUrl
+
 
     def parsePage(self, url):
 
