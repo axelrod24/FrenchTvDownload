@@ -29,7 +29,7 @@ class FranceTvVideoMetadata(VideoMetadata):
 
     self._networkName="france.tv"
     self._manifestUrl = self.get('manifest')
-    self._synopsis = self.get('synopsis', "no synopsis")
+    self._synopsis = self.get('synopsis', "no_synopsis")
     
     vMeta =  self.get('video')
     #self._manifestUrl = vMeta.get('url')
@@ -219,4 +219,4 @@ class FranceTvParser(NetworkParser):
       desc = parsed.find_all("meta", attrs={"property": "og:description"})
       if len(desc) > 0:
         return desc[0].attrs["content"]
-      return "no synopsis"
+      return "no_synopsis"

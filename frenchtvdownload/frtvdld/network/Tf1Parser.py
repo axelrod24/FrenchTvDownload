@@ -21,20 +21,21 @@ class Tf1VideoMetadata(VideoMetadata):
     super().__init__(d)
 
   def parseMetadata(self):
-    if self.get("code") != 200:
+    deliveryTag = self.get('delivery', {})
+    if deliveryTag.get("code") != 200:
       raise FrTvDownloadException("Can't parse json url for Tf1")    
 
-    self._manifestUrl = self.get('url')
-    # metaData['drm'] = False
-    self._mediaType = self.get("format")
-    self._progTitle = self.get('media', {}).get("title", "default_prog_title")
-    
-    data = self.get("media",{}).get("chapters",[{}])[0]
-    gregorian_date = data.get('date_diffusion')
-    self._airDate = time.mktime(datetime.strptime(gregorian_date, "%Y-%m-%d").timetuple()) 
-    self._synopsis = data.get("description", "no synopsis")
-    self._duration = self.get('media', {}).get('duration', 0)
+    self._manifestUrl = deliveryTag.get('url')
+    self._mediaType = deliveryTag.get("format")
+
+    self._progTitle = self.get('content', {}).get("title", "default_prog_title")
     self._progName = self.get('media', {}).get('owner', "default_prog_name")
+    self._duration = self.get('media', {}).get('duration', 0)
+
+    data = self.get("mediametrie",{}).get("chapters",[{}])[0]
+    gregorian_date = data.get('estatS4')
+    self._airDate = time.mktime(datetime.strptime(gregorian_date, "%Y-%m-%d").timetuple()) 
+    self._synopsis = "%s\r\n%s" % (self.get('media', {}).get('title', ""), self.get('synopsis'))
 
     self._videoId = self.get('videoId')
     self._filename = "%s-Tf1-%s" % (datetime.fromtimestamp(self._airDate).strftime("%Y%m%d"), self.normalizeProgTitle(self._progTitle))
@@ -48,6 +49,7 @@ class Tf1Parser(NetworkParser):
     REGEX_M3U8 = "/([0-9]{4}/S[0-9]{2}/J[0-9]{1}/[0-9]*-[0-9]{6,8})-"
     JSON_API = "https://delivery.tf1.fr/mytf1-wrd/_ID_EMISSION_"
     JSON_DESCRIPTION = "https://www.wat.tv/interface/contentv4/_ID_EMISSION_?context=MYTF1"
+    JSON_API = "https://player.tf1.fr/mediainfocombo/_ID_EMISSION_?context=MYTF1&pver=4001000"
 
     def parsePage(self, url):
 
@@ -62,14 +64,16 @@ class Tf1Parser(NetworkParser):
         # go for JSON straight, don't even try XML
         jurl1 = self.JSON_API.replace("_ID_EMISSION_", idEmission)
         pageInfos1 = self.fakeAgent.readPage(jurl1)
-        jurl2 = self.JSON_DESCRIPTION.replace("_ID_EMISSION_", idEmission)
-        pageInfos2 = self.fakeAgent.readPage(jurl2)
+        # jurl2 = self.JSON_DESCRIPTION.replace("_ID_EMISSION_", idEmission)
+        # pageInfos2 = self.fakeAgent.readPage(jurl2)
         
         try:
           data = json.loads(pageInfos1)
-          data.update(json.loads(pageInfos2))
+          # data.update(json.loads(pageInfos2))
           data["videoUrl"] = url
-          data["videoId"] = jurl1
+          data["videoId"] = idEmission
+          data["synopsis"] = self._getSynopsis(page)
+
           videoMetadata = Tf1VideoMetadata(data)
           metadata = videoMetadata.getMetadata()
         except Exception as e:
@@ -78,23 +82,63 @@ class Tf1Parser(NetworkParser):
 
         self.progMetaData = metadata
 
+    def _findProgPageMetadata(self, page):
+      try:
+        parsed = BeautifulSoup(page, "html.parser")
+        scripts = parsed.find_all("script")
+        if len(scripts) == 0:
+            return None
+
+        for script in scripts:
+          # extract stream id for var definition
+          if script.text.startswith("window.__APOLLO_STATE__"):
+            return script
+        
+        return None
+
+      except Exception as e:
+        logger.error(e)
+        raise FrTvDwnPageParsingError(e)
+
     def _getVideoId(self, page):
-        """
-        get Video ID from the video page
-        """
-        try:
-            parsed = BeautifulSoup(page, "html.parser")
-            videoId = parsed.find_all("section",
-                                      attrs={"id": "content_video", "data-watid": re.compile("[0-9]+")})
-            if len(videoId) == 0:
-                return None
+      """
+      get Video ID from the video page
+      """
+      try:
+        script = self._findProgPageMetadata(page)
+        sindex = script.text.find('"streamId":')
+        eindex = sindex + script.text[sindex:].find(',')
+        val = script.text[sindex:eindex]
+        vid = val.split(':')[1].strip("'\" ")
+        return vid
 
-            # logger.debug("ID de l'émission : %s" % (videoId[0]["data-main-video"]))
-            return videoId[0]["data-watid"]
+      except Exception as e:
+        logger.error(e)
+        raise FrTvDwnPageParsingError(e)
 
-        except Exception as e:
-            logger.error(e)
-            raise FrTvDwnPageParsingError(e)
+    def _getSynopsis(self, page):
+      try:
+        script = self._findProgPageMetadata(page)
+        sindex = script.text.find('"__typename":"Decoration"')
+        sindex = sindex + script.text[sindex:].find(',')
+        sindex = sindex + script.text[sindex:].find(':')
+        sindex = sindex + script.text[sindex:].find('"')
+        sindex+=1
+        eindex = sindex + script.text[sindex:].find('"')
+
+        val = script.text[sindex:eindex]
+        val = val.strip("'\" ")
+        return val
+          
+      except Exception as e:
+        logger.error(e)
+        raise FrTvDwnPageParsingError(e)
+
+      parsed = BeautifulSoup(page, "html.parser")
+      desc = parsed.find_all("meta", attrs={"property": "og:description"})
+      if len(desc) > 0:
+        return desc[0].attrs["content"]
+      return "no_synopsis"
  
 
 
