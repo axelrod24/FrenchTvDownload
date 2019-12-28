@@ -124,7 +124,7 @@ if (__name__ == "__main__"):
     parser.add_argument("--nocolor", action='store_true', default=False, help='turn of color in terminal')
     parser.add_argument("--version", action='version', version="FrenchTvDownloader %s" % (__version__))
     parser.add_argument("-i", "--input", action="store", choices=['url', 'mongo'], default="mongo", help='input source url or mongo')
-    parser.add_argument("urlEmission", action="store", default="", help="URL of video to download")
+    parser.add_argument("urlEmission", action="store", default="", nargs="?", help="URL of video to download")
 
     args = parser.parse_args()
 
