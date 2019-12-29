@@ -1,13 +1,18 @@
 repo=TV
 dstFolder=~/Dropbox/$repo
-mkdir $dstFolder
-localFolder=$(dirname $0)
+if [ ! -d "$dstFolder" ]; then
+    mkdir $dstFolder
+fi
 
 tstamp=$(date +"%Y-%m-%d_%T")
-echo $tstamp "Start downloading from:" $2 >> $dstFolder/download-log.txt
+echo $tstamp "- start fetch video." >> $dstFolder/download-log.txt
 
+localFolder=$(dirname $0)
 cd $localFolder
 export VIRTUAL_ENV=$PWD/.venv
 .venv/bin/python3 ./frenchtvdownload/downloadStream.py -o $dstFolder -i mongo --saveMetadata --repo $repo
+
+tstamp=$(date +"%Y-%m-%d_%T")
+echo $tstamp "- complete fetch video." >> $dstFolder/download-log.txt
 
 

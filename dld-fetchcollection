@@ -1,7 +1,0 @@
-localFolder=$(dirname $0)
-cd $localFolder
-export VIRTUAL_ENV=$PWD/.venv
-.venv/bin/python3 ./frenchtvdownload/fetchCollection.py -i url $1 --nbrVideo=$2
-
-
-

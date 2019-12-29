@@ -1,16 +1,20 @@
+# create dst folder if doesn't exist
 repo=TV
 dstFolder=~/Dropbox/$repo
-mkdir $dstFolder
-localFolder=$(dirname $0)
+if [ ! -d "$dstFolder" ]; then
+    mkdir $dstFolder
+fi
+
+nbrVideo=1
+if [ ! -z "$2" ]; then
+    nbrVideo=$2
+fi
 
 tstamp=$(date +"%Y-%m-%d_%T")
-echo $tstamp "Start downloading from:" $2 >> $dstFolder/download-log.txt
+echo $tstamp "- fetch collection" >> $dstFolder/download-log.txt
 
+localFolder=$(dirname $0)
 cd $localFolder
 export VIRTUAL_ENV=$PWD/.venv
-# .venv/bin/python3 ./frenchtvdownload/main.py -o $dstFolder -b $2 --saveMetadata file mongo --noDuplicate --repo $repo
-.venv/bin/python3 ./frenchtvdownload/fetchCollection.py -i url $1 --nbrVideo=$2
-
-tstamp=$(date +"%Y-%m-%d_%T")
-echo $tstamp "Download completed:" $2 >> $dstFolder/download-log.txt
+.venv/bin/python3 ./frenchtvdownload/fetchCollection.py -i url $1 --nbrVideo=$nbrVideo
 

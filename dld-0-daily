@@ -1,29 +1,26 @@
-dst=$(date +"%Y-%m-%d_%a")
-dstFolder=${dst%.*}
 cd $(dirname $0)
 
-./dld-f5-cdanslair
-./dld-f5-cavous
-./dld-f2-jt20h
-./dld-f5-passagedesarts
-./dld-f5-cadire
-./dld-f2-cash
-./dld-f5-mondeenface
-./dld-f5-grandelibrairie
-./dld-f2-envoye
-./dld-f2-complement
-./dld-f5-clhebdo
-./dld-f5-cpolitique
-./dld-f3-dimancheenpolitique
-./dld-f2-2030ledimanche
-./dld-f2-onpc
-./dld-f2-vousavezlaparole
-./dld-f5-ledocdudimanche
-./dld-f3-secretdhistoire
-./dld-f5-sciencegrandformat
-./dld-f5-enquetedesante
-./dld-f2-grandechiquier
-./dld-f5-guerredestrones
-./dld-tf1-quotidien
-
+./dld-f5-cdanslair 2
+./dld-f5-cavous 2
+./dld-f2-jt20h 2
+./dld-f5-passagedesarts 2
+./dld-f5-cadire 2
+./dld-f2-cash 2
+./dld-f5-mondeenface 2
+./dld-f5-grandelibrairie 2
+./dld-f2-envoye 2
+./dld-f2-complement 2
+./dld-f5-clhebdo 2
+./dld-f5-cpolitique 2
+./dld-f3-dimancheenpolitique 2
+./dld-f2-2030ledimanche 2
+./dld-f2-onpc 2
+./dld-f2-vousavezlaparole 2
+./dld-f5-ledocdudimanche 2
+./dld-f3-secretdhistoire 2
+./dld-f5-sciencegrandformat 2
+./dld-f5-enquetedesante 2
+./dld-f2-grandechiquier 1
+./dld-f5-guerredestrones 2
+./dld-tf1-quotidien 2
 

@@ -1,7 +1,11 @@
-dst=$(date +"%Y-%m-%d_%a")
-dstFolder=${dst%.*}
+nbrVideo=1
+if [ ! -z "$1" ]; then
+    nbrVideo=$1
+fi
+
 localFolder=$(dirname $0)
 cd $localFolder
 
-./dld-francetv https://www.france.tv/france-5/c-a-dire/ 2
+./dld-francetv https://www.france.tv/france-5/c-a-dire/ $nbrVideo
+
 

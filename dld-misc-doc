@@ -1,6 +1,9 @@
 repo=TV
 dstFolder=~/Dropbox/$repo
-mkdir $dstFolder
+if [ ! -d "$dstFolder" ]; then
+    mkdir $dstFolder
+fi
+
 localFolder=$(dirname $0)
 cd $localFolder
 
