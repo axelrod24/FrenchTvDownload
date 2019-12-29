@@ -23,4 +23,6 @@ cd $(dirname $0)
 ./dld-f2-grandechiquier 1
 ./dld-f5-guerredestrones 2
 ./dld-tf1-quotidien 2
+./dld-f2-basiqueleconcert 1
+
 
