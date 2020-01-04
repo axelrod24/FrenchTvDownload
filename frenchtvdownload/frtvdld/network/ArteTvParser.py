@@ -40,79 +40,85 @@ class ArteTvVideoMetadata(VideoMetadata):
     
     VSR = data['VSR']
     for k in VSR:
-        if not k.startswith("HLS"):
-            continue
-        v = VSR[k]
-        if v["versionCode"] not in ["VF-STF", "VOF-STF", "VF", "VOF", "VO-STF"]:
-            continue
+      if not k.startswith("HLS"):
+          continue
+      v = VSR[k]
+      if v["versionCode"] not in ["VF-STF", "VOF-STF", "VF", "VOF", "VO-STF"]:
+          continue
 
-        self._manifestUrl = v['url']
-        # metaData['drm'] = False
-        self._mediaType = "hls"
-        break
+      self._manifestUrl = v['url']
+      # metaData['drm'] = False
+      self._mediaType = "hls"
+      break
 
     self._filename = "%s-Arte-%s" % (datetime.fromtimestamp(self._airDate).strftime("%Y%m%d"), self.normalizeProgTitle(self._progTitle))
 
 
 class ArteTvParser(NetworkParser):
-    JSON_API = "https://api.arte.tv/api/player/v1/config/fr/_ID_EMISSION_"
-    JSON_COLLECTION_API = "https://www.arte.tv/guide/api/api/zones/fr/collection_videos?id=_ID_EMISSION_&page=_ID_PAGE_"
+  JSON_API = "https://api.arte.tv/api/player/v1/config/fr/_ID_EMISSION_"
+  #JSON_COLLECTION_API = "https://www.arte.tv/guide/api/api/zones/fr/collection_videos?id=_ID_EMISSION_&page=_ID_PAGE_"
+  JSON_COLLECTION_API = "https://www.arte.tv/guide/api/emac/v3/fr/web/data/COLLECTION_VIDEOS/?collectionId=_ID_EMISSION_&page=_ID_PAGE_"
 
-    def getListOfUrlCollection(self, url):
+  def parseCollection(self, baseUrl, nbrPage=1, nbrVideoLink=1):
+    
+    # read the page
+    progId = self._getProgId(baseUrl)
+    index = 1
+    listVideoUrl=[]
+    while(nbrPage==-1 or index <= nbrPage):
+      url = self.JSON_COLLECTION_API.replace("_ID_EMISSION_", progId).replace("_ID_PAGE_", str(index)) 
+      page = self.fakeAgent.readPage(url)
+      if len(page) == 0: # nothing on the page, that's the last one.
+        break
+      
+      jsondata = json.loads(page)
+      listOfProg = jsondata.get("data", [])
+      if len(listOfProg) == 0: # no list of program, end if collection
+        break
+      
+      for prog in listOfProg:
+        href = prog.get("url", "")
+        if len(href) == 0:  # no link, weird but continue
+          continue
+        listVideoUrl.append(href)
+        if len(listVideoUrl) == nbrVideoLink:
+          return listVideoUrl
+      
+      index+=1
 
-        progId = self._getProgId(url)
+    return listVideoUrl
 
-        # not a collection ID
-        if not progId.startswith("RC-"):
-            return None
 
-        allUrl = []
-        jurl = self.JSON_COLLECTION_API.replace("_ID_EMISSION_", progId)
-        pageId = 1
-        while True:
-            jurlTemp = jurl.replace("_ID_PAGE_", str(pageId))
-            pageInfo = self.fakeAgent.readPage(jurlTemp)
-            if not self._getCollectionUrls(pageInfo, allUrl):
-                break
+  def parsePage(self, url):
+    progId = self._getProgId(url)
 
-            pageId += 1
+    jurl = self.JSON_API.replace("_ID_EMISSION_", progId)
+    pageInfos = self.fakeAgent.readPage(jurl)
+    # parse Metadata
+    try:
+      data = json.loads(pageInfos)
+      data["videoUrl"] = url
+      data["videoId"] = jurl
+      videoMetadata = ArteTvVideoMetadata(data)
+      metadata = videoMetadata.getMetadata()
+    except Exception as e:
+      logger.error(e)
+      raise FrTvDwnMetaDataParsingError(e)
 
-        return allUrl
+    self.progMetaData = metadata
+      
+  def _getProgId(self, url):
+    try:
+      l = url.split("/")
+      i = 0
+      while(i<len(l)):
+        if l[i] == "videos":
+            return l[i+1]
+        i+=1 
 
-    def parsePage(self, url):
-        progId = self._getProgId(url)
-
-        jurl = self.JSON_API.replace("_ID_EMISSION_", progId)
-        pageInfos = self.fakeAgent.readPage(jurl)
-        # parse Metadata
-        try:
-          data = json.loads(pageInfos)
-          data["videoUrl"] = url
-          data["videoId"] = jurl
-          videoMetadata = ArteTvVideoMetadata(data)
-          metadata = videoMetadata.getMetadata()
-        except Exception as e:
-          logger.error(e)
-          raise FrTvDwnMetaDataParsingError(e)
-
-        self.progMetaData = metadata
-       
-    def _getProgId(self, url):
-        try:
-            l = url.split("/")
-            i = 0
-            while(i<len(l)):
-                if l[i] == "videos":
-                    return l[i+1]
-                i+=1 
-
-            return None
-            
-        except Exception as e:
-            logger.error(e)
-            raise FrTvDwnPageParsingError(e)
-
-    def _getCollectionUrls(self, pageInfo, allUrl):
-        pass
-           
+      return None
+        
+    except Exception as e:
+      logger.error(e)
+      raise FrTvDwnPageParsingError(e)
 
