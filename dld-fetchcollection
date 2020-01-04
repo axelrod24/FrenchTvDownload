@@ -1,0 +1,27 @@
+# create dst folder if doesn't exist
+repo=TV
+dstFolder=~/Dropbox/$repo
+if [ ! -d "$dstFolder" ]; then
+    mkdir $dstFolder
+fi
+
+nbrVideo=1
+if [ ! -z "$2" ]; then
+    nbrVideo=$2
+fi
+
+progCode=""
+if [ ! -z "$3" ]; then
+    progCode="--programCode=$3"
+fi
+
+tstamp=$(date +"%Y-%m-%d_%T")
+echo $tstamp "- fetch collection" >> $dstFolder/download-log.txt
+
+localFolder=$(dirname $0)
+cd $localFolder
+export VIRTUAL_ENV=$PWD/.venv
+.venv/bin/python3 ./frenchtvdownload/fetchCollection.py -i url $1 --nbrVideo=$nbrVideo $progCode
+
+
+
