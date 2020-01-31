@@ -74,13 +74,23 @@ def downloadOneStream(stream, args):
         fileIndex += 1
 
     # downloading with ffmpeg
-    logger.info("++")
-    logger.info("Downloading: %s" % (url))
     logger.info("------------")
+    logger.info("Downloading: %s" % (url))
+    logger.info("++")
     updateStreamStatus(stream, "downloading")
 
-    ffmpegHLSDownloader = FfmpegHLSDownloader(url=progMetadata.manifestUrl)
-    ffmpegHLSDownloader.downlaodAndConvertFile(dst=dstFullPath + ".mp4")
+    try:
+        ffmpegHLSDownloader = FfmpegHLSDownloader(url=progMetadata.manifestUrl)
+        ffmpegHLSDownloader.downloadAndConvertFile(dst=dstFullPath + ".mp4")
+    except Exception as err:
+        # log the error and continue with next stream
+        logger.error(err.__repr__())
+        updateStreamWithError(stream, err.__repr__())
+        logger.info("++")
+        logger.info("Download interupted with error")
+        logger.info("-------")
+        return 
+
     logger.info("++")
     logger.info("Download completed: %s" % (url))
     logger.info("Video : %s" % (dstFullPath))
@@ -99,7 +109,6 @@ def downloadOneStream(stream, args):
     logger.info("Saving video info")
     updateStreamWithMetadata(stream, progMetadata)
     addVideo(dstFullPath, folder, args.repo, progMetadata, stream)
-
 
 
 #
@@ -165,7 +174,16 @@ if (__name__ == "__main__"):
         stream.save()
         logger.info("=" * 6)       
 
-    # fetch list of stream from mongodb
+    # # fetch list of stream with error and exclude stream order than 2020/01/20
+    # d = datetime(2020, 1, 20)
+    # streams = getStreamsByStatus(status="error")
+    # for stream in streams:
+    #     if stream.dateAdded < d:
+    #         continue
+    #     errors = stream.lastErrors
+    #     if len(errors) >= 10
+    #     print(stream)
+
     streams = getStreamsByStatus(status="pending")
     if not streams:
         logger.info("-" * 6)
@@ -175,7 +193,6 @@ if (__name__ == "__main__"):
 
     for stream in streams:
         downloadOneStream(stream, args)
-
 
     logger.info("=========================================================")
   

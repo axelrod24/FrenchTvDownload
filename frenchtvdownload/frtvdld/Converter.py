@@ -30,7 +30,7 @@ class FfmpegHLSDownloader(object):
   def __init__(self, url):
     self.manifestUrl = url
 
-  def downlaodAndConvertFile(self, dst):
+  def downloadAndConvertFile(self, dst):
     command = 'ffmpeg -hide_banner -i "%s" -acodec copy -vcodec copy %s' % (self.manifestUrl , dst)
     try:
       if (os.system(command) == 0):
