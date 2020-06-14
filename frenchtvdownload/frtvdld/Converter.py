@@ -2,9 +2,9 @@ import logging
 import os
 
 from frtvdld.DownloadException import FrTvDownloadException
+from frtvdld.GlobalRef import LOGGER_NAME
 
-logger = logging.getLogger("frtvdld")
-
+logger = logging.getLogger(LOGGER_NAME)
 
 
 def CreateMP4(src, dst):
