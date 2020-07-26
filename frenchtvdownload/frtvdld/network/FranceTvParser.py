@@ -90,7 +90,7 @@ class FranceTvParser(NetworkParser):
           if len(s) > 0:  # ignore "extrait"
             if s[0].text == "extrait":
               continue
-          href = card.find_all("a", attrs={"class": "c-card-video__link"})
+          href = card.find_all("a", attrs={"class": "c-card-video__textarea-link"})
           if len(href) == 0:  # no link, weird but continue
             continue
 
@@ -203,9 +203,9 @@ class FranceTvParser(NetworkParser):
     def _getListOfAvailableVideo(self, url, index):
         page = self.fakeAgent.readPage(url)
         parsed = BeautifulSoup(page, "html.parser")
-        videoUrlList = parsed.find_all("a", attrs={"class": "c-card-video__link"})
+        videoUrlList = parsed.find_all("a", attrs={"class": "c-card-video__textarea-link"})
 
-        if index > len(videoUrlList):
+        if index >= len(videoUrlList):
             return None
 
         return urljoin(url, videoUrlList[index]["href"])
