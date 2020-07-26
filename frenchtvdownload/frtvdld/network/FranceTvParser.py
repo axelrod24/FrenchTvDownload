@@ -71,7 +71,6 @@ class FranceTvParser(NetworkParser):
     JSON2_DESC="https://sivideo.webservices.francetelevisions.fr/tools/getInfosOeuvre/v2/?idDiffusion=_ID_EMISSION_"
     JSON3_DESC="https://player.webservices.francetelevisions.fr/v1/videos/_ID_EMISSION_?country_code=FR&w=1920&h=1080&device_type=desktop&browser=safari"
 
-    #REPLAY_VIDEO_URL = "%s/replay-videos/ajax?page=%d"
     REPLAY_VIDEO_URL = "%s/toutes-les-videos/?page=%d"
 
     def parseCollection(self, baseUrl, nbrPage=1, nbrVideoLink=1):

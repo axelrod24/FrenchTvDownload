@@ -13,7 +13,6 @@ cd $(dirname $0)
 ./dld-f5-clhebdo 2
 ./dld-f5-cpolitique 2
 ./dld-f3-dimancheenpolitique 2
-./dld-f2-2030ledimanche 2
 ./dld-f2-onpc 2
 ./dld-f2-vousavezlaparole 2
 ./dld-f5-ledocdudimanche 2
@@ -22,7 +21,20 @@ cd $(dirname $0)
 ./dld-f5-enquetedesante 2
 ./dld-f2-grandechiquier 1
 ./dld-f5-guerredestrones 2
-./dld-tf1-quotidien 2
+./dld-tf1-quotidien 5
 ./dld-f2-basiqueleconcert 1
+./dld-arte-dessousdescartes 1
+./dld-arte-reportage 1
+./dld-arte-28mn 2
+./dld-f3-capitainemarleau 3
+./dld-f2-pouvoirducorpshumain 1
+./dld-f2-lesrivierespourpres 2
+./dld-f3-laloide 2
+./dld-f2-nuancesdedoc 2
+./dld-tv-hiphopjazz 4
+./dld-f5-magsante 2
+./dld-f5-capousse 2
+./dld-f2-infrarouge 3
+./dld-f2-celluledecrise 2
 
 
