@@ -152,7 +152,7 @@ class NetworkProgParser(object):
         return self._networkParser.progMetaData
 
     def parseCollection(self, url, nbrVideo):
-        listOfUrl = self._networkParser.parseCollection(url, nbrPage=-1, nbrVideoLink=nbrVideo)
+        listOfUrl = self._networkParser.parseCollection(url, nbrPage=10, nbrVideoLink=nbrVideo)
         return listOfUrl
 
 
