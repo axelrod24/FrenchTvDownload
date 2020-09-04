@@ -61,7 +61,7 @@ class Tf1Parser(NetworkParser):
         if len(page)==0: # nothing on the page, that's the last one.
           break
         parsed = BeautifulSoup(page, "html.parser")
-        cardVideos = parsed.find_all("div", attrs={"class": "VideoCardThumbnail_thumbnail_25y_5"})
+        cardVideos = parsed.find_all("div", attrs={"class": "VideoGrid_videos__item_3OzN9"})
         for card in cardVideos:
           href = card.find_all("a")
           if len(href) == 0:  # no link, weird but continue
