@@ -83,7 +83,7 @@ if (__name__ == "__main__"):
         url = args.urlEmission
         networkParser = networkParserFactory(url)
         listOfUrls = networkParser.parseCollection(url, int(args.nbrVideo))
-       
+
         # use code program passed as argument or extract the last part of URL as code program
         parsedUrl = urlparse(url)
         programCode = args.programCode
@@ -96,8 +96,14 @@ if (__name__ == "__main__"):
             logger.info("-" * 6)
             stream = getStreamByUrl(url)
             if (stream):  #and stream.status=="done"):
-                logger.info("Duplicate. Continue ...")
-                logger.info("Url: %s" % (url))
+                if (stream.status=="error" and len(stream.lastErrors)<3):
+                    stream.status = "pending"
+                    stream.save()
+                    logger.info("Trying download again:%d" % len(stream.lastErrors))
+                else:
+                    logger.info("Duplicate. Continue ...")
+                    logger.info("Url: %s" % (url))
+
                 logger.info("=" * 6)
                 continue  
 

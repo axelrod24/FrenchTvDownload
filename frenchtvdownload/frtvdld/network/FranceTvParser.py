@@ -176,7 +176,7 @@ class FranceTvParser(NetworkParser):
         """
         try:
             parsed = BeautifulSoup(page, "html.parser")
-            div_tag = parsed.find_all("div", class_="c-player")
+            div_tag = parsed.find_all("div", class_="js-player-container c-player-container")
             if len(div_tag) == 0:
                 return None
 

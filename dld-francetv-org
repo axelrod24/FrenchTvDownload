@@ -1,0 +1,15 @@
+repo=VM1
+dstFolder=~/Dropbox/$repo
+mkdir $dstFolder
+localFolder=$(dirname $0)
+
+tstamp=$(date +"%Y-%m-%d_%T")
+echo $tstamp "Start downloading from:" $2 >> $dstFolder/download-log.txt
+
+cd $localFolder
+export VIRTUAL_ENV=$PWD/.venv
+.venv/bin/python3 ./frenchtvdownload/main.py -o $dstFolder -b $2 --saveMetadata file mongo --noDuplicate --repo $repo
+
+tstamp=$(date +"%Y-%m-%d_%T")
+echo $tstamp "Download completed:" $2 >> $dstFolder/download-log.txt
+

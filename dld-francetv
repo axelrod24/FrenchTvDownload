@@ -1,5 +1,5 @@
 # create dst folder if doesn't exist
-repo=TV
+repo=VM1
 dstFolder=~/Dropbox/$repo
 if [ ! -d "$dstFolder" ]; then
     mkdir $dstFolder

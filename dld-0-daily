@@ -1,6 +1,6 @@
 cd $(dirname $0)
 
-./dld-f5-cdanslair 2
+./dld-f5-cdanslair 5
 ./dld-f5-cavous 2
 ./dld-f2-jt20h 2
 ./dld-f5-passagedesarts 2
@@ -13,8 +13,9 @@ cd $(dirname $0)
 ./dld-f5-clhebdo 2
 ./dld-f5-cpolitique 2
 ./dld-f3-dimancheenpolitique 2
-./dld-f2-onpc 2
+./dld-f2-onestendirect 2
 ./dld-f2-vousavezlaparole 2
+./dld-f2-prenezsoindevous 2
 ./dld-f5-ledocdudimanche 2
 ./dld-f3-secretdhistoire 2
 ./dld-f5-sciencegrandformat 2

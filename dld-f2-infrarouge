@@ -6,6 +6,6 @@ fi
 localFolder=$(dirname $0)
 cd $localFolder
 
-./dld-francetv https://www.france.tv/france-2/on-n-est-pas-couche/ $nbrVideo
+./dld-francetv https://www.france.tv/france-2/infrarouge/ $nbrVideo
 
 

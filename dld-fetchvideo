@@ -1,4 +1,4 @@
-repo=TV
+repo=VM1
 dstFolder=~/Dropbox/$repo
 if [ ! -d "$dstFolder" ]; then
     mkdir $dstFolder

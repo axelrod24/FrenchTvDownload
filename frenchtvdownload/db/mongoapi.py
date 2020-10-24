@@ -73,7 +73,7 @@ def getStreamByUrl(url):
   streams = Streams.objects(url = url)
   if len(streams) == 0:
     return None
-    
+
   theStream = streams[0]
   return theStream
 
