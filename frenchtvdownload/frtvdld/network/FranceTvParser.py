@@ -184,8 +184,12 @@ class FranceTvParser(NetworkParser):
             if script_tag.name !=  "script":
                 return None
 
+            if len(script_tag.contents) == 0 or len(script_tag.contents[0]) == 0:
+                return None
+
             # extract Video Id from script text
-            json_text = script_tag.text
+            # json_text = script_tag.text
+            json_text = script_tag.contents[0]
             json_text = json_text[json_text.find("["):json_text.rfind("]")+1]
 
             # replace wrong escape character .... 
