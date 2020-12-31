@@ -117,8 +117,10 @@ class Tf1Parser(NetworkParser):
 
         for script in scripts:
           # extract stream id for var definition
-          if script.text.startswith("window.__APOLLO_STATE__"):
+          if len(script.contents)>0 and script.contents[0].startswith("window.__APOLLO_STATE__"):
             return script
+          # if script.text.startswith("window.__APOLLO_STATE__"):
+          #   return script
         
         return None
 
@@ -132,9 +134,10 @@ class Tf1Parser(NetworkParser):
       """
       try:
         script = self._findProgPageMetadata(page)
-        sindex = script.text.find('"streamId":')
-        eindex = sindex + script.text[sindex:].find(',')
-        val = script.text[sindex:eindex]
+        script_text = script.contents[0] 
+        sindex = script_text.find('"streamId":')
+        eindex = sindex + script_text[sindex:].find(',')
+        val = script_text[sindex:eindex]
         vid = val.split(':')[1].strip("'\" ")
         return vid
 
@@ -145,14 +148,15 @@ class Tf1Parser(NetworkParser):
     def _getSynopsis(self, page):
       try:
         script = self._findProgPageMetadata(page)
-        sindex = script.text.find('"__typename":"Decoration"')
-        sindex = sindex + script.text[sindex:].find(',')
-        sindex = sindex + script.text[sindex:].find(':')
-        sindex = sindex + script.text[sindex:].find('"')
+        script_text = script.contents[0] 
+        sindex = script_text.find('"__typename":"Decoration"')
+        sindex = sindex + script_text[sindex:].find(',')
+        sindex = sindex + script_text[sindex:].find(':')
+        sindex = sindex + script_text[sindex:].find('"')
         sindex+=1
-        eindex = sindex + script.text[sindex:].find('"')
+        eindex = sindex + script_text[sindex:].find('"')
 
-        val = script.text[sindex:eindex]
+        val = script_text[sindex:eindex]
         val = val.strip("'\" ")
         return val
           
