@@ -29,6 +29,7 @@ class VideoMetadata(dict):
     s = re.sub("[()':,\"]", "", s)
     s = re.sub("/", "_", s)
     s = re.sub('\s+', '_', s)
+    s = re.sub('\u0026', "", s)    # deal with "&"
     # remove accented char
     s = unicodedata.normalize('NFD', s).encode('ascii', 'ignore').decode("utf-8")
     return s.lower()
@@ -73,6 +74,7 @@ class NetworkParser(object):
         s = re.sub("[()':,\"]", "", s)
         s = re.sub("/", "_", s)
         s = re.sub('\s+', '_', s)
+        s = re.sub('\u0026', "", s)    # deal with "&"
         return s
 
     def getVideoUrl(self, url):
