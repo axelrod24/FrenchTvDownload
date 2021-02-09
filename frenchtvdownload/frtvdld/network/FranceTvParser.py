@@ -83,17 +83,21 @@ class FranceTvParser(NetworkParser):
         if len(page)==0: # nothing on the page, that's the last one.
           break
         parsed = BeautifulSoup(page, "html.parser")
-        cardVideos = parsed.find_all("div", attrs={"class": "c-card-video"})
+        # cardVideos = parsed.find_all("div", attrs={"class": "c-card-video"})
+        cardVideos = parsed.find_all("a", attrs={"class": "c-card-video"})
         for card in cardVideos:
-          s = card.find_all("span", attrs={"class": "c-label"})
-          if len(s) > 0:  # ignore "extrait"
-            if s[0].text == "extrait":
-              continue
-          href = card.find_all("a", attrs={"class": "c-card-video__textarea-link"})
-          if len(href) == 0:  # no link, weird but continue
+          cardOnClick = card.get('onclick', "")
+          if len(cardOnClick) == 0:   # card with no onclick
+            continue
+          
+          # get onclick function arguments, skip if not replay
+          jsonStr = cardOnClick[cardOnClick.find('(')+1:cardOnClick.find(')')]
+          jsonArg = yaml.load(jsonStr)
+          typeVideo = jsonArg.get('customObject',{'type_video':"extrait"})['type_video']
+          if typeVideo != "replay":
             continue
 
-          videoUrl = urljoin(baseUrl, href[0]["href"])
+          videoUrl = urljoin(baseUrl, card["href"])
           listVideoUrl.append(videoUrl)
           if len(listVideoUrl) == nbrVideoLink:
             return listVideoUrl
