@@ -1,41 +1,48 @@
+nbrVideo=2
+if [ ! -z "$1" ]; then
+    nbrVideo=$1
+fi
+
 cd $(dirname $0)
 
-./dld-f5-cdanslair 5
-./dld-f5-cavous 2
-./dld-f2-jt20h 2
-./dld-f5-passagedesarts 2
-./dld-f5-cadire 2
-./dld-f2-cash 2
-./dld-f5-mondeenface 2
-./dld-f5-grandelibrairie 2
-./dld-f2-envoye 2
-./dld-f2-complement 2
-./dld-f5-clhebdo 2
-./dld-f5-cpolitique 2
-./dld-f3-dimancheenpolitique 2
-./dld-f2-onestendirect 2
-./dld-f2-vousavezlaparole 2
-./dld-f2-prenezsoindevous 2
-./dld-f5-ledocdudimanche 2
-./dld-f3-secretdhistoire 2
-./dld-f5-sciencegrandformat 2
-./dld-f5-enquetedesante 2
-./dld-f2-grandechiquier 1
-./dld-f5-guerredestrones 2
-./dld-tf1-quotidien 5
-./dld-f2-basiqueleconcert 1
-./dld-arte-dessousdescartes 1
-./dld-arte-reportage 1
-./dld-arte-28mn 2
-./dld-f3-capitainemarleau 3
-./dld-f2-pouvoirducorpshumain 1
-./dld-f2-lesrivierespourpres 2
-./dld-f3-laloide 2
-./dld-f2-nuancesdedoc 2
-./dld-tv-hiphopjazz 4
-./dld-f5-magsante 2
-./dld-f5-capousse 2
-./dld-f2-infrarouge 3
-./dld-f2-celluledecrise 2
+./dld-f5-cdanslair $nbrVideo
+./dld-f5-cavous $nbrVideo
+./dld-f2-jt20h $nbrVideo
+./dld-f5-passagedesarts $nbrVideo
+./dld-f5-cadire $nbrVideo
+./dld-f2-cash $nbrVideo
+./dld-f5-mondeenface $nbrVideo
+./dld-f5-grandelibrairie $nbrVideo
+./dld-f2-envoye $nbrVideo
+./dld-f2-complement $nbrVideo
+./dld-f5-clhebdo $nbrVideo
+./dld-f5-cpolitique $nbrVideo
+./dld-f3-dimancheenpolitique $nbrVideo
+./dld-f2-onestendirect $nbrVideo
+./dld-f2-vousavezlaparole $nbrVideo
+./dld-f2-prenezsoindevous $nbrVideo
+./dld-f5-ledocdudimanche $nbrVideo
+./dld-f3-secretdhistoire $nbrVideo
+./dld-f5-sciencegrandformat $nbrVideo
+./dld-f5-enquetedesante $nbrVideo
+./dld-f2-grandechiquier $nbrVideo
+./dld-f5-guerredestrones $nbrVideo
+./dld-tf1-quotidien $nbrVideo
+./dld-f2-basiqueleconcert $nbrVideo
+./dld-arte-dessousdescartes $nbrVideo
+./dld-arte-reportage $nbrVideo
+./dld-arte-28mn $nbrVideo
+./dld-f3-capitainemarleau $nbrVideo 
+./dld-f2-pouvoirducorpshumain $nbrVideo
+./dld-f2-lesrivierespourpres $nbrVideo
+./dld-f3-laloide $nbrVideo
+./dld-f2-nuancesdedoc $nbrVideo
+./dld-tv-hiphopjazz $nbrVideo
+./dld-f5-magsante $nbrVideo
+./dld-f5-capousse $nbrVideo
+./dld-f2-infrarouge $nbrVideo
+./dld-f2-celluledecrise $nbrVideo
+./dld-f2-2030ledimanche $nbrVideo
+./dld-f2-1315ledimanche $nbrVideo
 
 

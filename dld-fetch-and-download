@@ -1,0 +1,5 @@
+cd $(dirname $0)
+./dld-0-daily
+./dld-fetchvideos
+
+
