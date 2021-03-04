@@ -180,20 +180,29 @@ class FranceTvParser(NetworkParser):
         """
         try:
             parsed = BeautifulSoup(page, "html.parser")
-            div_tag = parsed.find_all("div", class_="js-player-container c-player-container")
-            if len(div_tag) == 0:
-                return None
+            # div_tag = parsed.find_all("div", class_="js-player-container c-player-container")
+            # if len(div_tag) == 0:
+            #     return None
 
-            script_tag = div_tag[0].nextSibling
-            if script_tag.name !=  "script":
-                return None
+            # script_tag = div_tag[0].nextSibling
+            # if script_tag.name !=  "script":
+            #     return None
 
-            if len(script_tag.contents) == 0 or len(script_tag.contents[0]) == 0:
-                return None
+            # if len(script_tag.contents) == 0 or len(script_tag.contents[0]) == 0:
+            #     return None
+
+            script_tags = parsed.find_all("script")
+            vplayer_scripts = [s.getText() for s in script_tags if (len(s.getText())>0 and s.getText().find('window.FTVPlayerVideos')>0)] 
+            
+            # for s_tag in script_tags:
+            #   if type(s_tag.next)!=type(''):
+            #     continue
+            #   if s_tag.next.find("window.FTVPlayerVideos") == -1:
+            #     continue
 
             # extract Video Id from script text
             # json_text = script_tag.text
-            json_text = script_tag.contents[0]
+            json_text = vplayer_scripts[0]
             json_text = json_text[json_text.find("["):json_text.rfind("]")+1]
 
             # replace wrong escape character .... 
