@@ -47,78 +47,78 @@ from db.mongoapi import addStream, getStreamByUrl
 
 if (__name__ == "__main__"):
 
-    # Arguments de la ligne de commande
-    usage = "fetchCollection.py [options] urlToCollection"
-    parser = argparse.ArgumentParser(usage=usage, description="Download video from FranceTv.fr")
-    parser.add_argument("-v", "--verbose", action="store_true", default=False,
-                        help='dispay download information')
+  # Arguments de la ligne de commande
+  usage = "fetchCollection.py [options] urlToCollection"
+  parser = argparse.ArgumentParser(usage=usage, description="Download video from FranceTv.fr")
+  parser.add_argument("-v", "--verbose", action="store_true", default=False,
+                      help='dispay download information')
 
-    parser.add_argument("-i", "--input", action="store", choices=['url', 'mongo'], default="url", help='input source url or mongo')
-    parser.add_argument("--nbrVideo", action="store", default="1", help='number of video link to fech (default 1), -1 means all')
-    parser.add_argument("--programCode", action="store", default="", help='set the program code for that video or collection')
-    parser.add_argument("urlEmission", action="store", help="URL of video to download")
-    args = parser.parse_args()
+  parser.add_argument("-i", "--input", action="store", choices=['url', 'mongo'], default="url", help='input source url or mongo')
+  parser.add_argument("--nbrVideo", action="store", default="1", help='number of video link to fech (default 1), -1 means all')
+  parser.add_argument("--programCode", action="store", default="", help='set the program code for that video or collection')
+  parser.add_argument("urlEmission", action="store", help="URL of video to download")
+  args = parser.parse_args()
 
-    # set logger
-    logger = logging.getLogger(LOGGER_NAME)
-    console = logging.StreamHandler(sys.stdout)
-    if (args.verbose):
-        logger.setLevel(logging.DEBUG)
-        console.setLevel(logging.DEBUG)
-    else:
-        logger.setLevel(logging.INFO)
-        console.setLevel(logging.INFO)
-    console.setFormatter(ColorFormatter(True))
-    logger.addHandler(console)
+  # set logger
+  logger = logging.getLogger(LOGGER_NAME)
+  console = logging.StreamHandler(sys.stdout)
+  if (args.verbose):
+    logger.setLevel(logging.DEBUG)
+    console.setLevel(logging.DEBUG)
+  else:
+    logger.setLevel(logging.INFO)
+    console.setLevel(logging.INFO)
+  console.setFormatter(ColorFormatter(True))
+  logger.addHandler(console)
 
-    # Affiche des infos sur le systeme
-    logger.debug("Python %s (%s)" % (platform.python_version(), platform.machine()))
-    logger.debug("OS : %s %s" % (platform.system(), platform.version()))
+  # Affiche des infos sur le systeme
+  logger.debug("Python %s (%s)" % (platform.python_version(), platform.machine()))
+  logger.debug("OS : %s %s" % (platform.system(), platform.version()))
 
-    if (args.input == 'mongo'):
-        logger.error("input mongo not supported yet")
-        exit(1)
+  if (args.input == 'mongo'):
+    logger.error("input mongo not supported yet")
+    exit(1)
 
-    try:
-        url = args.urlEmission
-        networkParser = networkParserFactory(url)
-        listOfUrls = networkParser.parseCollection(url, int(args.nbrVideo))
+  try:
+    url = args.urlEmission
+    networkParser = networkParserFactory(url)
+    listOfUrls = networkParser.parseCollection(url, int(args.nbrVideo))
 
-        # use code program passed as argument or extract the last part of URL as code program
-        parsedUrl = urlparse(url)
-        programCode = args.programCode
-        if len(programCode)==0:
-            programCode = parsedUrl.path.strip('/').split('/').pop()
+    # use code program passed as argument or extract the last part of URL as code program
+    parsedUrl = urlparse(url)
+    programCode = args.programCode
+    if len(programCode)==0:
+        programCode = parsedUrl.path.strip('/').split('/').pop()
 
-        networkName = parsedUrl.hostname
+    networkName = parsedUrl.hostname
 
-        for url in listOfUrls:
-            logger.info("-" * 6)
-            stream = getStreamByUrl(url)
-            if (stream):  #and stream.status=="done"):
-                if (stream.status=="error" and len(stream.lastErrors)<3):
-                    stream.status = "pending"
-                    stream.save()
-                    logger.info("Trying download again:%d" % len(stream.lastErrors))
-                else:
-                    logger.info("Duplicate. Continue ...")
-                    logger.info("Url: %s" % (url))
+    for url in listOfUrls:
+      logger.info("-" * 6)
+      stream = getStreamByUrl(url)
+      if (stream):  #and stream.status=="done"):
+        if (stream.status=="recovering" or (stream.status=="error" and len(stream.lastErrors)<4)):
+          stream.status = "pending"
+          stream.save()
+          logger.info("Trying download again:%d" % len(stream.lastErrors))
+        else:
+          logger.info("Duplicate. Continue ...")
+          logger.info("Url: %s" % (url))
 
-                logger.info("=" * 6)
-                continue  
+        logger.info("=" * 6)
+        continue  
 
-            # add the Stream as pending.
-            logger.info("Adding pending stream: %s" % (url))
-            stream = addStream(url, "pending")
-            stream.progCode = programCode
-            stream.networkName = networkName
-            stream.save()
-            logger.info("=" * 6)
+      # add the Stream as pending.
+      logger.info("Adding pending stream: %s" % (url))
+      stream = addStream(url, "pending")
+      stream.progCode = programCode
+      stream.networkName = networkName
+      stream.save()
+      logger.info("=" * 6)
 
-    except Exception as err:
-        logger.error(err.__repr__())
-        exit()
- 
-    logger.info("=========================================================")
+  except Exception as err:
+    logger.error(err.__repr__())
+    exit()
+
+  logger.info("=========================================================")
   
     
