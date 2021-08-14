@@ -1,0 +1,14 @@
+nbrVideo=1
+if [ ! -z "$1" ]; then
+    nbrVideo=$1
+fi
+
+localFolder=$(dirname $0)
+cd $localFolder
+
+./dld-francetv https://www.france.tv/spectacles-et-culture/theatre-et-danse $nbrVideo
+./dld-francetv https://www.france.tv/spectacles-et-culture/musique-concerts $nbrVideo
+./dld-francetv https://www.france.tv/spectacles-et-culture/opera-et-musique-classique $nbrVideo
+./dld-francetv https://www.france.tv/spectacles-et-culture/pop-rock-electro $nbrVideo
+./dld-francetv https://www.france.tv/spectacles-et-culture/hip-hop-jazz $nbrVideo
+

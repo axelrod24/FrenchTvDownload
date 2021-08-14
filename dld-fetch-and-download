@@ -1,5 +1,25 @@
+#!/bin/bash
+pid_file="dld-process.pid"
+
 cd $(dirname $0)
+# create file
+
+if [ -f $pid_file ]; then
+  echo "Found existing .pid file named $pid_file. Exiting."
+  exit
+else
+  echo "Creating .pid file $pid_file"
+  echo $$ > $pid_file
+fi
+
+echo "dld processing starting"
+
 ./dld-0-daily
 ./dld-fetchvideos
 
+echo "dld processing completed"
 
+# delete pid file
+rm $pid_file
+
+echo "pid file: $pid_file deleted"

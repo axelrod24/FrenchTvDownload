@@ -8,4 +8,5 @@ cd $localFolder
 
 ./dld-francetv https://www.france.tv/france-5/c-politique/ $nbrVideo
 ./dld-francetv https://www.france.tv/france-5/c-politique-la-suite/ $nbrVideo
+./dld-francetv https://www.france.tv/france-5/c-etait-ecrit/ $nbrVideo
 
