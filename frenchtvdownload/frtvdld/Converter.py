@@ -27,11 +27,12 @@ def CreateMP4(src, dst):
 
 
 class FfmpegHLSDownloader(object):
-  def __init__(self, url):
+  def __init__(self, url, userAgent):
     self.manifestUrl = url
+    self.userAgent = userAgent
 
   def downloadAndConvertFile(self, dst):
-    command = 'ffmpeg -hide_banner -i "%s" -acodec copy -vcodec copy %s' % (self.manifestUrl , dst)
+    command = 'ffmpeg -hide_banner -user_agent "%s" -loglevel info -i "%s" -acodec copy -vcodec copy %s &> %s' % (self.userAgent, self.manifestUrl , dst, dst.split(".mp4")[0]+".log")
     try:
       if (os.system(command) == 0):
         logger.info("-> %s" % dst)

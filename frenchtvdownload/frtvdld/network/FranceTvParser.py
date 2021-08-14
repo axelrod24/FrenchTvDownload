@@ -30,12 +30,12 @@ class FranceTvVideoMetadata(VideoMetadata):
     self._networkName="france.tv"
     self._manifestUrl = self.get('manifest')
     self._synopsis = self.get('synopsis', "no_synopsis")
-    
+
     vMeta =  self.get('video')
     #self._manifestUrl = vMeta.get('url')
     self._mediaType = vMeta.get('format') 
     self._duration = vMeta.get('duration') 
-    
+
     pMeta = self.get('meta')
     self._videoId = pMeta.get('id')
 
@@ -46,9 +46,11 @@ class FranceTvVideoMetadata(VideoMetadata):
     self._progTitle = self.normalizeProgTitle(pTitle, 'default_prog_title')
 
     self._airDate = self._parseAirDate(pMeta.get('broadcasted_at'))  #\TODO LBR: add default date value
-
     self._filename = "%s-%s" % (datetime.fromtimestamp(self._airDate).strftime("%Y%m%d"), self.normalizeProgTitle(self._progName))
-  
+    # add program title at the end of the filename
+    if self._progTitle != 'default_prog_title':
+      self._filename += "-%s" % self._progTitle
+
   def _parseAirDate(self, str_date):
     split_date = str_date.split("T")[0]
     d = datetime.fromisoformat(split_date)
@@ -73,7 +75,7 @@ class FranceTvParser(NetworkParser):
 
   REPLAY_VIDEO_URL = "%s/toutes-les-videos/?page=%d"
 
-  def parseCollection(self, baseUrl, nbrPage=1, nbrVideoLink=1):
+  def parseCollection(self, baseUrl, nbrPage=1, nbrVideoLink=1, checkBaseUrl=False):
     index = 0
     # read the page
     listVideoUrl=[]
@@ -99,7 +101,7 @@ class FranceTvParser(NetworkParser):
 
         videoUrl = urljoin(baseUrl, card["href"])
         # filter out "unrelated" video
-        if not videoUrl.startswith(baseUrl):
+        if checkBaseUrl and not videoUrl.startswith(baseUrl):
           continue
         listVideoUrl.append(videoUrl)
         if len(listVideoUrl) == nbrVideoLink:

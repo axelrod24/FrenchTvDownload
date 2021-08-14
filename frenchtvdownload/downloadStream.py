@@ -36,11 +36,11 @@ from frtvdld.ColorFormatter import ColorFormatter
 from frtvdld.network.NetworkProgParser import networkParserFactory 
 from frtvdld.downloader.HLSDownloader import HlsManifestParser, HLSStreamDownloader
 
-from frtvdld.FakeAgent import FakeAgent
+from frtvdld.FakeAgent import FakeAgent, CURRENT_USER_AGENT
 from frtvdld.Converter import CreateMP4, FfmpegHLSDownloader
 from frtvdld.GlobalRef import LOGGER_NAME
 
-from db.mongoapi import addStream, getStreamsByStatus, updateStreamWithError, updateStreamWithMetadata, addVideo, updateStreamStatus, getStreamByUrl, getStreamsByNetworkAndStatus
+from db.mongoapi import addStream, getStreamsByStatus, updateStreamWithError, updateStreamWithMetadata, addVideo, updateStreamStatus, getStreamByUrl
 
 
 def downloadOneStream(stream, args):
@@ -80,7 +80,7 @@ def downloadOneStream(stream, args):
   updateStreamStatus(stream, "downloading")
 
   try:
-    ffmpegHLSDownloader = FfmpegHLSDownloader(url=progMetadata.manifestUrl)
+    ffmpegHLSDownloader = FfmpegHLSDownloader(url=progMetadata.manifestUrl, userAgent=CURRENT_USER_AGENT)
     ffmpegHLSDownloader.downloadAndConvertFile(dst=dstFullPath + ".mp4")
   except Exception as err:
     # log the error and continue with next stream
@@ -129,7 +129,6 @@ if (__name__ == "__main__"):
   # parser.add_argument("--noDuplicate", action='store_true', default=False, help="download video only if video id not in Mongo db")
   parser.add_argument("--saveMetadata", action='store_true', default=False, help="save the video metadata in file (.meta)")
   parser.add_argument("--repo", action='store', default='TV', help="define the default folder")
-
   parser.add_argument("--nocolor", action='store_true', default=False, help='turn of color in terminal')
   parser.add_argument("--version", action='version', version="FrenchTvDownloader %s" % (__version__))
   parser.add_argument("-i", "--input", action="store", choices=['url', 'mongo'], default="mongo", help='input source url or mongo')

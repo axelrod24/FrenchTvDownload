@@ -30,6 +30,8 @@ class VideoMetadata(dict):
     s = re.sub("/", "_", s)
     s = re.sub('\s+', '_', s)
     s = re.sub('\u0026', "", s)    # deal with "&"
+#    s = re.sub('\u003F', "\u00BF", s)    # deal with "?"
+#    s = re.sub('\u0021', '\u00A1', s)    # deal with "!"
     # remove accented char
     s = unicodedata.normalize('NFD', s).encode('ascii', 'ignore').decode("utf-8")
     return s.lower()
