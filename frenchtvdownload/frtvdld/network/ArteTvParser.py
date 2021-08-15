@@ -55,7 +55,7 @@ class ArteTvVideoMetadata(VideoMetadata):
 
 
 class ArteTvParser(NetworkParser):
-  JSON_API = "https://api.arte.tv/api/player/v2/config/fr/_ID_EMISSION_"
+  JSON_API = "https://api.arte.tv/api/player/v1/config/fr/_ID_EMISSION_"
   #JSON_COLLECTION_API = "https://www.arte.tv/guide/api/api/zones/fr/collection_videos?id=_ID_EMISSION_&page=_ID_PAGE_"
   #JSON_COLLECTION_API = "https://www.arte.tv/guide/api/emac/v3/fr/web/data/COLLECTION_VIDEOS/?collectionId=_ID_EMISSION_&page=_ID_PAGE_"
   JSON_COLLECTION_API = "https://www.arte.tv/api/rproxy/emac/v3/fr/web/data/COLLECTION_VIDEOS/?collectionId=_ID_EMISSION_&page=_ID_PAGE_"
