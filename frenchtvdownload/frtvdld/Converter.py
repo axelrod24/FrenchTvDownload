@@ -1,6 +1,7 @@
 import logging
 import os
 import subprocess
+import shlex
 
 from frtvdld.DownloadException import FrTvDownloadException
 from frtvdld.GlobalRef import LOGGER_NAME
@@ -35,18 +36,21 @@ class FfmpegHLSDownloader(object):
   def downloadAndConvertFile(self, dst):
     log_file = dst.split(".mp4")[0]+".log"
     command = 'ffmpeg -hide_banner -user_agent "%s" -loglevel info -i "%s" -acodec copy -vcodec copy %s' % (self.userAgent, self.manifestUrl , dst)
+    command_args = shlex.split(command)
     #command = ['ffmpeg', '-hide_banner', '-user_agent', '%s'%(self.userAgent), '-loglevel', 'info', '-i', '%s'%(self.manifestUrl), '-acodec', 'copy', '-vcodec', 'copy', dst]
-    logger.info(command)
+    logger.info("ffmpeg command")
+    logger.info(command_args)
     try:
-      #with open(log_file, 'w') as stdout_file:
-      #  process_output = subprocess.run(command, stdout=stdout_file, stderr=subprocess.STDOUT, text=True)
+      with open(log_file, 'w') as stderr_file:
+        process_output = subprocess.run(command_args, stdout=subprocess.PIPE, stderr=stderr_file, text=True)
 
-      if (os.system(command) == 0):
-      #if (process_output.stderr==None):
+      #if (os.system(command) == 0):
+      if (process_output.returncode==0):
         logger.info("-> %s" % dst)
+        logger.info("-> %s" % log_file)
       else:
-        logger.warning("Problem with FFmpeg: %s"%process_output.stderr)
-        raise FrTvDownloadException("Error running: FFmpeg %s"%process_output.stderr)
-      
+        logger.warning("Problem with FFmpeg: %s"%process_output.stdout)
+        raise FrTvDownloadException("Error running: FFmpeg %s"%process_output.stdout)
+
     except Exception as err:
       raise FrTvDownloadException("Can't create final MP4. "+err.__repr__())
