@@ -23,11 +23,15 @@ cd $(dirname $0)
 ./dld-f2-1315ledimanche $nbrVideo
 ./dld-f2-beletbien $nbrVideo
 ./dld-f2-antidote $nbrVideo
+./dld-f2-elysee $nbrVideo
+./dld-f2-affairessensibles $nbrVideo
+./dld-f2-20h22 $nbrVideo
 ./dld-f3-secretdhistoire $nbrVideo
 ./dld-f3-crimesparfaits $nbrVideo
 ./dld-f3-capitainemarleau $nbrVideo 
 ./dld-f3-laloide $nbrVideo
 ./dld-f3-dimancheenpolitique $nbrVideo
+./dld-f3-reseauenquetes $nbrVideo
 ./dld-f5-cdanslair $nbrVideo
 ./dld-f5-cavous $nbrVideo
 ./dld-f5-passagedesarts $nbrVideo
