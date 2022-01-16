@@ -42,7 +42,6 @@ from frtvdld.GlobalRef import LOGGER_NAME
 
 from db.mongoapi import addStream, getStreamsByStatus, updateStreamWithError, updateStreamWithMetadata, addVideo, updateStreamStatus, getStreamByUrl
 
-
 def downloadOneStream(stream, args):
   try:
     url = stream.url
@@ -91,6 +90,21 @@ def downloadOneStream(stream, args):
     logger.info("-------")
     return 
 
+   # check log file for error
+  logger.info("------------")
+  logger.info(f"Checking log file: {dstFullPath}.log")
+  logger.info("++")
+  with open(dstFullPath+".log", 'r') as f:
+    lines = f.readlines()
+  if any(("error" in l for l in lines)):
+    logger.info("------------")
+    logger.info("Found downloading error. Clean up and will retry later")
+    logger.info("++")
+    cleanUp(dstFullPath)
+    updateStreamWithError(stream, "Segment download error")
+    updateStreamStatus(stream, "pending")
+    return 
+
   logger.info("++")
   logger.info("Download completed: %s" % (url))
   logger.info("Video : %s" % (dstFullPath))
@@ -109,6 +123,10 @@ def downloadOneStream(stream, args):
   logger.info("Saving video info")
   updateStreamWithMetadata(stream, progMetadata)
   addVideo(dstFullPath, folder, args.repo, progMetadata, stream)
+
+def cleanUp(dstFullPath):
+  for ext in (".mp4",".meta",".log"):
+    os.remove(dstFullPath+ext) 
 
 
 #
