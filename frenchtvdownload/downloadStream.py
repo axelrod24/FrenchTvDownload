@@ -125,7 +125,7 @@ def downloadOneStream(stream, args):
   addVideo(dstFullPath, folder, args.repo, progMetadata, stream)
 
 def cleanUp(dstFullPath):
-  for ext in (".mp4",".meta",".log"):
+  for ext in (".mp4",".log"):
     os.remove(dstFullPath+ext) 
 
 
