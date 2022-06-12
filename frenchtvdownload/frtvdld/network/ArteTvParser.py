@@ -3,6 +3,7 @@ import json, yaml
 import time
 
 from datetime import datetime
+from datetime import date
 
 from bs4 import BeautifulSoup
 from urllib.parse import urlparse, urljoin
@@ -20,42 +21,44 @@ class ArteTvVideoMetadata(VideoMetadata):
     super().__init__(d)
 
   def parseMetadata(self):
+    self._networkName = "arte.tv"
+    data = self.get("data", {})
+    data = data.get('attributes', {})
 
-    self._networkName="arte.tv"
-    data = self.get("videoJsonPlayer", {})
-    if 'VRA' not in data.keys():
-        data = {}
+    metadata = data.get('metadata', {})
+    self._progTitle = metadata.get('title', 'default_prog_title')
+    self._progName = metadata.get('title', 'default_prog_name')
+    self._synopsis = metadata.get('description', "no synopsis")
+    self._duration = metadata.get('duration').get("seconds")
 
-    gregorian_date = data['VRA'].split(" ", 1)[0]
-    self._airDate = time.mktime(datetime.strptime(gregorian_date, "%d/%m/%Y").timetuple()) 
-    self._progName = data.get('caseProgram', 'default_prog_name')
-    self._progTitle = data.get('VTI', 'default_prog_title')
-    self._duration = data.get('videoDurationSeconds', 0)
-    self._synopsis = data.get('VDE', "no synopsis")
-    
+    gregorian_date = data.get('rights', {'begin': f"{date.today()}T"}).get(
+        'begin').split("T", 1)[0]
+    self._airDate = time.mktime(datetime.strptime(
+        gregorian_date, "%Y-%m-%d").timetuple())
+
     self._videoId = self.get('videoId')
-    
-    if 'VSR' not in data.keys():
-        return
-    
-    VSR = data['VSR']
-    for k in VSR:
-      if not k.startswith("HLS"):
-          continue
-      v = VSR[k]
-      if v["versionCode"] not in ["VF-STF", "VOF-STF", "VF", "VOF", "VO-STF"]:
-          continue
 
-      self._manifestUrl = v['url']
-      # metaData['drm'] = False
-      self._mediaType = "hls"
-      break
+    streams = data.get('streams', [])
+    if not len(streams):
+      return
 
-    self._filename = "%s-Arte-%s" % (datetime.fromtimestamp(self._airDate).strftime("%Y%m%d"), self.normalizeProgTitle(self._progTitle))
+    # find the stream URL
+    for s in streams:
+      versions = s["versions"]
+      for v in versions:
+        if v["shortLabel"] in ["VF", "ST mal", "VOA", "ST mal DE"]:
+          self._manifestUrl = s['url']
+          self._mediaType = "hls"
+          break
+      if self._manifestUrl is not None:
+        break
+
+    self._filename = "%s-Arte-%s" % (datetime.fromtimestamp(
+        self._airDate).strftime("%Y%m%d"), self.normalizeProgTitle(self._progTitle))
 
 
 class ArteTvParser(NetworkParser):
-  JSON_API = "https://api.arte.tv/api/player/v1/config/fr/_ID_EMISSION_"
+  JSON_API = "https://api.arte.tv/api/player/v2/config/fr/_ID_EMISSION_"
   #JSON_COLLECTION_API = "https://www.arte.tv/guide/api/api/zones/fr/collection_videos?id=_ID_EMISSION_&page=_ID_PAGE_"
   #JSON_COLLECTION_API = "https://www.arte.tv/guide/api/emac/v3/fr/web/data/COLLECTION_VIDEOS/?collectionId=_ID_EMISSION_&page=_ID_PAGE_"
   JSON_COLLECTION_API = "https://www.arte.tv/api/rproxy/emac/v3/fr/web/data/COLLECTION_VIDEOS/?collectionId=_ID_EMISSION_&page=_ID_PAGE_"

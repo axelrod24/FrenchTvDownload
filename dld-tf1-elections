@@ -1,0 +1,11 @@
+nbrVideo=1
+if [ ! -z "$1" ]; then
+    nbrVideo=$1
+fi
+
+localFolder=$(dirname $0)
+cd $localFolder
+
+./dld-francetv https://www.tf1.fr/tf1/elections/ $nbrVideo
+
+

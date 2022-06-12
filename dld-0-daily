@@ -49,6 +49,8 @@ cd $(dirname $0)
 ./dld-f5-capousse $nbrVideo
 ./dld-f5-ledocstupefiant $nbrVideo
 ./dld-tf1-quotidien $nbrVideo
+./dld-tf1-martinweill $nbrVideo
+./dld-tf1-elections $nbrVideo
 ./dld-arte-dessousdescartes $nbrVideo
 ./dld-arte-reportage $nbrVideo
 ./dld-arte-28mn $nbrVideo
