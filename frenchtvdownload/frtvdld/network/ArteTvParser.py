@@ -48,6 +48,7 @@ class ArteTvVideoMetadata(VideoMetadata):
       for v in versions:
         if v["shortLabel"] in ["VF", "ST mal", "VOA", "ST mal DE"]:
           self._manifestUrl = s['url']
+          logger.info(self._manifestUrl)
           self._mediaType = "hls"
           break
       if self._manifestUrl is not None:

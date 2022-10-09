@@ -8,7 +8,12 @@ try:
 except ModuleNotFoundError:
   pass
   # ignore error if this package can't be found
-    
+
+try:
+    from yaml import CLoader as Loader, CDumper as Dumper
+except ImportError:
+    from yaml import Loader, Dumper
+
 from bs4 import BeautifulSoup
 from urllib.parse import urlparse, urljoin
 
@@ -94,7 +99,7 @@ class FranceTvParser(NetworkParser):
         
         # get onclick function arguments, skip if not replay
         jsonStr = cardOnClick[cardOnClick.find('(')+1:cardOnClick.find(')')]
-        jsonArg = yaml.load(jsonStr)
+        jsonArg = yaml.load(jsonStr, Loader=Loader)
         typeVideo = jsonArg.get('customObject',{'type_video':"extrait"})['type_video']
         if typeVideo != "replay":
           continue
@@ -196,7 +201,7 @@ class FranceTvParser(NetworkParser):
       # replace wrong escape character .... 
       json_text = json_text.replace("\\/","/")
 
-      data = yaml.load(json_text)
+      data = yaml.load(json_text, Loader=Loader)
       data = data[0]
       return data["videoId"]
 
